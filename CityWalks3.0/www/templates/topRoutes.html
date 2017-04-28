@@ -1,0 +1,15 @@
+<ion-view title="Top Routes" hide-back-button="true" id="page7">
+  <ion-content padding="true" class="has-header">
+    <form id="topRoutes-form8" class="list">
+      <label class="item item-input" id="topRoutes-search1">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="" ng-model="data.search">
+      </label>
+    </form>
+    <div class="item item-body" id="topRoutes-list-item-container5" ng-repeat="route in routes">
+      <div id="topRoutes-markdown29" class="show-list-numbers-and-dots">
+        <p style="margin-top:0px;color:#000000;">{{mongoData.routes}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
