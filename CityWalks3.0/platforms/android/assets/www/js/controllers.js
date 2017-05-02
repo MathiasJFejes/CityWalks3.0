@@ -101,10 +101,33 @@ function ($scope, $stateParams, $state) {
     }
 }])
    
-.controller('nearbyRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('nearbyRoutesCtrl', ['$scope', '$stateParams', '$state', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $stateParams, $state, $http) {
+
+    $scope.data = {
+        'city': '',
+        'distance': ''
+    }
+
+
+    $scope.findNearbyRoutes = function () {
+
+        var req = {
+            crossDomain: true,
+            method: 'POST',
+            url: 'http://46.101.219.139:5000/api/cities',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: { 'name': $scope.data.city, 'distance': $scope.data.distance }
+        }
+
+        $http(req).then(function () { $state.go('menu.nearbyRoutes'), $scope.error = 'Error logging in.' });
+
+
+    };
 
 
 }])
@@ -117,18 +140,78 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('topRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
 
+    $scope.getRouteData = function () {
+
+        $http({
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/cities'
+        }).then(function (response) {
+            $scope.myData = response.data.data;
+
+
+        })
+    }
+
+    $scope.getRouteInfo = function (id) {
+        var routeId = id;
+        listItmeDataService.set(routeId);
+        $state.go("menu.myRoutes")
+        console.log(routeId._id, routeId.name);
+
+    }
+
+    $scope.deleteRouteData = function (item) {
+
+        $http({
+            method: 'DELETE',
+            url: 'http://46.101.219.139:5000/api/cities/' + item._id
+        }).then(function () {
+            $scope.getRouteData();
+        })
+       };
 
 }])
    
-.controller('myRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('myRoutesCtrl', ['$scope', '$stateParams', 'listItmeDataService', '$http', '$state',   // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $stateParams, listItmeDataService, $http, $state) {
+    $scope.itemData = listItmeDataService.get();
+
+    $scope.data = {
+        'distance': ''
+    };
+
+
+    $scope.updateDistance = function (item) {
+        console.log($scope.data.distance);
+        var req = {
+            crossDomain: true,
+            method: 'PUT',
+            url: 'http://46.101.219.139:5000/api/cities/' + item._id,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: { 'name': $scope.itemData.name, 'distance': $scope.data.distance }
+        }
+        $http(req).then(function () { $state.go('menu.topRoutes'), $scope.error = 'Error logging in.' });
+
+    };
+
+    $scope.deleteRouteData = function (item) {
+
+        $http({
+            method: 'DELETE',
+            url: 'http://46.101.219.139:5000/api/cities/' + item._id
+        }).then(function () {
+            $state.go('menu.topRoutes');
+        })
+    };
 
 
 }])

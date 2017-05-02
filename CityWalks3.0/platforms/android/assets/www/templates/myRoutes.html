@@ -1,9 +1,14 @@
 <ion-view title="My Routes" id="page10">
-  <ion-content padding="true" class="has-header">
-    <div class="item item-body" id="myRoutes-list-item-container1">
-      <div id="myRoutes-markdown20" class="show-list-numbers-and-dots">
-        <p style="margin-top:0px;color:#000000;">{{userData.id.routes}}</p>
-      </div>
-    </div>
-  </ion-content>
+    <ion-content padding="true" class="has-header">
+        <ion-toggle ng-model="shouldShowDelete">
+            Show Delete button?
+        </ion-toggle>
+        <ion-list show-delete="shouldShowDelete">
+            <ion-item>
+                ID: {{itemData._id}}<p>&nbsp;</p>Namn: {{itemData.name}}<p>&nbsp;</p>Distance: <input type="text" placeholder={{itemData.distance}} ng-model="data.distance"><p>&nbsp;</p>Created: {{itemData.create_date}}
+                <ion-delete-button class="ion-minus-circled" ng-click="deleteRouteData(itemData)"></ion-delete-button>
+                <ion-option-button class="button-assertive" ng-click="updateDistance(itemData)">Edit</ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>

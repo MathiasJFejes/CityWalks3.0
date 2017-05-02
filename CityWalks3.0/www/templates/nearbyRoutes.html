@@ -1,10 +1,16 @@
 <ion-view title="Nearby Routes" hide-back-button="true" id="page5">
   <ion-content padding="true" class="has-header">
-    <button id="nearbyRoutes-button23" ng-click="findNearbyRoutes()" class="button button-balanced  button-block">Find nearby routes</button>
-    <div class="item item-body" id="nearbyRoutes-list-item-container4">
-      <div id="nearbyRoutes-markdown27" class="show-list-numbers-and-dots">
-        <p style="margin-top:0px;color:#000000;">{{$scope.data.routes}}</p>
-      </div>
-    </div>
+      <ion-list id="login-list2">
+          <label class="item item-input" id="login-input1">
+              <span class="input-label">City</span>
+              <input type="text" placeholder="" ng-model="data.city">
+          </label>
+          <label class="item item-input" id="login-input2">
+              <span class="input-label">Distance</span>
+              <input type="text" placeholder="" ng-model="data.distance">
+          </label>
+      </ion-list>
+      <button id="nearbyRoutes-button23" ng-click="findNearbyRoutes()" class="button button-balanced  button-block">Add new route!</button>
+
   </ion-content>
 </ion-view>

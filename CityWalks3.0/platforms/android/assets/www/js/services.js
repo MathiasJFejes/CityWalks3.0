@@ -4,7 +4,7 @@ angular.module('app.services', [])
 
 }])
 
-.factory('myService', function(){
+.factory('listItmeDataService', function(){
     var savedData = {}
     function set(data) {
         savedData = data;
