@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*!
   Ionicons, v2.0.1
   Created by Ben Sperry for the Ionic Framework, http://ionicons.com/
@@ -6559,8 +6559,12 @@ button.item.item-button-right {
   .item-reordering .item-reorder {
     z-index: 9; }
 
+
+
+
 .item-placeholder {
-  opacity: 0.7; }
+ opacity:0.1;
+     }
 
 /**
  * The hidden right-side buttons that can be exposed under a list item
@@ -7654,11 +7658,13 @@ textarea {
   font-size: 16px; }
 
 .placeholder-icon {
-  color: #aaa; }
+  color:black; 
+  opacity:0.9;
+}
   .placeholder-icon:first-child {
-    padding-right: 6px; }
+    padding-right: 10px; }
   .placeholder-icon:last-child {
-    padding-left: 6px; }
+    padding-left: 10px; }
 
 .item-stacked-label {
   display: block;
@@ -7749,11 +7755,16 @@ input[type="color"] {
 textarea {
   padding-left: 0; }
   textarea::-moz-placeholder {
-    color: #aaaaaa; }
+    color:red;
+    opacity:1.0;
+  }
   textarea:-ms-input-placeholder {
-    color: #aaaaaa; }
+    color:red;
+    opacity:1.0;
+  }
   textarea::-webkit-input-placeholder {
-    color: #aaaaaa;
+    color:red;
+    opacity:1.0;
     text-indent: -3px; }
 
 textarea {
@@ -7802,15 +7813,24 @@ input[type="file"] {
 
 input::-moz-placeholder,
 textarea::-moz-placeholder {
-  color: #aaaaaa; }
+  color:black; 
+  opacity:0.4;
+   font-style:italic;
+}
 
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: #aaaaaa; }
+  color:black;
+  opacity:0.4;
+   font-style:italic;
+}
+
 
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: #aaaaaa;
+  color:black;
+  font-style:italic; 
+  opacity:0.4;
   text-indent: 0; }
 
 input[disabled],

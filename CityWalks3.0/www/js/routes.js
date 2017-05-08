@@ -126,6 +126,17 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('menu.EditFriends', {
+     url: '/page44',
+     views: {
+         'side-menu21': {
+          templateUrl: 'templates/EditFriends.html',
+          controller: 'EditFriendsCtrl'
+      }
+    }
+  })
+
+
 $urlRouterProvider.otherwise('/page0')
 
   

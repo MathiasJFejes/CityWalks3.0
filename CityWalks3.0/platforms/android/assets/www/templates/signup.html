@@ -1,6 +1,9 @@
 <ion-view title="Signup" hide-nav-bar="true" hide-back-button="true" cache-view="false" nav-transition="none" id="page9">
   <ion-content padding="true" style="background: url(img/EhjFt9MeSrGqjngEFxIl_17836878_10212976240544669_1619232310_o.jpg) no-repeat center;background-size:cover;" class="manual-ios-statusbar-padding" scroll="false">
-    <form id="signup-form4" class="list">
+    
+
+      
+      <form id="signup-form4" class="list">
       <div id="signup-markdown4" ng-if="error" class="show-list-numbers-and-dots error-box">
         <p style="color:#000000;">{{error}}</p>
       </div>
@@ -9,26 +12,33 @@
         <img src="img/nRsFpnSGRebHX3QppJen_CityWalkingLogoNewPNG.png" style="display: block; width: 50%; height: auto; margin-left: auto; margin-right: auto;">
       </div>
       <div class="spacer" style="width: 300px; height: 21px;"></div>
-      <ion-list id="signup-list5">
-        <label class="item item-input" id="signup-input8">
-          <span class="input-label">Name</span>
-          <input type="text" placeholder="" ng-model="data.name">
-        </label>
-        <label class="item item-input" id="signup-input10">
-          <span class="input-label">Email</span>
-          <input type="email" placeholder="" ng-model="data.email">
-        </label>
-        <label class="item item-input" id="signup-input9">
-          <span class="input-label">Password</span>
-          <input type="password" placeholder="" ng-model="data.password">
-        </label>
-      </ion-list>
-      <div class="spacer" style="width: 300px; height: 22px;"></div>
-      <button id="signup-button6" ng-click="signup()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px;" class="button button-royal  button-block">Sign up</button>
-      <div id="signup-markdown5" style="text-align:center;" class="show-list-numbers-and-dots">
-        <p style="color:#FFFFFF;">OR</p>
-      </div>
-      <a ui-sref="login" id="signup-button8" style="font-weight:600;color:#FFFFFF;" class="button button-light  button-block button-clear">Already have an account?</a>
-    </form>
+
+          <div id="requestResetPassword-markdown12" style="text-align:center;" class="show-list-numbers-and-dots">
+              <p style="color:#636060;font-size:large;">
+                  Sign up to CityWalks
+              </p>
+
+
+              <ion-list id="signup-list5">
+                  <label class="item item-input" id="signup-input8" style="margin-left:5%; background:none; border:none;  width:85%">
+                      <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
+                      <input type="text" style="font-size: large;border-bottom: 1px solid #636060;" placeholder="Choose a username" ng-model="data.name">
+                  </label>
+                  <label class="item item-input" id="signup-input10" style="margin-left:5%; background:none; border:none;  width:85%">
+                      <i class="icon ion-ios-email placeholder-icon" style="font-size:27px;"></i>
+                      <input type="email" style="font-size: large;border-bottom: 1px solid #636060;" placeholder="Write your email address" ng-model="data.email">
+                  </label>
+                  <label class="item item-input" id="signup-input9" style="margin-left:5%; background:none; border:none;  width:85%">
+                      <i class="icon ion-locked placeholder-icon" style="font-size:27px;"></i>
+                      <input type="password" style="font-size: large;border-bottom: 1px solid #636060;" placeholder="Choose a password" ng-model="data.password">
+                  </label>
+              </ion-list>
+              <div class="spacer" style="width: 300px; height: 22px;"></div>
+              <button id="signup-button6" ng-click="signup()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75%; margin-left:12.5%" class="button button-royal  button-block">Sign up</button>
+              <div id="signup-markdown5" style="text-align:center;" class="show-list-numbers-and-dots">
+                  <p style="color:#FFFFFF;">OR</p>
+              </div>
+              <a ui-sref="login" id="signup-button8" style="font-weight:600;color:#FFFFFF;" class="button button-light  button-block button-clear">Already have an account?</a>
+</form>
   </ion-content>
 </ion-view>

@@ -1,13 +1,13 @@
 <ion-view title="Top Routes" hide-back-button="true" id="page7">
     <ion-content padding="true" class="has-header">
         <button id="login-button1" ng-click="getRouteData()" style="font-weight:600;color:#FFFFFF ;border-radius:15px 15px 15px 15px;" class="button button-royal  button-block">Load Top Routes</button>
-        <ion-toggle ng-model="shouldShowDelete">
-            Show Delete button?
-        </ion-toggle>
-        <ion-list show-delete="shouldShowDelete">
-            <ion-item ng-repeat="x in myData" ng-click="getRouteInfo(x)">
-                Index: {{$index}}<p>&nbsp;</p>ID: {{x._id}}<p>&nbsp;</p>Name: {{x.name}}<p>&nbsp;</p>Distance: <input type="text" placeholder={{x.distance}} ng-model="data.distance"><p>&nbsp;</p>Created: {{x.create_date}}
-                <ion-delete-button class="ion-minus-circled" ng-click="deleteRouteData(x)"></ion-delete-button>
+        <b>(Load without button)</b>
+        <ion-list>
+            <ion-item class="item item-thumbnail-left" ng-repeat="x in myData" ng-click="getRouteInfo(x)">
+                <img src="../img/EhjFt9MeSrGqjngEFxIl_17836878_10212976240544669_1619232310_o.jpg" />
+
+                <b> Load from server:</b> <p>&nbsp;</p> Username <p>&nbsp;</p> Distance: <input type="text" placeholder={{x.distance}} ng-model="data.distance"><p>&nbsp;</p>  Avarage rating:  <p>&nbsp;</p>  *DropDownIcon <p>&nbsp;</p> Count(#comments in commentsattribute) <p>&nbsp;</p>
+         
                 <ion-option-button class="button-assertive" ng-click="updateDistance(x)">Edit</ion-option-button>
             </ion-item>
         </ion-list>

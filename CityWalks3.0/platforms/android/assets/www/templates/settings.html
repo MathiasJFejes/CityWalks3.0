@@ -1,23 +1,25 @@
 <ion-view title="Settings" id="page12">
   <ion-content padding="true" class="has-header">
-    <div class="item item-body" id="settings-list-item-container2">
-      <div id="settings-markdown22" class="show-list-numbers-and-dots">
-        <p style="margin-top:0px;color:#000000;">
-          <strong>Username: {{userData.name}}</strong>
-        </p>
-      </div>
-      <div id="settings-markdown23" class="show-list-numbers-and-dots">
-        <p style="margin-top:0px;color:#000000;">
-          <strong>Email: {{userData.email}}</strong>
-        </p>
-      </div>
-    </div>
-    <form id="settings-form9" class="list">
-      <label class="item item-input" id="settings-input11">
-        <span class="input-label">New username:</span>
-        <input type="text" placeholder="">
-      </label>
-    </form>
-    <button id="settings-button12" class="button button-positive  button-block">Update username</button>
-  </ion-content>
+           <form class="list">
+               <label class="item item-input">
+                   <span class="input-label">Edit email</span>
+                   <input type="text" placeholder="EmailFromServer">
+               </label>
+               <div class="spacer" style="width: 300px; height: 19px;"></div>
+            <label class="item item-input">
+                <span class="input-label">Edit Username</span>
+                <input type="text" placeholder="UsernameFromServer">
+            </label>
+            <div class="spacer" style="width: 300px; height: 19px;"></div>
+            <label class="item item-input">
+                <span class="input-label">Change Password</span>
+                <input type="password" placeholder="PasswordFromServer">
+            </label>
+        </form>
+      <button style="color:#FFFFFF;" class="button button-balanced  button-block">Save Changes</button>
+      <b>(Commit changes to server)</b> 
+      <a ui-sref="menu.EditFriends" style="border-radius:-6px -6px -6px -6px;" class="button button-royal  button-block">Edit Friends</a>
+      </ion-content>
 </ion-view>
+
+

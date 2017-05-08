@@ -9,23 +9,28 @@
         <img src="img/nRsFpnSGRebHX3QppJen_CityWalkingLogoNewPNG.png" style="display: block; width: 50%; height: auto; margin-left: auto; margin-right: auto;">
       </div>
       <div class="spacer" style="width: 300px; height: 21px;"></div>
-      <ion-list id="login-list2">
-        <label class="item item-input" id="login-input1">
-          <span class="input-label">Email</span>
-          <input type="text" placeholder="" ng-model="data.email">
-        </label>
-        <label class="item item-input" id="login-input2">
-          <span class="input-label">Password</span>
-          <input type="password" placeholder="" ng-model="data.password">
-        </label>
-      </ion-list>
-      <div class="spacer" style="width: 300px; height: 22px;"></div>
-      <button id="login-button1" ng-click="login()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px;" class="button button-royal  button-block">Sign In</button>
-      <a ui-sref="requestResetPassword" id="login-button3" style="font-weight:600;color:#FFFFFF;" class="button button-light  button-block button-clear">Forgot password?</a>
-      <div id="login-markdown1" style="text-align:center;" class="show-list-numbers-and-dots">
-        <p style="color:#FFFFFF;">OR</p>
-      </div>
-      <a ui-sref="signup" id="login-button11" style="font-weight:600;color:#FFFFFF;" class="button button-light  button-block button-clear">Create account</a>
-    </form>
+
+
+
+            <ion-list id="login-list2" >
+                <label class="item item-input" id="login-input1" style="margin-left:10%; background:none; border:none; width:75%;">
+                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
+                    <input type="text" style="font-size: large; color:black; border-bottom: 1px solid #636060;" placeholder="Username" ng-model="data.email">
+                </label>
+                <label class="item item-input" id="login-input2" style="margin-left:10%; background:none; border:none; width:75%;">
+                    <i class="icon ion-locked placeholder-icon" style="font-size:27px;"></i>
+                    <input type="password" style="font-size: large; border-bottom: 1px solid #636060;" placeholder="Password" ng-model="data.password">
+                </label>
+            </ion-list>
+            <div class="spacer" style="width: 300px; height: 10px;"></div>
+            <button id="login-button1" ng-click="login()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%;" class="button button-royal  button-block">Sign In</button>
+        
+        
+            <a ui-sref="requestResetPassword" id="login-button3" style="font-weight:600;color:#FFFFFF; margin-left:30%;" class="button button-light button-clear">Forgot password?</a>
+            <div id="login-markdown1" style="text-align:center;" class="show-list-numbers-and-dots">
+                <p style="color:#FFFFFF;">OR</p>
+            </div>
+            <a ui-sref="signup" id="login-button11" style="font-weight:600;color:#FFFFFF;margin-left:32%;" class="button button-light button-clear">Create account</a>
+</form>
   </ion-content>
 </ion-view>
