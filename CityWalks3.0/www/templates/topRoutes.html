@@ -1,8 +1,8 @@
 <ion-view title="Top Routes" hide-back-button="true" id="page7">
+
+
     <ion-content padding="true" class="has-header">
-        <button id="login-button1" ng-click="getRouteData()" style="font-weight:600;color:#FFFFFF ;border-radius:15px 15px 15px 15px;" class="button button-royal  button-block">Load Top Routes</button>
-        <b>(Load without button)</b>
-        <ion-list>
+        <ion-list ng-init="getRouteData()">
             <ion-item class="item item-thumbnail-left" ng-repeat="x in myData" ng-click="getRouteInfo(x)">
                 <img src="../img/route.png" />
 
