@@ -45,7 +45,7 @@ function ($scope, $stateParams, $state, $http) {
             data: { 'strategy': local, 'email': $scope.data.email, 'password': $scope.data.password }
         }
 
-        $http(req).then(function (response) {console.log(response), $state.go('menu.topRoutes')});
+        $http(req).then(function (response) {console.log(response), $state.go('menu.createRoute')});
         
 
     };
