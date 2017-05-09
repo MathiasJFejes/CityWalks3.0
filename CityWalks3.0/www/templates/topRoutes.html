@@ -1,4 +1,4 @@
-<ion-view title="Top Routes" hide-back-button="true" id="page7" style="background-color:mediumpurple">
+<ion-view title="Top Routes" hide-back-button="true" id="page7" style="background: linear-gradient(purple, grey, black)">
 
 
     <ion-content padding="true" class="has-header">
@@ -6,9 +6,8 @@
             <ion-item class="item item-thumbnail-left" ng-repeat="x in myData" ng-click="getRouteInfo(x)">
                 <img src="../img/route.png" />
 
-                <b> Load from server:</b> <p>&nbsp;</p> Username <p>&nbsp;</p> Distance: <input type="text" placeholder={{x.distance}} ng-model="data.distance"><p>&nbsp;</p>  Avarage rating:  <p>&nbsp;</p>  *DropDownIcon <p>&nbsp;</p> Count(#comments in commentsattribute) <p>&nbsp;</p>
+                <b> Subject</b> <p>&nbsp;</p> Username  <p>&nbsp;</p> Distance: <input type="text" placeholder={{x.distance}} ng-model="data.distance"><p>&nbsp;</p>  Avarage rating:  <p>&nbsp;</p>  *DropDownIcon <p>&nbsp;</p> Count(#comments in commentsattribute) <p>&nbsp;</p>
          
-                <ion-option-button class="button-assertive" ng-click="updateDistance(x)">Edit</ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>

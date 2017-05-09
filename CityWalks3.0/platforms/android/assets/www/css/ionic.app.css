@@ -3491,6 +3491,7 @@ ion-infinite-scroll {
 
 /* If you change these, change platform.scss as well */
 .has-header {
+    background-color: #7A60A7;
   top: 44px; }
 
 .no-header {
@@ -3503,6 +3504,8 @@ ion-infinite-scroll {
   top: 93px; }
 
 .has-header.has-subheader.has-tabs-top {
+
+
   top: 137px; }
 
 .has-footer {
@@ -5258,9 +5261,10 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
   min-height: 100%;
   max-height: 100%;
   width: 275px;
-  background-color: #fff; }
+  background-color: #7A60A7; }
   .menu .scroll-content {
-    z-index: 10; }
+    z-index: 10;
+  }
   .menu .bar-header {
     z-index: 11; }
 
@@ -5271,16 +5275,23 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
 
 .menu-open .menu-content .pane,
 .menu-open .menu-content .scroll-content {
-  pointer-events: none; }
+  pointer-events: none;
+
+}
 
 .menu-open .menu-content .scroll-content .scroll {
-  pointer-events: none; }
+  pointer-events: none;
+
+}
 
 .menu-open .menu-content .scroll-content:not(.overflow-scroll) {
-  overflow: hidden; }
+  overflow: hidden; 
+ 
+}
 
 .grade-b .menu-content,
 .grade-c .menu-content {
+  
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -5291,6 +5302,7 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
   box-shadow: none; }
 
 .menu-left {
+    
   left: 0; }
 
 .menu-right {
@@ -6141,7 +6153,9 @@ a.item-content {
   position: absolute;
   top: 0;
   height: 100%;
-  font-size: 32px; }
+  font-size: 32px; 
+
+}
   .item-icon-left .icon:before,
   .item-icon-right .icon:before {
     display: block;

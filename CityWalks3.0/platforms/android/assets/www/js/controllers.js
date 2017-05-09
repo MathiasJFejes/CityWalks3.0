@@ -42,9 +42,10 @@ function ($scope, $stateParams, $state, $http) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { 'strategy': local, 'email': $scope.data.email, 'password': $scope.data.password }
+            data: { 'strategy': local, 'username': $scope.data.email, 'email': $scope.data.email, 'password': $scope.data.password }
+            
         }
-
+        //console.log(req.data);
         $http(req).then(function (response) {console.log(response), $state.go('menu.createRoute')});
         
 
