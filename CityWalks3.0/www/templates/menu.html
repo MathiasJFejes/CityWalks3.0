@@ -1,6 +1,6 @@
 <ion-side-menus enable-menu-with-back-views="false">
   <ion-side-menu-content>
-    <ion-nav-bar class="bar-stable">
+    <ion-nav-bar class="bar-royal">
       <ion-nav-back-button></ion-nav-back-button>
       <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -9,38 +9,61 @@
     <ion-nav-view name="side-menu21"></ion-nav-view>
   </ion-side-menu-content>
   <ion-side-menu side="left" id="side-menu21" >
-    <ion-content padding="false" style="top:0px !important;" class="side-menu-left ">
-      <div class="spacer" style="width: 268px; height: 34px;"></div>
-      <div class="item item-body" id="menu-list-item-container3">
-        <div id="menu-markdown24" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            <strong> Username: {{userData.name}}</strong>
-          </p>
-        </div>
-        <div id="menu-markdown25" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            <strong> Email: {{userData.email}}</strong>
-          </p>
-        </div>
-      </div>
-      <ion-list id="menu-list1" >
-        <ion-item class="item-icon-left balanced" id="menu-list-item1" ui-sref="menu.createRoute" menu-close="">
-          <i class="icon ion-plus"></i>Create route</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item2" ui-sref="menu.nearbyRoutes" menu-close="">
-          <i class="icon ion-android-pin"></i>Nearby routes</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item3" ui-sref="menu.topRoutes" menu-close="">
-          <i class="icon ion-trophy"></i>Top routes</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item6" ui-sref="menu.myRoutes" menu-close="">
-          <i class="icon ion-android-person"></i>My routes</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item5" ui-sref="menu.friendesRoutes" menu-close="" ng-click="findFriendsRoutes()">
-          <i class="icon ion-android-people"></i>Friends routes</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item7" ui-sref="menu.recordRoute" menu-close="">
-          <i class="icon ion-android-walk"></i>Record route</ion-item>
-        <ion-item class="item-icon-left" id="menu-list-item8" ui-sref="menu.settings" menu-close="">
-          <i class="icon ion-android-settings"></i>Settings</ion-item>
-        <ion-item class="item-icon-left assertive" id="menu-list-item9" ng-click="logout()">
-          <i class="icon No Icon"></i>Log out</ion-item>
+
+      <ion-content padding="false" style="top:0px !important;" class="side-menu-left side-menu-gradient">
+          <div class="spacer" style="width: 268px; height: 28px;"></div>
+          <div>
+              <img src="img/1fee0QDTsKrVxzzRI218_CityWalkingLogoWhite.png" style="display: block; width: 30%; height: auto; margin-left: auto; margin-right: auto;">
+          </div>
+
+          <div class="spacer" style="width: 268px; height: 28px;"></div>
+
+          <ion-list id="menu-list1">
+            
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item1" ui-sref="menu.createRoute" menu-close="" active-page-highlight="" >
+                  <i class="icon ion-plus"></i>Create route
+              </ion-item>
+
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item2" ui-sref="menu.nearbyRoutes" menu-close="" active-page-highlight="">
+                  <i class="icon ion-android-pin"></i>Nearby routes
+              </ion-item>
+              
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item3" ui-sref="menu.topRoutes" menu-close="" active-page-highlight="" >
+                  <i class="icon ion-trophy"></i>Top routes
+              </ion-item>
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item6" ui-sref="menu.myRoutes" menu-close="">
+                  <i class="icon ion-android-person"></i>My routes
+              </ion-item>
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item5" ui-sref="menu.friendesRoutes" menu-close="" ng-click="findFriendsRoutes()" active-page-highlight="" >
+                  <i class="icon ion-android-people"></i>Friends routes
+              </ion-item>
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item7" ui-sref="menu.recordRoute" menu-close="" active-page-highlight="" >
+                  <i class="icon ion-android-walk"></i>Record route
+              </ion-item>
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item8" ui-sref="menu.settings" menu-close="" active-page-highlight="" >
+                  <i class="icon ion-android-settings"></i>Settings
+              </ion-item>
+              <ion-item class="item-icon-left side-menu-item" id="menu-list-item9" ng-click="logout()" active-page-highlight="" style="color:red" >
+                  <i class="icon ion-log-out"></i>Log out
+              </ion-item>
+
+             
+          </ion-list>
+      </ion-content>
+
+
+  
+      <!--<ion-content padding="false" style="top:0px !important;" class="side-menu-left ">
+      <div class="spacer" style="width: 268px; height: 34px;"></div>-->
+
+
+
+      <!--<ion-list id="menu-list1" >
+        
+     
+        
       </ion-list>
-    </ion-content>
+    </ion-content>-->
+
   </ion-side-menu>
 </ion-side-menus>

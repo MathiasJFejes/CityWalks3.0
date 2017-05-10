@@ -4264,6 +4264,7 @@ a.subdued {
     background: none; }
 
 .bar-header {
+
   top: 0;
   border-top-width: 0;
   border-bottom-width: 1px; }
@@ -9851,3 +9852,22 @@ ui-gmap-google-map {
   .error-box p {
     color: white;
     margin: 0px; }
+
+
+  .side-menu-item {
+  background: none;
+  color: white;
+  font-weight: 300;
+  border: 0px; }
+  .side-menu-item .item-content {
+    background: none; }
+    .side-menu-item .item-content.activated {
+      background: rgba(255, 255, 255, 0.4); }
+  .side-menu-item.active-page-highlight .item-content {
+    background: rgba(255, 255, 255, 0.4); }
+
+.side-menu-gradient {
+  background: -webkit-linear-gradient(left top, #886AEA, #b9afd8);
+  background: -o-linear-gradient(bottom right, #886AEA, #b9afd8);
+  background: -moz-linear-gradient(bottom right, #886AEA, #b9afd8);
+  background: linear-gradient(to bottom right, #886AEA, #b9afd8); }
