@@ -19,11 +19,11 @@ function ($scope, $stateParams, $state) {
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 
+.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http) {
+function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
    $scope.data = {
         'email': '',
@@ -45,18 +45,23 @@ function ($scope, $stateParams, $state, $http) {
             data: { 'strategy': local, 'username': $scope.data.email, 'email': $scope.data.email, 'password': $scope.data.password }
             
         }
-        //console.log(req.data);
-        $http(req).then(function (response) {console.log(response), $state.go('menu.createRoute')});
+        $http(req).then(function (response) {
+            var jwt = response;
+            console.log('response jwt', jwt);
+            listItmeDataService.set(jwt),
+            console.log('dataService', 
+            listItmeDataService.get(jwt)),
+            $state.go('menu.createRoute')});
         
 
     };
 
 }])
    
-.controller('signupCtrl', ['$scope', '$stateParams', '$state', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('signupCtrl', ['$scope', '$stateParams', '$state', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state) {
+function ($scope, $stateParams, $state, $http) {
     
     $scope.data = {
         'name': '',
@@ -66,10 +71,26 @@ function ($scope, $stateParams, $state) {
     
     $scope.error='';
 
-    $scope.signup = function(){
+    $scope.signup = function () {
+        console.log("inne i funktionen")
+        var req = {
+            crossDomain: true,
+            method: 'POST',
+            url: 'http://46.101.219.139:5000/users',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.password }
 
-              $state.go('login');
-    }
+        }
+        $http(req).then(function successCallback (response) {
+            $state.go('menu.createRoute')
+        }, function errorCallback(response) {
+            console.log('error',response)
+        });
+
+
+    };
 
 }])
    
