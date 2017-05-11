@@ -171,9 +171,11 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
         $http({
             method: 'GET',
-            url: 'http://46.101.219.139:5000/api/cities'
+            url: 'http://46.101.219.139:5000/api/routes'
         }).then(function (response) {
-            $scope.myData = response.data.data;
+            console.log('response')
+            console.log(response)
+            $scope.myData = response.data;
 
 
         })
@@ -191,7 +193,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
         $http({
             method: 'DELETE',
-            url: 'http://46.101.219.139:5000/api/cities/' + item._id
+            url: 'http://46.101.219.139:5000/api/routes/' + item._id
         }).then(function () {
             $scope.getRouteData();
         })
