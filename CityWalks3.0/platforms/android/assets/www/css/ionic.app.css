@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*!
   Ionicons, v2.0.1
   Created by Ben Sperry for the Ionic Framework, http://ionicons.com/
@@ -3491,6 +3491,7 @@ ion-infinite-scroll {
 
 /* If you change these, change platform.scss as well */
 .has-header {
+    background-color: #7A60A7;
   top: 44px; }
 
 .no-header {
@@ -3503,6 +3504,8 @@ ion-infinite-scroll {
   top: 93px; }
 
 .has-header.has-subheader.has-tabs-top {
+
+
   top: 137px; }
 
 .has-footer {
@@ -4261,6 +4264,7 @@ a.subdued {
     background: none; }
 
 .bar-header {
+
   top: 0;
   border-top-width: 0;
   border-bottom-width: 1px; }
@@ -5258,9 +5262,10 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
   min-height: 100%;
   max-height: 100%;
   width: 275px;
-  background-color: #fff; }
+  background-color: #7A60A7; }
   .menu .scroll-content {
-    z-index: 10; }
+    z-index: 10;
+  }
   .menu .bar-header {
     z-index: 11; }
 
@@ -5271,16 +5276,23 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
 
 .menu-open .menu-content .pane,
 .menu-open .menu-content .scroll-content {
-  pointer-events: none; }
+  pointer-events: none;
+
+}
 
 .menu-open .menu-content .scroll-content .scroll {
-  pointer-events: none; }
+  pointer-events: none;
+
+}
 
 .menu-open .menu-content .scroll-content:not(.overflow-scroll) {
-  overflow: hidden; }
+  overflow: hidden; 
+ 
+}
 
 .grade-b .menu-content,
 .grade-c .menu-content {
+  
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -5291,6 +5303,7 @@ ion-tabs.tabs-striped.tabs-color-active-dark .tab-item.tab-item-active, ion-tabs
   box-shadow: none; }
 
 .menu-left {
+    
   left: 0; }
 
 .menu-right {
@@ -6141,7 +6154,9 @@ a.item-content {
   position: absolute;
   top: 0;
   height: 100%;
-  font-size: 32px; }
+  font-size: 32px; 
+
+}
   .item-icon-left .icon:before,
   .item-icon-right .icon:before {
     display: block;
@@ -6559,8 +6574,12 @@ button.item.item-button-right {
   .item-reordering .item-reorder {
     z-index: 9; }
 
+
+
+
 .item-placeholder {
-  opacity: 0.7; }
+ opacity:0.1;
+     }
 
 /**
  * The hidden right-side buttons that can be exposed under a list item
@@ -7654,11 +7673,13 @@ textarea {
   font-size: 16px; }
 
 .placeholder-icon {
-  color: #aaa; }
+  color:black; 
+  opacity:0.9;
+}
   .placeholder-icon:first-child {
-    padding-right: 6px; }
+    padding-right: 10px; }
   .placeholder-icon:last-child {
-    padding-left: 6px; }
+    padding-left: 10px; }
 
 .item-stacked-label {
   display: block;
@@ -7749,11 +7770,16 @@ input[type="color"] {
 textarea {
   padding-left: 0; }
   textarea::-moz-placeholder {
-    color: #aaaaaa; }
+    color:red;
+    opacity:1.0;
+  }
   textarea:-ms-input-placeholder {
-    color: #aaaaaa; }
+    color:red;
+    opacity:1.0;
+  }
   textarea::-webkit-input-placeholder {
-    color: #aaaaaa;
+    color:red;
+    opacity:1.0;
     text-indent: -3px; }
 
 textarea {
@@ -7802,15 +7828,24 @@ input[type="file"] {
 
 input::-moz-placeholder,
 textarea::-moz-placeholder {
-  color: #aaaaaa; }
+  color:black; 
+  opacity:0.4;
+   font-style:italic;
+}
 
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: #aaaaaa; }
+  color:black;
+  opacity:0.4;
+   font-style:italic;
+}
+
 
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: #aaaaaa;
+  color:black;
+  font-style:italic; 
+  opacity:0.4;
   text-indent: 0; }
 
 input[disabled],
@@ -9817,3 +9852,22 @@ ui-gmap-google-map {
   .error-box p {
     color: white;
     margin: 0px; }
+
+
+  .side-menu-item {
+  background: none;
+  color: white;
+  font-weight: 300;
+  border: 0px; }
+  .side-menu-item .item-content {
+    background: none; }
+    .side-menu-item .item-content.activated {
+      background: rgba(255, 255, 255, 0.4); }
+  .side-menu-item.active-page-highlight .item-content {
+    background: rgba(255, 255, 255, 0.4); }
+
+.side-menu-gradient {
+  background: -webkit-linear-gradient(left top, #886AEA, #b9afd8);
+  background: -o-linear-gradient(bottom right, #886AEA, #b9afd8);
+  background: -moz-linear-gradient(bottom right, #886AEA, #b9afd8);
+  background: linear-gradient(to bottom right, #886AEA, #b9afd8); }
