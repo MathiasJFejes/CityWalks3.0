@@ -7449,8 +7449,8 @@ ion-slides {
   stroke: #444;
   fill: #444; }
   .spinner svg {
-    width: 28px;
-    height: 28px; }
+    width: 20%;
+    height: 20%; }
   .spinner.spinner-light {
     stroke: #fff;
     fill: #fff; }
