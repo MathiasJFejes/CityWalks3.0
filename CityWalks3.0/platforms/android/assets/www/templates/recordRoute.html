@@ -1,11 +1,95 @@
 <ion-view title="Record Route" id="page14" ">
-  <ion-content padding="true" scroll="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
-    <creator-map-component options="{&quot;mapTypeId&quot;:&quot;roadmap&quot;}" marker="true" location="Uppsala Ångström" zoom="12" style="display:block;position:relative;width:100%;height:350px;">
-      <ui-gmap-google-map ng-if="map.center" center="map.center" zoom="map.zoom" options="map.options">
-        <ui-gmap-marker coords="map.marker.coords" idkey="map.marker.id" options="map.marker.options"></ui-gmap-marker>
-      </ui-gmap-google-map>
-    </creator-map-component>
-    <button id="recordRoute-button24" ng-click="startRecordRoute()" class="button button-balanced  button-block">Start recording</button>
-    <button id="recordRoute-button25" ng-click="stopRecordingRoute()" class="button button-assertive  button-block">Stop recording</button>
-  </ion-content>
+    <ion-content padding="false" scroll="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+        <!--INIT VIEW-->
+
+        <div ng-init="initPosition()" id="map_canvas_current" ng-hide="clickedStart" style="block;position:relative;top:0%;left:0;width:100%;height:92%;"> </div>
+        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
+            <button id="recordRoute-button24" ng-click="initPosition()" ng-hide="clickedStart" class="button icon-left ion-navigate button-royal">My Location</button>
+            <button id="recordRoute-button28" ng-click="startRecordingRoute(); clickedStart=true" ng-hide="clickedStart" class="button icon-left ion-play button-balanced">Start recording</button>
+        </div>
+
+        <!--REC VIEW-->
+        <div ng-show="clickedStart && !clickedStop" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
+        <div ng-show="clickedStart && !clickedStop" style="position:absolute;margin:auto;left:35%;top:50%;color:white"> Map is loading . . .  </div>
+        <div ng-show="clickedStart && !clickedShare" id="map_canvas" style="block;position:relative;top:0;left:0;width:100%;height:92%;"> </div>
+
+
+        <!-- SHOW THIS WHEN DONE WALKING-->
+        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:50%;bottom:4.5%">
+
+            <a class="item item-icon-left">
+                <i class="icon ion-map"></i>
+                {{routeDistance}} (km)
+            </a>
+
+            <a class="item item-icon-left">
+                <i class="icon ion-ios-timer-outline"></i>
+                {{routeTimeMin}}:{{routeTimeSec}} (m:s)
+            </a>
+        </div>
+
+        <!-- STOP -->
+        <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="stopRecordingRoute(); clickedStop=true" class="button icon-left ion-stop button-block button-assertive" ng-show="clickedStart && !clickedStop"> Stop recording</button>
+
+        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
+            <!-- Delete REC-->
+            <button id="recordRoute-button26" ng-click="deleteRecordedRoute(); clickedStart=false; clickedStop=false" class="button icon-left ion-ios-close-outline button-assertive" ng-show="clickedStop && !clickedShare">Delete route</button>
+            <!-- share REC-->
+            <button id="recordRoute-button27" ng-click="shareRecordedRoute(); clickedShare=true" class="button icon-left ion-android-share-alt button-royal" ng-show="clickedStop && !clickedShare">Share route</button>
+        </div>
+
+        <!-- SEND -->
+
+        <div ng-show="clickedShare">
+            <div class="list">
+                <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                    <i class="icon ion-document-text"></i>
+                    Route Title
+
+                </div>
+                <label class="item item-input" >
+                    <input required type="text" maxlength="20" placeholder="Input a route title here!" ng-model="data.routeTitle">
+                </label>
+                <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                    <i class="icon ion-android-textsms"></i>
+                    Route Description
+                </div>
+                <label class="item item-input">
+                    <textarea required rows="4" maxlength="220" placeholder="Input a route description here!" ng-model="data.routeComment"></textarea>
+                </label>
+                <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                    <i class="icon ion-thumbsup"></i>
+                    Route rating <i class="balanced" style="text-align:right;font-style:italic;font-size:smaller"> *optional</i>
+
+                </div>
+                <li class="item item-toggle" >
+                    Like Route?
+                    <label class="toggle toggle-balanced">
+                        <input type="checkbox" ng-model="data.routeLike" ng-true-value="1" ng-false-value="0">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+                <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                    <i class="icon ion-ios-information"></i>
+                    Route Information
+                </div>
+                <a class="item" ">
+                    Route Distance: {{routeDistance}} (km)
+                </a>
+                <a class="item">
+                    Route Time: {{routeTimeMin}}:{{routeTimeSec}} (minutes:seconds)
+                </a>
+            </div>
+
+        </div>
+        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
+            <!-- Back-->
+            <button id="recordRoute-button26" ng-click="clickedShare=false" class="button icon-left ion-android-arrow-back button-assertive" ng-show="clickedShare">Back</button>
+            <!-- SAVE REC-->
+            <button id="recordRoute-button27" ng-click="sendRecordedRoute(); clickedStart=false; clickedStop=false; clickedShare=false" class="button icon-left ion-paper-airplane button-royal" ng-show="clickedShare">Send route</button>
+        </div>
+
+    </ion-content>
 </ion-view> 
