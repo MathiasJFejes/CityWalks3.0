@@ -1,4 +1,4 @@
-angular.module('app.controllers', [])
+﻿angular.module('app.controllers', [])
   
 .controller('cityWalksCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -19,11 +19,11 @@ function ($scope, $stateParams, $state) {
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
+    .controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'tokenHandler', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http, listItmeDataService) {
+        function ($scope, $stateParams, $state, $http, tokenHandler) {
 
    $scope.data = {
         'email': '',
@@ -46,11 +46,10 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
             
         }
         $http(req).then(function (response) {
-            var jwt = response;
+            var jwt = response.data.accessToken;
             console.log('response jwt', jwt);
-            listItmeDataService.set(jwt),
-            console.log('dataService', 
-            listItmeDataService.get(jwt)),
+            tokenHandler.set(jwt),
+                console.log("tokenHandler",tokenHandler.get()),
             $state.go('menu.createRoute')});
         
 
@@ -237,14 +236,29 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
 
 }])
-   
-.controller('settingsCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+    .controller('settingsCtrl', ['$scope', '$stateParams', '$http', 'tokenHandler', '$state', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+        function ($scope, $state, $stateParams, $http, tokenHandler) {
 
-
-}])
+    $scope.getSettingsData = function () {
+        //var jwt = tokenHandler.get();
+        //console.log("jwt",jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users',
+            headers: {
+                'Authorization': tokenHandler.get()
+            },
+        }
+        $http(req).then(function successCallback(response) {console.log(respose),
+            $scope.myData = response.data.data;
+        },
+            function errorCallback(response) {
+                console.log('error', response)
+            });
+    };
+        }])
    
 .controller('recordRouteCtrl', ['$scope', '$stateParams', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
