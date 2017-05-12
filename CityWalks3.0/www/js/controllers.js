@@ -47,6 +47,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
         }
         $http(req).then(function (response) {
             var jwt = response.data.accessToken;
+            console.log('response', response)
             console.log('response jwt', jwt);
             listItmeDataService.set(jwt),
                 console.log("tokenHandler", listItmeDataService.get()),
@@ -648,10 +649,10 @@ function ($scope, $stateParams) {
 }])
 
 
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http) {
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
     $scope.data = {
         'username': '',
@@ -659,11 +660,17 @@ function ($scope, $state, $stateParams, $http) {
 
 
     $scope.getFriends = function () {
-
-        $http({
+        var jwt = listItmeDataService.get();
+        console.log("jwt", jwt);
+        var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/users/'
-        }).then(function (response) {
+            url: 'http://46.101.219.139:5000/users',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
             console.log('response')
             console.log(response)
             $scope.myData = response.data;
@@ -672,13 +679,14 @@ function ($scope, $state, $stateParams, $http) {
     }
 
     $scope.addFriend = function () {
-
+        var jwt = listItmeDataService.get();
         var req = {
             crossDomain: true,
             method: 'PUT',
             url: 'http://46.101.219.139:5000/users/',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': jwt
             },
             data: {}
         }
@@ -701,3 +709,29 @@ function ($scope, $state, $stateParams, $http) {
 
 }])
  
+
+.controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+function ($scope, $http, $state, $stateParams, listItmeDataService) {
+
+    $scope.getSettingsData = function () {
+        var jwt = listItmeDataService.get();
+        console.log("jwt", jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+
+        $http(req).then(function successCallback(response) {
+            console.log(response)
+        },
+            function errorCallback(response) {
+                console.log('error', response)
+            })
+    };
+}])
