@@ -1,1 +1,6 @@
 CityWalks3.0/simulation/
+CityWalks3.0/platforms/android/assets/www/config.xml
+CityWalks3.0/platforms/android/assets/www/scss/ionic.app.scss
+CityWalks3.0/platforms/ios/cordova/node_modules/cordova-registry-mapper/README.md
+CityWalks3.0/platforms/ios/cordova/node_modules/lodash/collection/select.js
+CityWalks3.0/platforms/ios/cordova/node_modules/lodash/utility/range.js
