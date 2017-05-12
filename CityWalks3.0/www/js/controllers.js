@@ -231,18 +231,131 @@ function ($scope, $stateParams) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $http) {
 
-    $scope.startRecordRoute = function () {
-            console.log("test - fungerar inte ännu..");
-        }
-
     $scope.range = {
         model: null,
-        availableOptions: [ { value: 0.001, name: '100 m' },
-                            { value: 0.005, name: '500 m' },
-                            { value: 0.01, name: '1000 m' },
-                            { value: 0.015, name: '1500 m' }]}
+        availableOptions: [ { value: 100, name: '100 m' },
+                            { value: 500, name: '500 m' },
+                            { value: 1000, name: '1000 m' },
+                            { value: 2000, name: '2000 m' },
+                            { value: 5000, name: '5000 m' }]
+    }
+
+    $scope.place = {
+        model: null,
+        availableOptions: [ { value: 'park', name: 'Park' },
+                            { value: 'museum', name: 'Museum' },
+                            { value: 'art_gallery', name: 'Art gallery' },
+                            { value: 'cafe', name: 'Cafe' },
+                            { value: 'bar', name: 'Bar' },
+                            { value: 'city_hall', name: 'City hall' },
+                            { value: 'university', name: 'University' },
+                            { value: 'library', name: 'Library' }]
+    }
 
     $scope.startRandomRoute = function () {
+
+        navigator.geolocation.getCurrentPosition(
+        //success
+        function (position) {
+
+            var init_lat = position.coords.latitude;
+            var init_lon = position.coords.longitude;
+            var startend = new google.maps.LatLng(init_lat, init_lon);
+            trackPoints = [];
+            var radius = ($scope.range.model) / 100000; 
+
+            var randCoordfirst;
+            var randCoordsecond;
+            var randCoordthird;
+
+            //Fires up a random coordinate generation based upon range input and start
+            findCoordinates(init_lat, init_lon, radius);
+            initialize();
+
+            var directionsDisplay;
+            var directionsService = new google.maps.DirectionsService();
+
+            function initialize() {
+
+                directionsDisplay = new google.maps.DirectionsRenderer();
+           
+                var mapOptions = {
+                    zoom: 25,
+                    suppressMarkers: true,
+                    center: startend
+                };
+
+                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                directionsDisplay.setMap(map);
+            }
+            
+                var request = {
+                    origin: startend,
+                    destination: startend,
+                    waypoints: [{ location: randCoordfirst, stopover: false },
+                                { location: randCoordsecond, stopover: false },
+                                { location: randCoordthird, stopover: false }],
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.WALKING,
+                    avoidHighways: true
+                }
+            
+               directionsService.route(request, function (response, status) {
+
+                    if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+                            console.log(response.routes[0].legs[0].distance.value + " m");
+                        } else {
+                            alert('You broke it.');
+                        }
+                    });
+                
+                
+  
+            function findCoordinates(lat, long, range) {
+                console.log("findCoordinates")
+                // How many points do we want? 
+                var numberOfPoints = 16;
+                var degreesPerPoint = 360 / numberOfPoints;
+
+                // Keep track of the angle from centre to radius
+                var currentAngle = 0;
+
+                // The points on the radius will be lat+x2, long+y2
+                var x2;
+                var y2;
+                // Track the points we generate to return at the end
+
+                for (var i = 1; i < numberOfPoints; i++) {
+
+                    // X2 point will be cosine of angle * radius (range)
+                    x2 = Math.cos(currentAngle) * range;
+                    // Y2 point will be sin * range
+                    y2 = Math.sin(currentAngle) * range;
+
+                    // Assuming here you're using points for each x,y..             
+                    newLat = lat + x2;
+                    newLong = long + y2;
+                    lat_long = new google.maps.LatLng(newLat, newLong);
+                    trackPoints[i] = lat_long;
+                    // Shift our angle around for the next point
+                    currentAngle += degreesPerPoint;
+                }
+
+                // Return the points we've generated
+                //gets random coordinate from our array of coords
+                //Add the last point to array that is the start point so that we start and stop at same position
+                //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
+                randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+            }
+            google.maps.event.addDomListener(window, 'load', initialize);
+            }
+        );
+    }
+
+    $scope.startRecordRoute = function () {
         
         navigator.geolocation.getCurrentPosition(
             //success
@@ -296,8 +409,8 @@ function ($scope, $stateParams, $http) {
                     var service = new google.maps.places.PlacesService(map);
                     service.nearbySearch({
                         location: currentpos,
-                        radius: 1000,
-                        type: ['park']
+                        radius: $scope.range.model,
+                        type: [$scope.place.model]
                     }, callback);
 
                     function callback(results, status) {

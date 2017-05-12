@@ -4,57 +4,16 @@
           <ion-list id="createRandomRoute" class="list">
               <label class="item item-select" id="createRoute-range">
                   <span class="input-label">Radius</span>
-                  
                   <select name="repeatSelect" id="repeatSelect" ng-model="range.model">
-                      <option ng-repeat="option in range.availableOptions" ng-value="{{option.value}}">{{option.name}}</option>
+                    <option ng-repeat="option in range.availableOptions" ng-value="{{option.value}}">{{option.name}}</option>
                   </select>
-
               </label>
-              <li class="item item-toggle" style="border-top:none">
-                  Stockholms Nation
-                  <label class="toggle toggle-balanced">
-                      <input type="checkbox" ng-model="data.stockholms" ng-true-value="1" ng-false-value="0">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </li>
-              <li class="item item-toggle" style="border-top:none">
-                  Norrlands Nation
-                  <label class="toggle toggle-balanced">
-                      <input type="checkbox" ng-model="data.norrlands" ng-true-value="1" ng-false-value="0">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </li>
-              <li class="item item-toggle" style="border-top:none">
-                  Gotlands Nation
-                  <label class="toggle toggle-balanced">
-                      <input type="checkbox" ng-model="data.gotlands" ng-true-value="1" ng-false-value="0">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </li>
-              <li class="item item-toggle" style="border-top:none">
-                  Kalmar Nation
-                  <label class="toggle toggle-balanced">
-                      <input type="checkbox" ng-model="data.kalmar" ng-true-value="1" ng-false-value="0">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </li>
-              <li class="item item-toggle" style="border-top:none">
-                  Uplands Nation
-                  <label class="toggle toggle-balanced">
-                      <input type="checkbox" ng-model="data.uplands" ng-true-value="1" ng-false-value="0">
-                      <div class="track">
-                          <div class="handle"></div>
-                      </div>
-                  </label>
-              </li>
+              <label class="item item-select" id="createRoute-place">
+                  <span class="input-label">Places</span>
+                  <select name="repeatSelect" id="repeatSelect" ng-model="place.model">
+                      <option ng-repeat="option in place.availableOptions" ng-value="{{option.value}}">{{option.value}}</option>
+                  </select>
+              </label>
           </ion-list>
           <button id="recordRoute-button24" ng-click="startRecordRoute(); clickedCreate=true" class="button button-balanced  button-block">Create route</button>
           <button id="recordRoute-button24" ng-click="startRandomRoute(); clickedCreate=true" class="button button-balanced  button-block">Create random route</button>
