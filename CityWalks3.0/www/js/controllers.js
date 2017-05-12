@@ -630,11 +630,56 @@ function ($scope, $stateParams) {
 }])
 
 
-.controller('EditFriendsCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $state, $stateParams, $http) {
 
+    $scope.data = {
+        'username': '',
+    }
+
+
+    $scope.getFriends = function () {
+
+        $http({
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users/'
+        }).then(function (response) {
+            console.log('response')
+            console.log(response)
+            $scope.myData = response.data;
+
+        })
+    }
+
+    $scope.addFriend = function () {
+
+        var req = {
+            crossDomain: true,
+            method: 'PUT',
+            url: 'http://46.101.219.139:5000/users/',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {}
+        }
+
+        $http(req).then(function () {
+            $scope.getFriends();
+        });
+
+    };
+
+    $scope.deleteFriend = function (item) {
+
+        $http({
+            method: 'DELETE',
+            url: 'http://46.101.219.139:5000/users/' + item._id
+        }).then(function () {
+            $scope.getFriends();
+        })
+    };
 
 }])
  
