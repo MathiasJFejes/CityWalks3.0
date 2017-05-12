@@ -1,22 +1,70 @@
 <ion-view title="Create Route" hide-back-button="true" id="page6" style="background-color:#FFFFFF;">
   <ion-content padding="true" class="has-header">
-    <form id="createRoute-form11" class="list">
-      <label class="item item-select" id="createRoute-select1">
-        <span class="input-label">Range</span>
-        <select>
-          <option>1 km</option>
-          <option>2 km</option>
-          <option>5 km</option>
-          <option>10 km</option>
-        </select>
-      </label>
-      <ion-toggle toggle-class="toggle-positive" id="createRoute-toggle4">Wheelchair friendly</ion-toggle>
-      <ion-toggle toggle-class="toggle-balanced" id="createRoute-toggle5">Green areas</ion-toggle>
-      <ion-toggle toggle-class="toggle-balanced" id="createRoute-toggle7">Water areas</ion-toggle>
-      <ion-toggle toggle-class="toggle-balanced" id="createRoute-toggle6">Historical buildings</ion-toggle>
-      <ion-toggle toggle-class="toggle-balanced" id="createRoute-toggle8">Museums</ion-toggle>
-      <ion-toggle toggle-class="toggle-balanced" id="createRoute-toggle9">Boutiques</ion-toggle>
-    </form>
-    <a ui-sref="menu.createdRoute" id="createRoute-button13" class="button button-royal  button-block">Create route</a>
+      <div ng-hide="clickedCreate">
+          <ion-list id="createRandomRoute" class="list">
+              <label class="item item-select" id="createRoute-range">
+                  <span class="input-label">Radius</span>
+                  
+                  <select name="repeatSelect" id="repeatSelect" ng-model="range.model">
+                      <option ng-repeat="option in range.availableOptions" ng-value="{{option.value}}">{{option.name}}</option>
+                  </select>
+
+              </label>
+              <li class="item item-toggle" style="border-top:none">
+                  Stockholms Nation
+                  <label class="toggle toggle-balanced">
+                      <input type="checkbox" ng-model="data.stockholms" ng-true-value="1" ng-false-value="0">
+                      <div class="track">
+                          <div class="handle"></div>
+                      </div>
+                  </label>
+              </li>
+              <li class="item item-toggle" style="border-top:none">
+                  Norrlands Nation
+                  <label class="toggle toggle-balanced">
+                      <input type="checkbox" ng-model="data.norrlands" ng-true-value="1" ng-false-value="0">
+                      <div class="track">
+                          <div class="handle"></div>
+                      </div>
+                  </label>
+              </li>
+              <li class="item item-toggle" style="border-top:none">
+                  Gotlands Nation
+                  <label class="toggle toggle-balanced">
+                      <input type="checkbox" ng-model="data.gotlands" ng-true-value="1" ng-false-value="0">
+                      <div class="track">
+                          <div class="handle"></div>
+                      </div>
+                  </label>
+              </li>
+              <li class="item item-toggle" style="border-top:none">
+                  Kalmar Nation
+                  <label class="toggle toggle-balanced">
+                      <input type="checkbox" ng-model="data.kalmar" ng-true-value="1" ng-false-value="0">
+                      <div class="track">
+                          <div class="handle"></div>
+                      </div>
+                  </label>
+              </li>
+              <li class="item item-toggle" style="border-top:none">
+                  Uplands Nation
+                  <label class="toggle toggle-balanced">
+                      <input type="checkbox" ng-model="data.uplands" ng-true-value="1" ng-false-value="0">
+                      <div class="track">
+                          <div class="handle"></div>
+                      </div>
+                  </label>
+              </li>
+          </ion-list>
+          <button id="recordRoute-button24" ng-click="startRecordRoute(); clickedCreate=true" class="button button-balanced  button-block">Create route</button>
+          <button id="recordRoute-button24" ng-click="startRandomRoute(); clickedCreate=true" class="button button-balanced  button-block">Create random route</button>
+      </div>
+    <!--Second view-->
+      <div ng-show="clickedCreate">
+          <div id="map-canvas" style="display:block;position:relative;width:100%;height:500px;"></div>
+          <div class="button-bar">
+              <button ng-click="clickedCreate=false" class="button button-royal  button-block"> Back </button>
+          </div>
+       </div>
   </ion-content>
 </ion-view>

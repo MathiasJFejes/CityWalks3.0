@@ -1,0 +1,10 @@
+<ion-view title="CityWalks" hide-back-button="true" id="page1" style="background-color:#1F0E0E;">
+  <ion-content padding="false" scroll="false" class="has-header">
+    <div id="cityWalks-button-bar3" class="button-bar"></div>
+    <creator-map-component options="{}" marker="false" location="Uppsala" zoom="12" style="display:block;position:relative;width:100%;height:100%;">
+      <ui-gmap-google-map ng-if="map.center" center="map.center" zoom="map.zoom" options="map.options">
+        <ui-gmap-marker coords="map.marker.coords" idkey="map.marker.id" options="map.marker.options"></ui-gmap-marker>
+      </ui-gmap-google-map>
+    </creator-map-component>
+  </ion-content>
+</ion-view>
