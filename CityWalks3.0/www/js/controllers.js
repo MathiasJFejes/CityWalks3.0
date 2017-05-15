@@ -29,7 +29,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
     $scope.error = '';
 
     $scope.data = {
-        'email': '',
+        'username': '',
         'password': ''
     }
 
@@ -39,7 +39,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
     $scope.login = function () {
         console.log("inne i funktionen")
-        console.log($scope.data.email, $scope.data.password)
+        console.log($scope.data.username, $scope.data.password)
         var req = {
             crossDomain: true,
             method: 'POST',
@@ -47,7 +47,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { 'strategy': local, 'email': $scope.data.email, 'password': $scope.data.password }
+            data: { 'strategy': local, 'username': $scope.data.username, 'password': $scope.data.password }
 
         }
         $http(req).then(function (response) {
@@ -58,7 +58,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
             var getReq = {
                 method: 'GET',
-                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.email,
+                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.username,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': jwt
@@ -1154,35 +1154,40 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     $scope.getFriends = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
+
         console.log("jwt", jwt);
         var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/users',
+            url: 'http://46.101.219.139:5000/users/',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             }
         }
         $http(req).then(function (response) {
-            console.log('getFriends', response)
-            $scope.myData = response.data;
+            $scope.myData = data.Userdata.friends;
 
         })
     }
 
     $scope.addFriend = function () {
         var data = listItmeDataService.get();
-        var jwt = data.jwt; 
+        var jwt = data.jwt;
+ 
+        var newFriendsList = data.Userdata.friends;
+        newFriendsList.push([$scope.data.username]);
 
         var req = {
             crossDomain: true,
-            method: 'PUT',
-            url: 'http://46.101.219.139:5000/users/',
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             },
-            data: {}
+            data: { 
+                "friends": newFriendsList
+            }
         }
 
         $http(req).then(function () {
