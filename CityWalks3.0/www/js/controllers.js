@@ -20,7 +20,7 @@ function ($scope, $stateParams, $state, listItmeDataService) {
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService',
+.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
@@ -39,7 +39,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
     $scope.login = function () {
         console.log("inne i funktionen")
-        console.log($scope.data.username, $scope.data.password)
+        console.log($scope.data.email, $scope.data.password)
         var req = {
             crossDomain: true,
             method: 'POST',
@@ -53,23 +53,19 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
         $http(req).then(function (response) {
             var jwt = response.data.accessToken;
             console.log('response jwt', jwt);
-            listItmeDataService.set(jwt),
+            listItmeDataService.set('jwt',jwt),
             console.log("tokenHandler", listItmeDataService.get())
-
-            //var data = listItmeDataService.get();
-            //console.log(data.jwt)
 
             var getReq = {
                 method: 'GET',
-                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.username,
+                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.email,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': jwt
                 }
             }
             $http(getReq).then(function (response) {
-                listItmeDataService.set(response)
-                console.log(response)
+                listItmeDataService.set('Userdata', response.data["0"])
                 $state.go('menu.createRoute')
 
             });
@@ -477,7 +473,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
     $scope.getRouteInfo = function (id) {
         var routeId = id;
-        listItmeDataService.set(routeId);
+        listItmeDataService.set('routeId', routeId);
         $state.go("menu.myRoutes")
         console.log(routeId._id, routeId.name);
 
@@ -1137,7 +1133,8 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
 
     $scope.getFriends = function () {
-        var jwt = listItmeDataService.get();
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
         console.log("jwt", jwt);
         var req = {
             method: 'GET',
@@ -1156,7 +1153,9 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     }
 
     $scope.addFriend = function () {
-        var jwt = listItmeDataService.get();
+        var data = listItmeDataService.get();
+        var jwt = data.jwt; 
+
         var req = {
             crossDomain: true,
             method: 'PUT',
@@ -1185,8 +1184,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     };
 
 }])
- 
-
 
 
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -1195,8 +1192,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 function ($scope, $http, $state, $stateParams, listItmeDataService) {
 
     $scope.getSettingsData = function () {
-        var jwt = listItmeDataService.get();
-        console.log("jwt", jwt);
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        console.log("jwt", data);
         var req = {
             method: 'GET',
             url: 'http://46.101.219.139:5000/users',

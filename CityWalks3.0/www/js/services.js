@@ -6,8 +6,8 @@ angular.module('app.services', [])
 
 .factory('listItmeDataService', function(){
     var savedData = {}
-    function set(data) {
-        savedData = data;
+    function set(name, data) {
+        savedData[name] = data
     }
     function get() {
         return savedData;
@@ -19,24 +19,6 @@ angular.module('app.services', [])
     }
 })
 
-.factory('tokenHandler', [function () {
-    var savedToken;
-    function set(token) {
-        savedToken = token;
-    }
-    function get() {
-        return savedToken
-    }
-    function drop() {
-        savedToken = 'no longer valid token'
-    }
-    return {
-        set: set,
-        get: get,
-        drop: drop
-            
-    }
-}])
 
 .service('BlankService', [function(){
 
