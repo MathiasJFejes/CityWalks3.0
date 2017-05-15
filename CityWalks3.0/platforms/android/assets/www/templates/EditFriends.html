@@ -1,21 +1,39 @@
+<<<<<<< HEAD
 ﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44">
 
     <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3 )">
+=======
+﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" >
+
+    <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+>>>>>>> feaf9f0b78467faef2ce3fb68c0b2c069d764c76
         <br />
         <p style="color:black;font-size:large; text-align:center; top:10%">
             Add friend:
         </p>
+<<<<<<< HEAD
         <label class="item item-input" style="margin-left:4%; background:none; border:none; width:85%;">
             <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
             <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060 ;">
         </label>
         <button style="font-weight:600;color:#FFFFFF ;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " ng-click="addFriend()" class="button button-balanced  button-block">Add friend</button>
+=======
+                <label class="item item-input" style="margin-left:4%; background:none; border:none; width:85%;">
+                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
+
+            <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
+        </label>
+        <button style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " ng-click="addFriend()" class="button button-balanced  button-block">Add friend</button>
+
+
+>>>>>>> feaf9f0b78467faef2ce3fb68c0b2c069d764c76
         <ion-list>
             <ion-list ng-init="getFriends()" style="width:100%">
                 <br />
                 <p style="color:black;font-size:large; text-align:center; top:10%">
                     My Friends:
                 </p>
+<<<<<<< HEAD
                 <ion-item class="item item-icon-left item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1 ,#7253C3 );color:white;border:none">
                     <i class="icon ion-person placeholder-icon"></i>
                     <p style="color:white; font-size:larger">
@@ -26,3 +44,18 @@
             </ion-list>
     </ion-content>
 </ion-view>
+=======
+                    <ion-item class="item item-icon-left item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
+                        <i class="icon ion-person placeholder-icon"></i>
+                        <p style="color:white; font-size:larger">
+                        {{friend.username}}
+                        </p>
+                    <i class="icon ion-android-delete" ng-click="deleteFriend()"></i>
+                </ion-item>
+            </ion-list>
+</ion-content>
+
+
+
+            
+>>>>>>> feaf9f0b78467faef2ce3fb68c0b2c069d764c76

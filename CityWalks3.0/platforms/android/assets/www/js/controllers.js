@@ -175,6 +175,10 @@ function ($scope, $stateParams, $state, $http) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $http) {
 
+    $scope.data = {
+        choice: "B"
+    }
+
     $scope.range = {
         model: null,
         availableOptions: [{ value: 100, name: '100 m' },
