@@ -4,7 +4,7 @@
 
         <!--INITIAL VIEW-->
 
-        <div ng-hide="clickedComment || clickedWalk">
+        <div ng-hide="clickedComment || clickedWalk || clickedStop">
 
             <div ng-init="itemMapSmall()" id="map_item_small" style="position:absolute;top:0;left:0;width:100%;height:53%;"> </div>
 
@@ -35,7 +35,7 @@
             </ion-list>
             <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:8%" ng-click="clickedComment=true" class="button icon-left ion-ios-chatbubble button-block button-positive"> Comments </button>
 
-            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="clickedWalk=true" class="button icon-left ion-android-walk button-block button-balanced"> Walk route </button>
+            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="walkRecordedRoute(); clickedWalk=true" class="button icon-left ion-android-walk button-block button-balanced"> Walk route </button>
 
 
         </div>
@@ -65,10 +65,63 @@
             </div>
 
         <!--Walks VIEW-->
-        <div ng-show="clickedWalk" >
-            <div ng-init="itemMapFull()" id="map_item_full" style="position:absolute;top:0;left:0;width:100%;height:92%;"></div>
-            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="clickedWalk=false" class="button icon-left ion-android-arrow-back button-assertive button-block"> Back </button>
-        </div>
+        
+            <div ng-show="clickedWalk" id="map_item_full" style="position:relative;top:0;left:0;width:100%;height:92%;"></div>
+             <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
+            <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:35%;top:50%;color:white"> Map is loading . . .  </div>
+            <button ng-show="clickedWalk" id="recordRoute-button25" style="position:relative;width:100%;margin:auto;bottom:0%" ng-click="stopWatchingRoute(); clickedWalk=false; clickedStop=true" class="button icon-left ion-stop button-assertive button-block"> Done Walking </button>
+        
+
+        <!-- Review View-->
+        <div ng-show="clickedStop">
+
+                <div class="list">
+
+                    <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                        <i class="icon ion-ios-information"></i>
+                        Route Information
+                    </div>
+                    <a class="item">
+                        Route title: {{itemData.title}}
+                    </a>
+                    <a class="item">
+                        Created by: {{itemData.creatorId}}
+                    </a>
+                    <a class="item" >
+                        Route Distance: {{itemData.distance}} (km)
+                    </a>
+
+                    <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                        <i class="icon ion-android-textsms"></i>
+                        Add a comment
+                    </div>
+                    <label class="item item-input">
+                        <textarea required rows="4" maxlength="220" placeholder="Input a comment here!" ng-model="data.routeWalkComment"></textarea>
+                    </label>
+                    <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
+                        <i class="icon ion-thumbsup"></i>
+                        Route rating <i class="balanced" style="text-align:right;font-style:italic;font-size:smaller"> *optional</i>
+
+                    </div>
+                    <li class="item item-toggle">
+                        Recommend Route?
+                        <label class="toggle toggle-balanced">
+                            <input type="checkbox" ng-model="data.routeWalkLike" ng-true-value="1" ng-false-value="0">
+                            <div class="track">
+                                <div class="handle"></div>
+                            </div>
+                        </label>
+                    </li>
+                </div>
+
+            </div>
+
+            <!-- No comment-->
+            <button style="position:absolute;bottom:0%;left:0%;width:30%" id="recordRoute-button26" ng-click="resetCommentsRating();clickedStop=false; clickedWalk=false; clickedComment=false" class="button icon-left ion-ios-close-outline button-assertive" ng-show="clickedStop">Skip</button>
+            <!-- Send comment+rating-->
+            <button style="position:absolute;bottom:0%;left:30%;width:70%" id="recordRoute-button27" ng-click="sendCommentRating();clickedStop=false; clickedWalk=false; clickedComment=false" class="button icon-left ion-paper-airplane button-royal" ng-show="clickedStop">Submit</button>
+
+
 
         
 </ion-content>
