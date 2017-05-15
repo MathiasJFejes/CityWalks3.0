@@ -13,10 +13,10 @@
         <ion-list>
             <ion-list ng-init="getFriends()">
                 <b>My friends</b>
-                <ion-item class="item item-thumbnail-right" ng-repeat="friend in myData">
-                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i> 
-                    Id: {{friend._id}}<p>&nbsp;</p>Username: {{friend.username}}
-                    <i class="icon ion-android-delete" style="font-size:27px;" ng-click="deleteFriend()"></i>
+                <ion-item ng-repeat="friend in myData">
+                    <i class="icon ion-person placeholder-icon" style="font-size:25px;"></i> 
+                    {{friend.username}}
+                    <i class="icon-right ion-android-delete" style="font-size:25px; width:100%" ng-click="deleteFriend()"></i>
                 </ion-item>
             </ion-list>
 </ion-content>
