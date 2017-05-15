@@ -179,6 +179,10 @@ function ($scope, $stateParams, $state, $http) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $http) {
 
+    $scope.data = {
+        choice: "B"
+    }
+
     $scope.range = {
         model: null,
         availableOptions: [{ value: 100, name: '100 m' },
@@ -712,6 +716,18 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                 $scope.itemData = latest_tracking_data;
                 $state.go('menu.myRoutes', {}, { reload: true });
             });
+        })
+    };
+
+    $scope.updateItem = function () {
+
+        $http({
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
+        }).then(function (response) {
+            var latest_tracking_data = response.data;
+            $scope.itemData = latest_tracking_data;
+
         })
     };
 
