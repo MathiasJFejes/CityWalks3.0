@@ -1,7 +1,23 @@
 ﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" >
-    <ion-content padding="true" class="has-header" style="background: linear-gradient(lightgray,#7253C3)"
 
-        <b>(Load friendslist from server, like in TopRoutes)</b>
 
-    </ion-content>
+    <ion-content padding="true" class="has-header" style="background: linear-gradient(white,#7253C3)">
+        <b>Add a friend</b>
+                <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
+                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
+
+                    <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
+                </label> 
+        <button style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " ng-click="addFriend()" class="button button-balanced  button-block">Add friend</button>
+
+        <ion-list>
+            <ion-list ng-init="getFriends()">
+                <b>My friends</b>
+                <ion-item ng-repeat="friend in myData">
+                    <i class="icon ion-person placeholder-icon" style="font-size:25px;"></i> 
+                    {{friend.username}}
+                    <i class="icon-right ion-android-delete" style="font-size:25px; width:100%" ng-click="deleteFriend()"></i>
+                </ion-item>
+            </ion-list>
+</ion-content>
 </ion-view>
