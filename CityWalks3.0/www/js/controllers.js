@@ -164,21 +164,10 @@ function ($scope, $stateParams, $http) {
     $scope.range = {
         model: null,
         availableOptions: [{ value: 100, name: '100 m' },
-                            { value: 500, name: '500 m' },
-                            { value: 1000, name: '1000 m' },
-                            { value: 2000, name: '2000 m' },
-                            { value: 5000, name: '5000 m' }]
-    }
-
-    $scope.place = {
-        model: null,
-        availableOptions: [{ value: 'park', name: 'Park' },
-                            { value: 'museum', name: 'Museum' },
-                            { value: 'art_gallery', name: 'Art gallery' },
-                            { value: 'cafe', name: 'Cafe' },
-                            { value: 'bar', name: 'Bar' },
-                            { value: 'university', name: 'University' },
-                            { value: 'library', name: 'Library' }]
+                           { value: 500, name: '500 m' },
+                           { value: 1000, name: '1000 m' },
+                           { value: 2000, name: '2000 m' },
+                           { value: 5000, name: '5000 m' }]
     }
 
     $scope.startRandomRoute = function () {
@@ -216,6 +205,7 @@ function ($scope, $stateParams, $http) {
 
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 directionsDisplay.setMap(map);
+                //directionsDisplay.setOptions({ suppressMarkers: true });
             }
 
             var request = {
@@ -239,10 +229,8 @@ function ($scope, $stateParams, $http) {
                 }
             });
 
-
-
             function findCoordinates(lat, long, range) {
-                console.log("findCoordinates")
+                
                 // How many points do we want? 
                 var numberOfPoints = 16;
                 var degreesPerPoint = 360 / numberOfPoints;
@@ -284,6 +272,17 @@ function ($scope, $stateParams, $http) {
         );
     }
 
+    $scope.place = {
+        model: null,
+        availableOptions: [{ id: 'park', name: 'Park' },
+                           { id: 'museum', name: 'Museum' },
+                           { id: 'art_gallery', name: 'Art gallery' },
+                           { id: 'cafe', name: 'Cafe' },
+                           { id: 'university', name: 'University' },
+                           { id: 'bar', name: 'Bar' },
+                           { id: 'library', name: 'Library' }]
+    }
+
     $scope.startRecordRoute = function () {
 
         navigator.geolocation.getCurrentPosition(
@@ -309,17 +308,12 @@ function ($scope, $stateParams, $http) {
                     var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
 
-                    var randCoordfirst;
-                    var randCoordsecond;
-                    var randCoordthird;
-
-                    //Fires up a random coordinate generation based upon range input and start
-                    findCoordinates(init_lat, init_lon, $scope.range.model);
                     initialize();
 
                     var map;
                     var infowindow;
                     var directionsDisplay;
+                    directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -359,9 +353,7 @@ function ($scope, $stateParams, $http) {
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts, /*[{ location: randCoordfirst, stopover: false },
-                                { location: randCoordsecond, stopover: false },
-                                { location: randCoordthird, stopover: false }],*/
+                                waypoints: waypts,
                                 optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
@@ -391,45 +383,7 @@ function ($scope, $stateParams, $http) {
                                         });
                                     }
                     */
-                    function findCoordinates(lat, long, range) {
-                        console.log("findCoordinates")
-                        // How many points do we want? 
-                        var numberOfPoints = 16;
-                        var degreesPerPoint = 360 / numberOfPoints;
-
-                        // Keep track of the angle from centre to radius
-                        var currentAngle = 0;
-
-                        // The points on the radius will be lat+x2, long+y2
-                        var x2;
-                        var y2;
-                        // Track the points we generate to return at the end
-
-                        for (var i = 1; i < numberOfPoints; i++) {
-
-                            // X2 point will be cosine of angle * radius (range)
-                            x2 = Math.cos(currentAngle) * range;
-                            // Y2 point will be sin * range
-                            y2 = Math.sin(currentAngle) * range;
-
-                            // Assuming here you're using points for each x,y..             
-                            newLat = lat + x2;
-                            newLong = long + y2;
-                            lat_long = new google.maps.LatLng(newLat, newLong);
-                            trackPoints[i] = lat_long;
-                            // Shift our angle around for the next point
-                            currentAngle += degreesPerPoint;
-                        }
-
-                        // Return the points we've generated
-                        //gets random coordinate from our array of coords
-                        //Add the last point to array that is the start point so that we start and stop at same position
-                        //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
-                        randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                    }
-                    google.maps.event.addDomListener(window, 'load', initialize);
+                google.maps.event.addDomListener(window, 'load', initialize);
                 }
             );
             })

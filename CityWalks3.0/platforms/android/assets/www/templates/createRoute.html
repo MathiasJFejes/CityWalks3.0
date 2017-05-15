@@ -8,14 +8,14 @@
               
               <label class="item item-select" id="createRoute-range">
                   <span class="input-label">Radius</span>
-                  <select name="repeatSelect" id="repeatSelect" ng-model="range.model">
+                  <select name="repeatSelect" id="repeatRadiusSelect" ng-model="range.model">
                       <option ng-repeat="option in range.availableOptions" ng-value="{{option.value}}">{{option.name}}</option>
                   </select>
               </label>
               <label class="item item-select" id="createRoute-place" ng-hide="clickedRandom">
                   <span class="input-label">Places</span>
-                  <select name="repeatSelect" id="repeatSelect" ng-model="place.model">
-                      <option ng-repeat="option in place.availableOptions" ng-value="{{option.value}}">{{option.value}}</option>
+                  <select name="repeatSelect" id="repeatPlaceSelect" ng-model="place.model">
+                      <option ng-repeat="option in place.availableOptions" ng-value="{{option.id}}">{{option.id}}</option>
                   </select>
               </label>
           </ion-list>
