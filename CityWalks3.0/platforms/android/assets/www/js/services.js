@@ -12,10 +12,14 @@ angular.module('app.services', [])
     function get() {
         return savedData;
     }
+    function drop() {
+        savedData = {}
+    }
 
     return {
         set: set,
         get: get
+
     }
 })
 

@@ -12,8 +12,7 @@ function ($scope, $stateParams) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $state, listItmeDataService) {
-    $scope.userData = listItmeDataService.get();
-
+    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
     $scope.logout = function(){
         $state.go('login');
     }
@@ -29,7 +28,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
     $scope.error = '';
 
     $scope.data = {
-        'email': '',
+        'username': '',
         'password': ''
     }
 
@@ -39,7 +38,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
     $scope.login = function () {
         console.log("inne i funktionen")
-        console.log($scope.data.email, $scope.data.password)
+        console.log($scope.data.username, $scope.data.password)
         var req = {
             crossDomain: true,
             method: 'POST',
@@ -47,7 +46,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { 'strategy': local, 'email': $scope.data.email, 'password': $scope.data.password }
+            data: { 'strategy': local, 'username': $scope.data.username, 'password': $scope.data.password }
 
         }
         $http(req).then(function (response) {
@@ -58,7 +57,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
             var getReq = {
                 method: 'GET',
-                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.email,
+                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.username,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': jwt
@@ -100,7 +99,7 @@ function ($scope, $stateParams, $state, $http) {
 
         }
         $http(req).then(function successCallback (response) {
-            $state.go('menu.createRoute')
+            $state.go('login')
         }, function errorCallback(response) {
             console.log('error',response)
         });
@@ -682,8 +681,9 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
             console.log('latest_tracking_data')
             console.log(latest_tracking_data)
 
+
             var newCommentList = latest_tracking_data.comments;
-            newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
+            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
 
             var req = {
                 crossDomain: true,
@@ -759,10 +759,10 @@ function ($scope, $http, $state, $stateParams,listItmeDataService) {
          };
 }])
    
-.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup','listItmeDataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, $ionicPopup) {
+function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService) {
 
     $scope.initPosition = function () {
 
@@ -1047,7 +1047,9 @@ function ($scope, $state, $stateParams, $http, $ionicPopup) {
     $scope.sendRecordedRoute = function () {
 
         var routeCoords = coordData;
-
+        var userInfo = listItmeDataService.get().Userdata._id
+        console.log('userId', userInfo)
+        var testUser = "5911cd9d8b242d06d3d30c09"
         var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
 
         var req = {
@@ -1059,11 +1061,11 @@ function ($scope, $state, $stateParams, $http, $ionicPopup) {
             },
             data: {
                 "title": $scope.data.routeTitle,
-                "creatorId": "5911cd9d8b242d06d3d30c09",
+                "creatorId": userInfo,
                 "coords": routeCoords,
                 "time": time,
-                "score": [{ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeLike }],
-                "comments": [{ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
+                "score": [{"userId": userInfo, "score": $scope.data.routeLike }],
+                "comments": [{ "userId": userInfo, "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
                 "distance": total_km_rounded
             }
         }
