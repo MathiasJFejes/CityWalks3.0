@@ -479,7 +479,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
         var routeId = id;
         listItmeDataService.set('routeId', routeId);
         $state.go("menu.myRoutes")
-        console.log(routeId._id, routeId.name);
+        //var data = listItmeDataService.get()
+        //console.log('test av get().routeID', data.routeId);
+
+        //console.log('test av get().routeID', listItmeDataService.get().routeId);
 
     }
 
@@ -499,12 +502,12 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, listItmeDataService, $http, $state) {
-    $scope.itemData = listItmeDataService.get();
-    var tracking_data = listItmeDataService.get();
+    $scope.itemData = listItmeDataService.get().routeId;
+    var tracking_data = listItmeDataService.get().routeId;
 
     $scope.itemMapSmall = function() { 
             console.log('First Map')
-            var tracking_data = listItmeDataService.get();
+            var tracking_data = listItmeDataService.get().routeId;
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
             console.log(last_element);
@@ -585,7 +588,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
     $scope.itemMapFull = function() { 
             console.log('First Map')
-            var tracking_data = listItmeDataService.get();
+            var tracking_data = listItmeDataService.get().routeId;
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
             console.log(last_element);
