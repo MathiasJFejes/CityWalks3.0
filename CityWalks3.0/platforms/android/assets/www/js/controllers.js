@@ -24,13 +24,14 @@ function ($scope, $stateParams, $state) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $state, $http, listItmeDataService) {
-    
-    $scope.error = '';
-    $scope.data = {
+
+   $scope.data = {
         'email': '',
         'password': ''
     }
     var local = 'local';
+    
+    $scope.error = '';
 
     $scope.login = function () {
         console.log("inne i funktionen")
@@ -41,33 +42,18 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { 'strategy': local, 'username': $scope.data.email, 'email': $scope.data.username, 'password': $scope.data.password }
+            data: { 'strategy': local, 'username': $scope.data.email, 'email': $scope.data.email, 'password': $scope.data.password }
             
         }
         $http(req).then(function (response) {
             var jwt = response.data.accessToken;
             console.log('response jwt', jwt);
             listItmeDataService.set(jwt),
-            console.log("tokenHandler", listItmeDataService.get())
-        
-            //var data = listItmeDataService.get();
-            //console.log(data.jwt)
-
-            var getReq = {
-                method: 'GET',
-                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.username,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': jwt
-                }
-            }
-            $http(getReq).then(function (response) {
-                listItmeDataService.set(response)
-                console.log(response)
-                $state.go('menu.createRoute')
-
-            });
+                console.log("tokenHandler", listItmeDataService.get()),
+            $state.go('menu.createRoute')
         });
+
+
     };
 
 }])
@@ -98,7 +84,7 @@ function ($scope, $stateParams, $state, $http) {
 
         }
         $http(req).then(function successCallback (response) {
-            $state.go('login')
+            $state.go('menu.createRoute')
         }, function errorCallback(response) {
             console.log('error',response)
         });
