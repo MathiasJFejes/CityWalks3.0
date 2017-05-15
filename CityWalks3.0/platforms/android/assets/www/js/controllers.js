@@ -104,7 +104,7 @@ function ($scope, $stateParams, $state, $http) {
 
         }
         $http(req).then(function successCallback (response) {
-            $state.go('menu.createRoute')
+            $state.go('login')
         }, function errorCallback(response) {
             console.log('error',response)
         });
