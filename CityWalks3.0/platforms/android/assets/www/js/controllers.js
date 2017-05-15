@@ -1156,36 +1156,40 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     $scope.getFriends = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
+
         console.log("jwt", jwt);
         var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/users',
+            url: 'http://46.101.219.139:5000/users/',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             }
         }
         $http(req).then(function (response) {
-            console.log('response')
-            console.log(response)
-            $scope.myData = response.data;
+            $scope.myData = data.Userdata.friends;
 
         })
     }
 
     $scope.addFriend = function () {
         var data = listItmeDataService.get();
-        var jwt = data.jwt; 
+        var jwt = data.jwt;
+ 
+        var newFriendsList = data.Userdata.friends;
+        newFriendsList.push([$scope.data.username]);
 
         var req = {
             crossDomain: true,
-            method: 'PUT',
-            url: 'http://46.101.219.139:5000/users/',
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             },
-            data: {}
+            data: { 
+                "friends": newFriendsList
+            }
         }
 
         $http(req).then(function () {

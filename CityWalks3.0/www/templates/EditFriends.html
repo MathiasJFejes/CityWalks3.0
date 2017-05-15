@@ -9,7 +9,7 @@
 
         <label class="item item-input" style="margin-left:4%; background:none; border:none; width:85%;">
             <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
-            <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060 ;">
+            <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060 ;" ng-model="data.username">
         </label>
         <button style="font-weight:600;color:#FFFFFF ;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " ng-click="addFriend()" class="button button-balanced  button-block">Add friend</button>
 
@@ -22,7 +22,7 @@
                 <ion-item class="item item-icon-left item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1 ,#7253C3 );color:white;border:none">
                     <i class="icon ion-person placeholder-icon"></i>
                     <p style="color:white; font-size:larger">
-                        {{friend.username}}
+                       {{friend}}
                     </p>
                     <i class="icon ion-android-delete" ng-click="deleteFriend()"></i>
                 </ion-item>
