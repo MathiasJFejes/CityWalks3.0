@@ -12,15 +12,14 @@ function ($scope, $stateParams) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $state, listItmeDataService) {
-    $scope.userData = listItmeDataService.get();
-
+    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
     $scope.logout = function(){
         $state.go('login');
     }
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService',
+.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
@@ -53,11 +52,8 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
         $http(req).then(function (response) {
             var jwt = response.data.accessToken;
             console.log('response jwt', jwt);
-            listItmeDataService.set(jwt),
+            listItmeDataService.set('jwt',jwt),
             console.log("tokenHandler", listItmeDataService.get())
-
-            //var data = listItmeDataService.get();
-            //console.log(data.jwt)
 
             var getReq = {
                 method: 'GET',
@@ -68,8 +64,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
                 }
             }
             $http(getReq).then(function (response) {
-                listItmeDataService.set(response)
-                console.log(response)
+                listItmeDataService.set('Userdata', response.data["0"])
                 $state.go('menu.createRoute')
 
             });
@@ -104,7 +99,7 @@ function ($scope, $stateParams, $state, $http) {
 
         }
         $http(req).then(function successCallback (response) {
-            $state.go('menu.createRoute')
+            $state.go('login')
         }, function errorCallback(response) {
             console.log('error',response)
         });
@@ -481,9 +476,12 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
     $scope.getRouteInfo = function (id) {
         var routeId = id;
-        listItmeDataService.set(routeId);
+        listItmeDataService.set('routeId', routeId);
         $state.go("menu.myRoutes")
-        console.log(routeId._id, routeId.name);
+        //var data = listItmeDataService.get()
+        //console.log('test av get().routeID', data.routeId);
+
+        //console.log('test av get().routeID', listItmeDataService.get().routeId);
 
     }
 
@@ -503,12 +501,12 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, listItmeDataService, $http, $state) {
-    $scope.itemData = listItmeDataService.get();
-    var tracking_data = listItmeDataService.get();
+    $scope.itemData = listItmeDataService.get().routeId;
+    var tracking_data = listItmeDataService.get().routeId;
 
     $scope.itemMapSmall = function() { 
             console.log('First Map')
-            var tracking_data = listItmeDataService.get();
+            var tracking_data = listItmeDataService.get().routeId;
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
             console.log(last_element);
@@ -587,202 +585,86 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
             console.log('Last Map')
     }
 
-    var watch_id = "WatchCurrentID";    // ID of the geolocation
-    var position_data = []; // Array containing GPS position objects
-    var trackCoords = []; // google maps lat lng coords for map
-    var coordData = [];
-    var interval;
+    $scope.itemMapFull = function() { 
+            console.log('First Map')
+            var tracking_data = listItmeDataService.get().routeId;
+            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
+            var first_element = tracking_data.coords[0];
+            console.log(last_element);
+            console.log(tracking_data);
+            console.log(first_element);
 
-    $scope.walkRecordedRoute = function () {
+            //Latest Coordinates
+            var myLatLng = new google.maps.LatLng(last_element["0"], last_element["1"]);
+            //First Coordinates
+            var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
 
-        watch_id = navigator.geolocation.watchPosition(
-       // Success
-       function (position) {
-           console.log('recording')
-           console.log('trackdata inne i rec')
-           position_data.push(position);  // For current position = last element
+            console.log(myLatLng);
+            console.log(myLatLng_first);
 
-           //Route data
-           var tracking_data = listItmeDataService.get(); 
-           var last_element = tracking_data.coords[tracking_data.coords.length - 1];
-           var first_element = tracking_data.coords[0];
+            // Google Map options center at current pos
+            var myOptions = {
+                zoom: 16,
+                center: myLatLng,
+                mapTypeId: google.maps.MapTypeId.WALKING
+            };
 
-           //Position data
-           var counter = 0;
-           var position_last_element = position_data[position_data.length - 1];
-           var position_first_element = position_data[0];
-           var interval = setInterval(function () {
+            // Create the Google Map, set options
+            var map_full = new google.maps.Map(document.getElementById("map_item_full"), myOptions);
 
-               if (1 < tracking_data.coords.length) {
-                       console.log(' inne i watch')
+            var trackCoords = []; // google maps lat lng coords for map
 
-                       //Latest Coordinates for current position marker
-                       var myLatLng_current = new google.maps.LatLng(position_last_element.coords.latitude, position_last_element.coords.longitude);
+            // Add each GPS entry to array trackCoords
+            for (i = 0; i < tracking_data.coords.length; i++) {
+                trackCoords.push(new google.maps.LatLng(tracking_data.coords[i]["0"], tracking_data.coords[i]["1"]));
 
-                       //Last Route Coordinates
-                       var myLatLng_last = new google.maps.LatLng(last_element["0"], last_element["1"]);
-                       //First Route Coordinates
-                       var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
+            }
 
-                       // Google Map options center at current pos
-                       var myOptions = {
-                           zoom: 17,
-                           center: myLatLng_current,
-                           mapTypeId: google.maps.MapTypeId.WALKING
-                       };
-
-                       // Create the Google Map, set options
-                       var map_current = new google.maps.Map(document.getElementById("map_item_full"), myOptions);
-
-                       var trackCoords = []; // google maps lat lng coords for map
-
-                       // ROUTE COORDS, Add each GPS entry to array trackCoords
-                       for (i = 0; i < tracking_data.coords.length; i++) {
-                           trackCoords.push(new google.maps.LatLng(tracking_data.coords[i]["0"], tracking_data.coords[i]["1"]));
-
-                       // Plot the GPS entries as a line on the Google Map
-                       var trackPath = new google.maps.Polyline({
-                           path: trackCoords,
-                           strokeColor: "#7253c3",
-                           strokeOpacity: 1.0,
-                           strokeWeight: 2
-                       });
+            // Plot the GPS entries as a line on the Google Map
+            var trackPath = new google.maps.Polyline({
+                path: trackCoords,
+                strokeColor: "#7253c3",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
 
 
-                       //Marker for current position
-                       var icon_current = {
-                           url: "/img/Icons/ic_my_location_blue_24dp.png",
-                           fillColor: '#0099ff',
-                           scaledSize: new google.maps.Size(30, 30), // scaled size
-                           origin: new google.maps.Point(0, 0), // origin
-                           anchor: new google.maps.Point(15, 15) // anchor
-                       }
+            //Marker for last position
+            var icon_current = {
+                url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
+                fillColor: '#0099ff',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
 
-                       var marker = new google.maps.Marker({
-                           position: myLatLng_current,
-                           icon: icon_current,
-                           map: map_current,
-                           title: 'Current position'
-                       });
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                icon: icon_current,
+                map: map_full,
+                title: 'Current position'
+            });
 
-                       //Marker for first position
-                       var icon_first = {
-                           url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
-                           fillColor: '#7253C3',
-                           scaledSize: new google.maps.Size(30, 30), // scaled size
-                           origin: new google.maps.Point(0, 0), // origin
-                           anchor: new google.maps.Point(15, 15) // anchor
-                       }
+            //Marker for first position
+            var icon_first = {
+                url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
+                fillColor: '#7253C3',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
 
-                       var marker = new google.maps.Marker({
-                           position: myLatLng_first,
-                           icon: icon_first,
-                           map: map_current,
-                           title: 'Start position'
-                       });
+            var marker = new google.maps.Marker({
+                position: myLatLng_first,
+                icon: icon_first,
+                map: map_full,
+                title: 'Start position'
+            });
 
-                       //Marker for last position
-                       var icon_current = {
-                           url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
-                           fillColor: '#0099ff',
-                           scaledSize: new google.maps.Size(30, 30), // scaled size
-                           origin: new google.maps.Point(0, 0), // origin
-                           anchor: new google.maps.Point(15, 15) // anchor
-                       }
-
-                       var marker = new google.maps.Marker({
-                           position: myLatLng_last,
-                           icon: icon_current,
-                           map: map_current,
-                           title: 'Final position'
-                       });
-
-
-                       // Apply the line to the map
-                       trackPath.setMap(map_current);
-                   }
-                   counter++;
-                   if (counter === 1) {
-                       clearInterval(interval);
-                   }
-               }}, 2000);
-       },
-       // Error
-       function (error) {
-           console.log(error);
-       },
-       // Settings
-       { frequency: 1000, enableHighAccuracy: true });
-
+            // Apply the line to the map
+            trackPath.setMap(map_full);
+            console.log('Last Map')
     }
-
-    $scope.stopWatchingRoute = function () {
-        clearInterval(interval);
-        navigator.geolocation.clearWatch(watch_id);
-    }
-
-    $scope.resetCommentsRating = function () {
-
-        //Clear input values
-        $scope.data = {
-            routeWalkComment: '',
-            routeWalkLike: 0
-        };
-        $state.go('menu.myRoutes', {}, { reload: true });
-    }
-
-
-    $scope.sendCommentRating = function () {
-
-            $http({
-                method: 'GET',
-                url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
-            }).then(function (response) {
-                var latest_tracking_data = response.data;
-                console.log('latest_tracking_data')
-                console.log(latest_tracking_data)
-
-                var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeWalkComment, "date": "2017-05-09T14:09:33.552Z" })
-
-                var newLikeList = latest_tracking_data.score;
-                newLikeList.push({ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeWalkLike})
-
-                var req = {
-                    crossDomain: true,
-                    method: 'PUT',
-                    url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    data: {
-                        "title": latest_tracking_data.title,
-                        "checkpoints": latest_tracking_data.checkpoints,
-                        "creatorId": latest_tracking_data.creatorId,
-                        "createdAt": latest_tracking_data.createdAt,
-                        "updatedAt": latest_tracking_data.updatedAt,
-                        "coords": latest_tracking_data.coords,
-                        "time": latest_tracking_data.time,
-                        "score": newLikeList,
-                        "comments": newCommentList,
-                        "distance": latest_tracking_data.distance,
-                        "_v": latest_tracking_data._v,
-                        "__proto__": latest_tracking_data.__proto__
-                    }
-                }
-
-                $http(req).then(function () {
-                    $scope.data = {
-                        routeWalkComment: '',
-                        routeWalkLike: 0
-                    };
-                    $scope.itemData = latest_tracking_data;
-                    $state.go('menu.myRoutes', {}, { reload: true });
-                });
-            })
-        };
-
-
 
 
     $scope.data = {
@@ -799,8 +681,9 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
             console.log('latest_tracking_data')
             console.log(latest_tracking_data)
 
+
             var newCommentList = latest_tracking_data.comments;
-            newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
+            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
 
             var req = {
                 crossDomain: true,
@@ -876,10 +759,10 @@ function ($scope, $http, $state, $stateParams,listItmeDataService) {
          };
 }])
    
-.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup','listItmeDataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, $ionicPopup) {
+function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService) {
 
     $scope.initPosition = function () {
 
@@ -1164,7 +1047,9 @@ function ($scope, $state, $stateParams, $http, $ionicPopup) {
     $scope.sendRecordedRoute = function () {
 
         var routeCoords = coordData;
-
+        var userInfo = listItmeDataService.get().Userdata._id
+        console.log('userId', userInfo)
+        var testUser = "5911cd9d8b242d06d3d30c09"
         var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
 
         var req = {
@@ -1176,11 +1061,11 @@ function ($scope, $state, $stateParams, $http, $ionicPopup) {
             },
             data: {
                 "title": $scope.data.routeTitle,
-                "creatorId": "5911cd9d8b242d06d3d30c09",
+                "creatorId": userInfo,
                 "coords": routeCoords,
                 "time": time,
-                "score": [{ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeLike }],
-                "comments": [{ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
+                "score": [{"userId": userInfo, "score": $scope.data.routeLike }],
+                "comments": [{ "userId": userInfo, "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
                 "distance": total_km_rounded
             }
         }
@@ -1269,35 +1154,42 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
 
     $scope.getFriends = function () {
-        var jwt = listItmeDataService.get();
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
         console.log("jwt", jwt);
         var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/users',
+            url: 'http://46.101.219.139:5000/users/',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             }
         }
         $http(req).then(function (response) {
-            console.log('response')
-            console.log(response)
-            $scope.myData = response.data;
+            $scope.myData = data.Userdata.friends;
 
         })
     }
 
     $scope.addFriend = function () {
-        var jwt = listItmeDataService.get();
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+ 
+        var newFriendsList = data.Userdata.friends;
+        newFriendsList.push([$scope.data.username]);
+
         var req = {
             crossDomain: true,
-            method: 'PUT',
-            url: 'http://46.101.219.139:5000/users/',
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             },
-            data: {}
+            data: { 
+                "friends": newFriendsList
+            }
         }
 
         $http(req).then(function () {
@@ -1317,8 +1209,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     };
 
 }])
- 
-
 
 
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -1327,8 +1217,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 function ($scope, $http, $state, $stateParams, listItmeDataService) {
 
     $scope.getSettingsData = function () {
-        var jwt = listItmeDataService.get();
-        console.log("jwt", jwt);
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        console.log("jwt", data);
         var req = {
             method: 'GET',
             url: 'http://46.101.219.139:5000/users',
