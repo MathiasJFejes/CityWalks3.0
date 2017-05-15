@@ -715,6 +715,18 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
         })
     };
 
+    $scope.updateItem = function () {
+
+        $http({
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
+        }).then(function (response) {
+            var latest_tracking_data = response.data;
+            $scope.itemData = latest_tracking_data;
+
+        })
+    };
+
 
 }])
    

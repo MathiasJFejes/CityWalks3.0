@@ -41,7 +41,7 @@
         </div>
 
         <!--Comment VIEW-->
-        <div ng-show="clickedComment">
+        <div ng-init="updateItem()" ng-show="clickedComment">
         
                 <ion-scroll id="comments-container1" style="position:absolute;top:0%;bottom:7.75%">
                     <ion-list id="comments-list2">
