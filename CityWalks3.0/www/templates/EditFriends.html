@@ -1,28 +1,27 @@
 ﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" >
+    <ion-content padding="false" class="has-header" style="background: linear-gradient(#937bd1,#7253C3)">
 
-
-    <ion-content padding="true" class="has-header" style="background: linear-gradient(#937bd1,#7253C3)">
         <b>Add a friend</b>
-                <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
-                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
+        <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
+            <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
 
-                    <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
-                </label> 
+            <input type="text" placeholder="Username" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
+        </label>
         <button style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " ng-click="addFriend()" class="button button-balanced  button-block">Add friend</button>
 
-        <ion-list>
-            <ion-list ng-init="getFriends()" style="width:100%">
-                <b>My friends</b>
-                <ion-item class="item item-icon-left" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
-                    <i class="icon ion-person placeholder-icon" style="font-size:25px;"></i> 
-                    <p style="color:white; font-size:larger">
-                        {{friend.username}}
+        <b>My friends</b>
 
-                        <i class="icon-right ion-android-delete" ng-click="deleteFriend()"></i>
-                    </p>
-                </ion-item>
-            </ion-list>
-</ion-content>
+        <ion-list ng-init="getFriends()">
+            <ion-item class="item item-icon-left" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
+                <i class="icon ion-person placeholder-icon" style="font-size:25px;"></i>
+                <p style="color:white; font-size:larger">
+                    {{friend.username}}
+
+                    <i class="icon-right ion-android-delete" ng-click="deleteFriend()" ></i>
+                </p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>
 
 

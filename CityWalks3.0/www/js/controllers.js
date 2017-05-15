@@ -26,16 +26,20 @@ function ($scope, $stateParams, $state, listItmeDataService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $state, $http, listItmeDataService) {
 
-   $scope.data = {
+    $scope.error = '';
+
+    $scope.data = {
         'email': '',
         'password': ''
     }
+
     var local = 'local';
+
     
-    $scope.error = '';
 
     $scope.login = function () {
         console.log("inne i funktionen")
+        console.log($scope.data.username, $scope.data.password)
         var req = {
             crossDomain: true,
             method: 'POST',
@@ -43,19 +47,33 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: { 'strategy': local, 'username': $scope.data.email, 'email': $scope.data.email, 'password': $scope.data.password }
-            
+            data: { 'strategy': local, 'email': $scope.data.email, 'password': $scope.data.password }
+
         }
         $http(req).then(function (response) {
             var jwt = response.data.accessToken;
-            console.log('response', response)
             console.log('response jwt', jwt);
             listItmeDataService.set(jwt),
-                console.log("tokenHandler", listItmeDataService.get()),
-            $state.go('menu.createRoute')
+            console.log("tokenHandler", listItmeDataService.get())
+
+            //var data = listItmeDataService.get();
+            //console.log(data.jwt)
+
+            var getReq = {
+                method: 'GET',
+                url: 'http://46.101.219.139:5000/users?username=' + $scope.data.username,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                }
+            }
+            $http(getReq).then(function (response) {
+                listItmeDataService.set(response)
+                console.log(response)
+                $state.go('menu.createRoute')
+
+            });
         });
-
-
     };
 
 }])
@@ -1169,6 +1187,8 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
 }])
  
+
+
 
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
