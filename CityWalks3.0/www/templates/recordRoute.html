@@ -1,12 +1,12 @@
 <ion-view title="Record Route" id="page14" ">
     <ion-content padding="false" scroll="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
-        <!--INIT VIEW-->
-
+       
+         <!--INIT VIEW-->
         <div ng-init="initPosition()" id="map_canvas_current" ng-hide="clickedStart" style="block;position:relative;top:0%;left:0;width:100%;height:92%;"> </div>
-        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
-            <button id="recordRoute-button24" ng-click="initPosition()" ng-hide="clickedStart" class="button icon-left ion-navigate button-royal">My Location</button>
-            <button id="recordRoute-button28" ng-click="startRecordingRoute(); clickedStart=true" ng-hide="clickedStart" class="button icon-left ion-play button-balanced">Start recording</button>
-        </div>
+        
+         <button style="position:absolute;bottom:0%;left:0%;width:50%" id="recordRoute-button24" ng-click="initPosition()" ng-hide="clickedStart" class="button icon-left ion-navigate button-positive">My Location</button>
+         <button style="position:absolute;bottom:0%;left:50%;width:50%" id="recordRoute-button28" ng-click="startRecordingRoute(); clickedStart=true" ng-hide="clickedStart" class="button icon-left ion-play button-balanced">Start recording</button>
+   
 
         <!--REC VIEW-->
         <div ng-show="clickedStart && !clickedStop" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
@@ -15,7 +15,7 @@
 
 
         <!-- SHOW THIS WHEN DONE WALKING-->
-        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:50%;bottom:4.5%">
+        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:50%;bottom:5%">
 
             <a class="item item-icon-left">
                 <i class="icon ion-map"></i>
@@ -30,13 +30,11 @@
 
         <!-- STOP -->
         <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="stopRecordingRoute(); clickedStop=true" class="button icon-left ion-stop button-block button-assertive" ng-show="clickedStart && !clickedStop"> Stop recording</button>
-
-        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
-            <!-- Delete REC-->
-            <button id="recordRoute-button26" ng-click="deleteRecordedRoute(); clickedStart=false; clickedStop=false" class="button icon-left ion-ios-close-outline button-assertive" ng-show="clickedStop && !clickedShare">Delete route</button>
-            <!-- share REC-->
-            <button id="recordRoute-button27" ng-click="shareRecordedRoute(); clickedShare=true" class="button icon-left ion-android-share-alt button-royal" ng-show="clickedStop && !clickedShare">Share route</button>
-        </div>
+        <!-- Delete REC-->
+        <button style="position:absolute;bottom:0%;left:0%;width:30%" id="recordRoute-button26" ng-click="deleteRecordedRoute(); clickedStart=false; clickedStop=false" class="button icon-left ion-ios-close-outline button-assertive" ng-show="clickedStop && !clickedShare">Delete</button>
+        <!-- share REC-->
+        <button style="position:absolute;bottom:0%;left:30%;width:70%" id="recordRoute-button27" ng-click="shareRecordedRoute(); clickedShare=true" class="button icon-left ion-android-share-alt button-royal" ng-show="clickedStop && !clickedShare">Share route</button>
+  
 
         <!-- SEND -->
 
@@ -52,10 +50,10 @@
                 </label>
                 <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
                     <i class="icon ion-android-textsms"></i>
-                    Route Description
+                    Route Comment
                 </div>
                 <label class="item item-input">
-                    <textarea required rows="4" maxlength="220" placeholder="Input a route description here!" ng-model="data.routeComment"></textarea>
+                    <textarea required rows="4" maxlength="220" placeholder="Input the first route comment here!" ng-model="data.routeComment"></textarea>
                 </label>
                 <div class="item item-divider item-icon-left" style="background-color:white;color:#7253C3">
                     <i class="icon ion-thumbsup"></i>
@@ -84,12 +82,12 @@
             </div>
 
         </div>
-        <div class="button-bar" style="position:absolute;width:100%;margin:auto;bottom:0%">
+        
             <!-- Back-->
-            <button id="recordRoute-button26" ng-click="clickedShare=false" class="button icon-left ion-android-arrow-back button-assertive" ng-show="clickedShare">Back</button>
+            <button style="position:absolute;bottom:0%;left:0%;width:30%" id="recordRoute-button26" ng-click="clickedShare=false" class="button icon-left ion-android-arrow-back button-assertive" ng-show="clickedShare">Back</button>
             <!-- SAVE REC-->
-            <button id="recordRoute-button27" ng-click="sendRecordedRoute(); clickedStart=false; clickedStop=false; clickedShare=false" class="button icon-left ion-paper-airplane button-royal" ng-show="clickedShare">Send route</button>
-        </div>
+            <button style="position:absolute;bottom:0%;left:30%;width:70%" id="recordRoute-button27" ng-click="sendRecordedRoute(); clickedStart=false; clickedStop=false; clickedShare=false" class="button icon-left ion-paper-airplane button-royal" ng-show="clickedShare">Send route</button>
+
 
     </ion-content>
 </ion-view> 
