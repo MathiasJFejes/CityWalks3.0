@@ -9871,3 +9871,16 @@ ui-gmap-google-map {
   background: -o-linear-gradient(bottom right, #886AEA, #b9afd8);
   background: -moz-linear-gradient(bottom right, #886AEA, #b9afd8);
   background: linear-gradient(to bottom right, #886AEA, #b9afd8); }
+
+.top-container {
+  height: calc(100% - 96px);
+  overflow: scroll; }
+
+.bottom-form {
+  position: absolute;
+  bottom: 0px;
+  display: block;
+  width: 100%;
+  background-color: white; }
+  .bottom-form button {
+    margin: 0px !important; }

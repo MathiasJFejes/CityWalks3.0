@@ -8,10 +8,11 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('menuCtrl', ['$scope', '$stateParams', '$state', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('menuCtrl', ['$scope', '$stateParams', '$state','listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state) {
+function ($scope, $stateParams, $state, listItmeDataService) {
+    $scope.userData = listItmeDataService.get();
 
     $scope.logout = function(){
         $state.go('login');
@@ -206,34 +207,218 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, listItmeDataService, $http, $state) {
     $scope.itemData = listItmeDataService.get();
+    var tracking_data = listItmeDataService.get();
+
+    $scope.itemMapSmall = function() { 
+            console.log('First Map')
+            var tracking_data = listItmeDataService.get();
+            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
+            var first_element = tracking_data.coords[0];
+            console.log(last_element);
+            console.log(tracking_data);
+            console.log(first_element);
+
+            //Latest Coordinates
+            var myLatLng = new google.maps.LatLng(last_element["0"], last_element["1"]);
+            //First Coordinates
+            var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
+
+            console.log(myLatLng);
+            console.log(myLatLng_first);
+
+            // Google Map options center at current pos
+            var myOptions = {
+                zoom: 14,
+                center: myLatLng_first,
+                mapTypeId: google.maps.MapTypeId.WALKING
+            };
+
+            // Create the Google Map, set options
+            var map = new google.maps.Map(document.getElementById("map_item_small"), myOptions);
+
+            var trackCoords = []; // google maps lat lng coords for map
+
+            // Add each GPS entry to array trackCoords
+            for (i = 0; i < tracking_data.coords.length; i++) {
+                trackCoords.push(new google.maps.LatLng(tracking_data.coords[i]["0"], tracking_data.coords[i]["1"]));
+
+            }
+
+            // Plot the GPS entries as a line on the Google Map
+            var trackPath = new google.maps.Polyline({
+                path: trackCoords,
+                strokeColor: "#7253c3",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+
+            //Marker for last position
+            var icon_current = {
+                url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
+                fillColor: '#0099ff',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                icon: icon_current,
+                map: map,
+                title: 'Current position'
+            });
+
+            //Marker for first position
+            var icon_first = {
+                url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
+                fillColor: '#7253C3',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng_first,
+                icon: icon_first,
+                map: map,
+                title: 'Start position'
+            });
+
+            // Apply the line to the map
+            trackPath.setMap(map);
+            console.log('Last Map')
+    }
+
+    $scope.itemMapFull = function() { 
+            console.log('First Map')
+            var tracking_data = listItmeDataService.get();
+            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
+            var first_element = tracking_data.coords[0];
+            console.log(last_element);
+            console.log(tracking_data);
+            console.log(first_element);
+
+            //Latest Coordinates
+            var myLatLng = new google.maps.LatLng(last_element["0"], last_element["1"]);
+            //First Coordinates
+            var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
+
+            console.log(myLatLng);
+            console.log(myLatLng_first);
+
+            // Google Map options center at current pos
+            var myOptions = {
+                zoom: 16,
+                center: myLatLng,
+                mapTypeId: google.maps.MapTypeId.WALKING
+            };
+
+            // Create the Google Map, set options
+            var map_full = new google.maps.Map(document.getElementById("map_item_full"), myOptions);
+
+            var trackCoords = []; // google maps lat lng coords for map
+
+            // Add each GPS entry to array trackCoords
+            for (i = 0; i < tracking_data.coords.length; i++) {
+                trackCoords.push(new google.maps.LatLng(tracking_data.coords[i]["0"], tracking_data.coords[i]["1"]));
+
+            }
+
+            // Plot the GPS entries as a line on the Google Map
+            var trackPath = new google.maps.Polyline({
+                path: trackCoords,
+                strokeColor: "#7253c3",
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+
+            //Marker for last position
+            var icon_current = {
+                url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
+                fillColor: '#0099ff',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                icon: icon_current,
+                map: map_full,
+                title: 'Current position'
+            });
+
+            //Marker for first position
+            var icon_first = {
+                url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
+                fillColor: '#7253C3',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng_first,
+                icon: icon_first,
+                map: map_full,
+                title: 'Start position'
+            });
+
+            // Apply the line to the map
+            trackPath.setMap(map_full);
+            console.log('Last Map')
+    }
+
 
     $scope.data = {
-        'distance': ''
+        message: ''
     };
 
-
-    $scope.updateDistance = function (item) {
-        console.log($scope.data.distance);
-        var req = {
-            crossDomain: true,
-            method: 'PUT',
-            url: 'http://46.101.219.139:5000/api/cities/' + item._id,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: { 'name': $scope.itemData.name, 'distance': $scope.data.distance }
-        }
-        $http(req).then(function () { $state.go('menu.topRoutes'), $scope.error = 'Error logging in.' });
-
-    };
-
-    $scope.deleteRouteData = function (item) {
+    $scope.sendComment = function () {
 
         $http({
-            method: 'DELETE',
-            url: 'http://46.101.219.139:5000/api/cities/' + item._id
-        }).then(function () {
-            $state.go('menu.topRoutes');
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
+        }).then(function (response) {
+            var latest_tracking_data = response.data;
+            console.log('latest_tracking_data')
+            console.log(latest_tracking_data)
+
+            var newCommentList = latest_tracking_data.comments;
+            newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
+
+            var req = {
+                crossDomain: true,
+                method: 'PUT',
+                url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    "title": latest_tracking_data.title,
+                    "checkpoints": latest_tracking_data.checkpoints,
+                    "creatorId": latest_tracking_data.creatorId,
+                    "createdAt": latest_tracking_data.createdAt,
+                    "updatedAt": latest_tracking_data.updatedAt,
+                    "coords": latest_tracking_data.coords,
+                    "time": latest_tracking_data.time,
+                    "score": latest_tracking_data.score,
+                    "comments": newCommentList,
+                    "distance": latest_tracking_data.distance,
+                    "_v": latest_tracking_data._v,
+                    "__proto__": latest_tracking_data.__proto__
+                }
+            }
+
+            $http(req).then(function () {
+                $scope.data = {
+                    message: ''
+                };
+                $scope.itemData = latest_tracking_data;
+                $state.go('menu.myRoutes', {}, { reload: true });
+            });
         })
     };
 

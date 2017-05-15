@@ -1,14 +1,75 @@
-<ion-view title="My Routes" id="page10">
-    <ion-content padding="true" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
-        <ion-toggle ng-model="shouldShowDelete">
-            Show Delete button?
-        </ion-toggle>
-        <ion-list show-delete="shouldShowDelete">
-            <ion-item>
-                ID: {{itemData._id}}<p>&nbsp;</p>Namn: {{itemData.name}}<p>&nbsp;</p>Distance: <input type="text" placeholder={{itemData.distance}} ng-model="data.distance"><p>&nbsp;</p>Created: {{itemData.create_date}}
-                <ion-delete-button class="ion-minus-circled" ng-click="deleteRouteData(itemData)"></ion-delete-button>
-                <ion-option-button class="button-assertive" ng-click="updateDistance(itemData)">Edit</ion-option-button>
-            </ion-item>
-        </ion-list>
-    </ion-content>
+<ion-view title="Route: {{itemData.title}}" id="page10">
+    <ion-content padding="false" scroll="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+
+
+        <!--INITIAL VIEW-->
+
+        <div ng-hide="clickedComment || clickedWalk">
+
+            <div ng-init="itemMapSmall()" id="map_item_small" style="position:absolute;top:0;left:0;width:100%;height:53%;"> </div>
+
+            <ion-list class="list card" style="position:absolute;width:100%;margin:auto;bottom:16%;background: linear-gradient(#7253C3,#937bd1)">
+
+                <div class="item  item-icon-left item-divider" style="background:none;color:white">
+                    <i class="icon ion-ios-person"></i>
+                    {{itemData.creatorId}}
+                </div>
+                <div class="item  item-icon-left item-divider" style="background:none;color:white">
+                    <i class="icon ion-ios-calendar"></i>
+                    {{itemData.createdAt}}
+                </div>
+                <div class="item  item-icon-left item-divider" style="background:none;color:white">
+                    <i class="icon ion-ios-timer"></i>
+                    {{itemData.time}} (min:sec)
+                </div>
+                <div class="item  item-icon-left item-divider" style="background:none;color:white">
+                    <i class="icon ion-map"></i>
+                    {{itemData.distance}} (km)
+                </div>
+
+                <div class="item item-icon-left item-divider" style="background:none;color:white">
+                    <i class="icon ion-thumbsup"></i>
+                    {{itemData.score["0"].score}}
+                </div>
+
+            </ion-list>
+            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:8%" ng-click="clickedComment=true" class="button icon-left ion-ios-chatbubble button-block button-positive"> Comments </button>
+
+            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="clickedWalk=true" class="button icon-left ion-android-walk button-block button-balanced"> Walk route </button>
+
+
+        </div>
+
+        <!--Comment VIEW-->
+        <div ng-show="clickedComment">
+        
+                <ion-scroll id="comments-container1" style="position:absolute;top:0%;bottom:7.75%">
+                    <ion-list id="comments-list2">
+                        <ion-item class="item" id="comments-list-item1" ng-repeat="x in itemData.comments" style="background: linear-gradient(white,#fefefe);border:none">
+                            <p style="color:gray;font-size:small">{{x.userId}} &bull; {{x.date}}</p>
+                            <textarea disabled style="color:black;width:100%;background-color:white">{{x.comment}}</textarea>
+                        </ion-item>
+                    </ion-list>
+                </ion-scroll>
+       
+                
+                    <label class="item item-input" id="comments-input4" style="position:absolute;width:80%;margin:auto;bottom:0%;left:10%">
+                        
+                        <input type="text" placeholder="Message" ng-model="data.message" ng-submit="sendComment()" style="left:10%">
+                    </label>
+                    
+                   <button style="position:absolute;bottom:0%;left:0%;width:10%;color:red;border-right:none;background-color:white" id="comments-button2" ng-click="clickedComment=false" class="button icon-left ion-ios-arrow-back"></button>
+                   <button type="submit" style="position:absolute;bottom:0%;left:90%;width:10%;color:#7253C3;border-left:none;background-color:white" id="comments-button2" ng-click="sendComment()" class="button icon-left ion-android-send"></button>
+
+                
+            </div>
+
+        <!--Walks VIEW-->
+        <div ng-show="clickedWalk" >
+            <div ng-init="itemMapFull()" id="map_item_full" style="position:absolute;top:0;left:0;width:100%;height:92%;"></div>
+            <button id="recordRoute-button25" style="position:absolute;width:100%;margin:auto;bottom:0%" ng-click="clickedWalk=false" class="button icon-left ion-android-arrow-back button-assertive button-block"> Back </button>
+        </div>
+
+        
+</ion-content>
 </ion-view>
