@@ -177,7 +177,6 @@ function ($scope, $stateParams, $http) {
                             { value: 'art_gallery', name: 'Art gallery' },
                             { value: 'cafe', name: 'Cafe' },
                             { value: 'bar', name: 'Bar' },
-                            { value: 'city_hall', name: 'City hall' },
                             { value: 'university', name: 'University' },
                             { value: 'library', name: 'Library' }]
     }
