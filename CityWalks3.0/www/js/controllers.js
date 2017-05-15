@@ -1161,8 +1161,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
             }
         }
         $http(req).then(function (response) {
-            console.log('response')
-            console.log(response)
+            console.log('getFriends', response)
             $scope.myData = response.data;
 
         })
