@@ -10,19 +10,13 @@
   </ion-side-menu-content>
   <ion-side-menu side="left" id="side-menu21" >
 
-      <ion-content padding="false" style="top:0px !important;" class="side-menu-left side-menu-gradient">
+      <ion-content padding="false" style="top:0px !important;" class="side-menu-left side-menu-gradient" scroll="false">
           <div class="spacer" style="width: 268px; height: 28px;"></div>
           <div>
               <img src="img/1fee0QDTsKrVxzzRI218_CityWalkingLogoWhite.png" style="display: block; width: 30%; height: auto; margin-left: auto; margin-right: auto;">
           </div>
 
           <div class="spacer" style="width: 268px; height: 20px;"></div>
-          <div class="item item-divider item-icon-left side-menu-item" id="menu-list-item2" style="border-top:1px solid white">
-              <i class="icon ion-person" style="font-size:20px"></i> {{userData[0]}}
-          </div>
-          <div class="item item-divider item-icon-left side-menu-item" id="menu-list-item2" style="border-bottom:1px solid white">
-              <i class="icon ion-email" style="font-size:20px" ></i> {{userData[1]}}
-          </div>
 
 
               <ion-list id="menu-list1">
@@ -43,7 +37,7 @@
                       <i class="icon ion-android-person"></i>My routes
                   </ion-item>
                   <ion-item class="item-icon-left side-menu-item" id="menu-list-item5" ui-sref="menu.friendesRoutes" menu-close="" ng-click="findFriendsRoutes()" active-page-highlight="">
-                      <i class="icon ion-android-people"></i>Friends routes
+                      <i class="icon ion-android-people"></i>Friend
                   </ion-item>
                   <ion-item class="item-icon-left side-menu-item" id="menu-list-item7" ui-sref="menu.recordRoute" menu-close="" active-page-highlight="">
                       <i class="icon ion-ios-stopwatch"></i>Record route
@@ -51,9 +45,6 @@
                   <ion-item class="item-icon-left side-menu-item" id="menu-list-item8" ui-sref="menu.settings" menu-close="" active-page-highlight="">
                       <i class="icon ion-android-settings"></i>Settings
                   </ion-item>
-
-                  <div class="spacer" style="width: 268px; height: 60px;"></div>
-
                   <ion-item class="item-icon-left side-menu-item" id="menu-list-item9" ng-click="logout()" active-page-highlight="" style="color:red">
                       <i class="icon ion-log-out"></i>Log out
                   </ion-item>
