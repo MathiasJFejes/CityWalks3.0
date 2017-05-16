@@ -5,38 +5,38 @@
 
 
             <p style="color:black;font-size:large; text-align:center;top:10%" >
-                Uppdate acoount:
+                Update account:
             </p>
             <form class="list" ng-init="getSettingsData()">
-                <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
-                    <i class="icon ion-ios-email placeholder-icon" style="font-size:27px;"></i>
-
-                    <input type="email" placeholder="EmailFromServer" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
+                <label class="item" style="margin-left:3%; background:none; border:none; width:85%;">
+                    <i class="icon ion-ios-email placeholder-icon" style="font-size:18px;"> {{userData[1]}}</i> 
+                    </label>
+                <label class="item" style="margin-left:3%; background:none; border:none; width:85%;">
+                    <i class="icon ion-person placeholder-icon" style="font-size:18px;"> {{userData[0]}}</i>
+                    
                 </label>
-
                 <div class="spacer" style="width: 300px; height: 19px;"></div>
+                <p style="color:black;font-size:large; text-align:center;top:10%">
+                    Change password:</p>
+                    <div class="spacer" style="width: 300px; height: 19px;"></div>
+                    <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
+                        <i class="icon ion-locked placeholder-icon" style="font-size:27px;"></i>
 
-                <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
-                    <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
-
-                    <input type="text" placeholder="UsernameFromServer" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
-                </label> 
-
-
-
-
-                <div class="spacer" style="width: 300px; height: 19px;"></div>
-                <label class="item item-input" style="margin-left:3%; background:none; border:none; width:85%;">
-                    <i class="icon ion-locked placeholder-icon" style="font-size:27px;"></i>
-
-                    <input type="password" placeholder="PasswordFromServer" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
-                </label>
-            </form>
+                        <input type="password" placeholder="*******" style="font-size: large; color:black; border-bottom: 1px solid #636060;">
+                    </label>
+</form>
 
             
-            <button style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " class="button button-balanced  button-block">Save Changes</button>
-            <b>(Commit changes to server)</b>
+            <button style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " class="button button-royal button-block">Save Password</button>
         </ion-content>
 </ion-view>
+
+
+<!--<div class="item item-divider item-icon-left side-menu-item" id="menu-list-item2" style="border-top:1px solid white">
+    <i class="icon ion-person" style="font-size:20px"></i> 
+</div>
+<div class="item item-divider item-icon-left side-menu-item" id="menu-list-item2" style="border-bottom:1px solid white">
+    <i class="icon ion-email" style="font-size:20px"></i> 
+</div>-->
 
 
