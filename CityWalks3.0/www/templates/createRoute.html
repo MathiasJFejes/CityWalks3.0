@@ -11,7 +11,7 @@
           
           <ion-list id="createRandomRoute" class="list" style="position:absolute;top:33%;width:100%">
 
-              <label class="item item-select" id="createRoute-range">
+              <label class="item item-select" id="createRoute-range" ng-show="clickedRandom">
                   <span class="input-label">Level <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"> *required</i> </span>
                   <select name="repeatSelect" id="repeatSelect" ng-model="range.model">
                       <option ng-repeat="option in range.availableOptions" ng-value="option.value">{{option.name}}</option>
@@ -19,12 +19,12 @@
               </label>
 
               <label class="item item-select" id="createRoute-place" ng-hide="clickedRandom">
-                  <span class="input-label">Place 1 <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"> *required</i> </span>
+                  <span class="input-label">Place <!--1--> <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"> *required</i> </span>
                   <select name="repeatSelect" id="repeatSelect" ng-model="placeOne.model">
                       <option ng-repeat="option in placeOne.availableOptions" ng-value="option.value">{{option.name}}</option>
                   </select>
               </label>
-
+<!--
               <label class="item item-select" id="createRoute-place" ng-hide="clickedRandom">
                   <span class="input-label">Place 2 </span>
                   <select name="repeatSelect" id="repeatSelect" ng-model="placeTwo.model">
@@ -38,7 +38,7 @@
                       <option ng-repeat="option in placeThree.availableOptions" ng-value="option.value">{{option.name}}</option>
                   </select>
               </label>
-
+-->
           </ion-list>
           <button ng-hide="clickedRandom" id="recordRoute-button24" ng-click="startRecordRoute(); clickedCreate=true" class="button button-balanced icon-left ion-plus" style="display:block;position:absolute;width:100%;height:8%;bottom:0%">Create</button>
           <button ng-show="clickedRandom" id="recordRoute-button24" ng-click="startRandomRoute(); clickedCreate=true" class="button button-positive icon-left ion-shuffle" style="display:block;position:absolute;width:100%;height:8%;bottom:0%;left:0%">Random</button>

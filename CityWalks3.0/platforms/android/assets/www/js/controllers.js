@@ -173,11 +173,11 @@ function ($scope, $stateParams, $state, $http) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $http) {
-
+    
     $scope.data = {
         choice: "B"
     }
-
+    
     $scope.range = {
         model: null,
         availableOptions: [{ value: 100, name: 'Easy' },
@@ -336,21 +336,12 @@ function ($scope, $stateParams, $http) {
 
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
-                    trackPoints = [];
-                    var checkpoints = [];
-                    addCheckPoints();
 
                     var startend = new google.maps.LatLng(init_lat, init_lon);
                     var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
                     var norrlands = new google.maps.LatLng(checkpointNorrlands[0], checkpointNorrlands[1]);
                     var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
-
-                    function addCheckPoints() {
-                        checkpoints.push($scope.placeOne.model);
-                        checkpoints.push($scope.placeTwo.model);
-                        checkpoints.push($scope.placeThree.model);
-                    }
 
                     initialize();
 
@@ -377,7 +368,8 @@ function ($scope, $stateParams, $http) {
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: $scope.range.model,
+                            radius: 500,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
@@ -391,7 +383,6 @@ function ($scope, $stateParams, $http) {
                                         stopover: false
                                     });
                                     var currentpos = location;
-                                    //createMarker(results[i]);
                                     console.log(results[i])
                                 }
                             }
@@ -406,75 +397,22 @@ function ($scope, $stateParams, $http) {
                             }
 
                             directionsService.route(request, function (response, status) {
-
+                           
+                                $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                $scope.routeTime = response.routes[0].legs[0].duration.text;
                                 if (status == google.maps.DirectionsStatus.OK) {
                                     directionsDisplay.setDirections(response);
-                                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
-                                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
-                                    console.log(response);
                                 } else {
                                     alert('You broke it.');
                                 }
                             });
                         }
                     }
-                    /*
-                                    function createMarker(place) {
-                                        var placeLoc = place.geometry.location;
-                                        var marker = new google.maps.Marker({
-                                            map: map,
-                                            position: place.geometry.location
-                                        });
-                                        google.maps.event.addListener(marker, 'click', function() {
-                                            infowindow.setContent(place.name);
-                                            infowindow.open(map, this);
-                                        });
-                                    }
-                    */
-                    function findCoordinates(lat, long, range) {
-                        console.log("findCoordinates")
-                        // How many points do we want? 
-                        var numberOfPoints = 16;
-                        var degreesPerPoint = 360 / numberOfPoints;
-
-                        // Keep track of the angle from centre to radius
-                        var currentAngle = 0;
-
-                        // The points on the radius will be lat+x2, long+y2
-                        var x2;
-                        var y2;
-                        // Track the points we generate to return at the end
-
-                        for (var i = 1; i < numberOfPoints; i++) {
-
-                            // X2 point will be cosine of angle * radius (range)
-                            x2 = Math.cos(currentAngle) * range;
-                            // Y2 point will be sin * range
-                            y2 = Math.sin(currentAngle) * range;
-
-                            // Assuming here you're using points for each x,y..             
-                            newLat = lat + x2;
-                            newLong = long + y2;
-                            lat_long = new google.maps.LatLng(newLat, newLong);
-                            trackPoints[i] = lat_long;
-                            // Shift our angle around for the next point
-                            currentAngle += degreesPerPoint;
-                        }
-
-                        // Return the points we've generated
-                        //gets random coordinate from our array of coords
-                        //Add the last point to array that is the start point so that we start and stop at same position
-                        //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
-                        randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                    }
                     google.maps.event.addDomListener(window, 'load', initialize);
                 }
             );
-            })
+        })
     }
-
 
 }])
    
