@@ -294,15 +294,37 @@ function ($scope, $stateParams, $http) {
         );
     }
 
-    $scope.place = {
+    $scope.placeOne = {
         model: null,
-        availableOptions: [{ id: 'park', name: 'Park' },
-                           { id: 'museum', name: 'Museum' },
-                           { id: 'art_gallery', name: 'Art gallery' },
-                           { id: 'cafe', name: 'Cafe' },
-                           { id: 'university', name: 'University' },
-                           { id: 'bar', name: 'Bar' },
-                           { id: 'library', name: 'Library' }]
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeTwo = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeThree = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
     }
 
     $scope.startRecordRoute = function () {
@@ -323,6 +345,8 @@ function ($scope, $stateParams, $http) {
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
                     trackPoints = [];
+                    var checkpoints = [];
+                    addCheckPoints();
 
                     var startend = new google.maps.LatLng(init_lat, init_lon);
                     var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
@@ -330,12 +354,20 @@ function ($scope, $stateParams, $http) {
                     var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
 
+                    function addCheckPoints() {
+                        checkpoints.push($scope.placeOne);
+                        checkpoints.push($scope.placeTwo);
+                        checkpoints.push($scope.placeThree);
+                    }
+                    
                     initialize();
+
+                    console.log(checkpoints);
 
                     var map;
                     var infowindow;
                     var directionsDisplay;
-                    directionsDisplay.setOptions({ suppressMarkers: true });
+                    //directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -352,10 +384,11 @@ function ($scope, $stateParams, $http) {
                         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
+
                         service.nearbySearch({
                             location: currentpos,
                             radius: $scope.range.model,
-                            type: [$scope.place.model]
+                            type: [$scope.placeOne.model]
                         }, callback);
 
                         function callback(results, status) {
@@ -367,6 +400,7 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
                                         stopover: false
                                     });
+                                    var currentpos = location;
                                     //createMarker(results[i]);
                                     console.log(results[i])
                                 }
@@ -410,8 +444,6 @@ function ($scope, $stateParams, $http) {
             );
             })
     }
-
-
 }])
    
 .controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
