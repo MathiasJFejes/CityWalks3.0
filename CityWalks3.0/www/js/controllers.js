@@ -19,11 +19,11 @@ function ($scope, $stateParams, $state, listItmeDataService) {
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
+.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', '$ionicPopup', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http, listItmeDataService) {
+function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup) {
 
     $scope.error = '';
 
@@ -68,20 +68,28 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
                 $state.go('menu.createRoute')
 
             });
+        }, function errorCallback(response) {
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Wrong Username or Password',
+                //template: 'Click <i>Forgot password </i>if you dont remember your username or password',
+                okType: 'button-balanced'
+            });
+
         });
     };
 
 }])
    
-.controller('signupCtrl', ['$scope', '$stateParams', '$state', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('signupCtrl', ['$scope', '$stateParams', '$state', '$http', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http) {
+function ($scope, $stateParams, $state, $http, $ionicPopup) {
     
     $scope.data = {
         'name': '',
         'email': '',
-        'password': ''
+        'newpassword': ''
     }
     
     $scope.error='';
@@ -95,13 +103,24 @@ function ($scope, $stateParams, $state, $http) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.password }
+            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.newpassword }
 
         }
         $http(req).then(function successCallback (response) {
             $state.go('login')
+            $ionicPopup.alert({
+                title: 'Welcome!',
+                template: 'Your account was succesfully created',
+                okType: 'button-balanced'
+            });
         }, function errorCallback(response) {
-            console.log('error',response)
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Error creating account',
+                template: 'Please type in username, email and password',
+                okType: 'button-balanced'
+            });
+
         });
 
 
@@ -173,29 +192,17 @@ function ($scope, $stateParams, $state, $http) {
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $stateParams, $http) {
-
+    
     $scope.data = {
         choice: "B"
     }
-
+    
     $scope.range = {
         model: null,
-        availableOptions: [{ value: 100, name: '100 m' },
-                            { value: 500, name: '500 m' },
-                            { value: 1000, name: '1000 m' },
-                            { value: 2000, name: '2000 m' },
-                            { value: 5000, name: '5000 m' }]
-    }
-
-    $scope.place = {
-        model: null,
-        availableOptions: [{ value: 'park', name: 'Park' },
-                            { value: 'museum', name: 'Museum' },
-                            { value: 'art_gallery', name: 'Art gallery' },
-                            { value: 'cafe', name: 'Cafe' },
-                            { value: 'bar', name: 'Bar' },
-                            { value: 'university', name: 'University' },
-                            { value: 'library', name: 'Library' }]
+        availableOptions: [{ value: 100, name: 'Easy' },
+                           { value: 500, name: 'Medium' },
+                           { value: 1000, name: 'Hard' },
+                           { value: 2000, name: 'Expert' }]
     }
 
     $scope.startRandomRoute = function () {
@@ -212,7 +219,6 @@ function ($scope, $stateParams, $http) {
 
             var randCoordfirst;
             var randCoordsecond;
-            var randCoordthird;
 
             //Fires up a random coordinate generation based upon range input and start
             findCoordinates(init_lat, init_lon, radius);
@@ -233,15 +239,15 @@ function ($scope, $stateParams, $http) {
 
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 directionsDisplay.setMap(map);
+                //directionsDisplay.setOptions({ suppressMarkers: true });
             }
 
             var request = {
                 origin: startend,
                 destination: startend,
                 waypoints: [{ location: randCoordfirst, stopover: false },
-                            { location: randCoordsecond, stopover: false },
-                            { location: randCoordthird, stopover: false }],
-                optimizeWaypoints: true,
+                            { location: randCoordsecond, stopover: false }],
+                optimizeWaypoints: true, 
                 travelMode: google.maps.TravelMode.WALKING,
                 avoidHighways: true
             }
@@ -249,17 +255,16 @@ function ($scope, $stateParams, $http) {
             directionsService.route(request, function (response, status) {
 
                 if (status == google.maps.DirectionsStatus.OK) {
+                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
                     directionsDisplay.setDirections(response);
-                    console.log(response.routes[0].legs[0].distance.value + " m");
                 } else {
                     alert('You broke it.');
                 }
             });
 
-
-
             function findCoordinates(lat, long, range) {
-                console.log("findCoordinates")
+                
                 // How many points do we want? 
                 var numberOfPoints = 16;
                 var degreesPerPoint = 360 / numberOfPoints;
@@ -294,11 +299,43 @@ function ($scope, $stateParams, $http) {
                 //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
             }
             google.maps.event.addDomListener(window, 'load', initialize);
         }
         );
+    }
+
+    $scope.placeOne = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeTwo = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeThree = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
     }
 
     $scope.startRecordRoute = function () {
@@ -318,7 +355,6 @@ function ($scope, $stateParams, $http) {
 
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
-                    trackPoints = [];
 
                     var startend = new google.maps.LatLng(init_lat, init_lon);
                     var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
@@ -326,17 +362,12 @@ function ($scope, $stateParams, $http) {
                     var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
 
-                    var randCoordfirst;
-                    var randCoordsecond;
-                    var randCoordthird;
-
-                    //Fires up a random coordinate generation based upon range input and start
-                    findCoordinates(init_lat, init_lon, $scope.range.model);
                     initialize();
 
                     var map;
                     var infowindow;
                     var directionsDisplay;
+                    //directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -353,10 +384,12 @@ function ($scope, $stateParams, $http) {
                         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
+
                         service.nearbySearch({
                             location: currentpos,
-                            radius: $scope.range.model,
-                            type: [$scope.place.model]
+                            radius: 500,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
+                            type: [$scope.placeOne.model]
                         }, callback);
 
                         function callback(results, status) {
@@ -368,7 +401,7 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
                                         stopover: false
                                     });
-                                    //createMarker(results[i]);
+                                    var currentpos = location;
                                     console.log(results[i])
                                 }
                             }
@@ -376,82 +409,29 @@ function ($scope, $stateParams, $http) {
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts, /*[{ location: randCoordfirst, stopover: false },
-                                { location: randCoordsecond, stopover: false },
-                                { location: randCoordthird, stopover: false }],*/
+                                waypoints: waypts,
                                 optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
 
                             directionsService.route(request, function (response, status) {
-
+                           
+                                $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                $scope.routeTime = response.routes[0].legs[0].duration.text;
                                 if (status == google.maps.DirectionsStatus.OK) {
                                     directionsDisplay.setDirections(response);
-                                    console.log(response.routes[0].legs[0].distance.value + " m");
                                 } else {
                                     alert('You broke it.');
                                 }
                             });
                         }
                     }
-                    /*
-                                    function createMarker(place) {
-                                        var placeLoc = place.geometry.location;
-                                        var marker = new google.maps.Marker({
-                                            map: map,
-                                            position: place.geometry.location
-                                        });
-                                        google.maps.event.addListener(marker, 'click', function() {
-                                            infowindow.setContent(place.name);
-                                            infowindow.open(map, this);
-                                        });
-                                    }
-                    */
-                    function findCoordinates(lat, long, range) {
-                        console.log("findCoordinates")
-                        // How many points do we want? 
-                        var numberOfPoints = 16;
-                        var degreesPerPoint = 360 / numberOfPoints;
-
-                        // Keep track of the angle from centre to radius
-                        var currentAngle = 0;
-
-                        // The points on the radius will be lat+x2, long+y2
-                        var x2;
-                        var y2;
-                        // Track the points we generate to return at the end
-
-                        for (var i = 1; i < numberOfPoints; i++) {
-
-                            // X2 point will be cosine of angle * radius (range)
-                            x2 = Math.cos(currentAngle) * range;
-                            // Y2 point will be sin * range
-                            y2 = Math.sin(currentAngle) * range;
-
-                            // Assuming here you're using points for each x,y..             
-                            newLat = lat + x2;
-                            newLong = long + y2;
-                            lat_long = new google.maps.LatLng(newLat, newLong);
-                            trackPoints[i] = lat_long;
-                            // Shift our angle around for the next point
-                            currentAngle += degreesPerPoint;
-                        }
-
-                        // Return the points we've generated
-                        //gets random coordinate from our array of coords
-                        //Add the last point to array that is the start point so that we start and stop at same position
-                        //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
-                        randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                        randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                    }
                     google.maps.event.addDomListener(window, 'load', initialize);
                 }
             );
-            })
+        })
     }
-
 
 }])
    
@@ -1248,11 +1228,35 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendesRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
+    $scope.getFriendsData = function () {
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        console.log("jwt", jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users/',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            $scope.myData = data.Userdata.friends;
+
+        })
+    }
+
+    $scope.getFriendsRoutes = function (id) {
+        var friendId = id;
+        listItmeDataService.set('friendId', friendId);
+        $state.go("menu.myRoutes")
+    }
 
 }])
 
@@ -1306,8 +1310,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
             }
         }
 
-        $http(req).then(function () {
-            $scope.getFriends();
+        $http(req).then(function (response) {
+            console.log(response)
+            newFriendsList = response.data.friends;
+            $state.go('menu.EditFriends', {}, { reload: true });
         });
 
     };
