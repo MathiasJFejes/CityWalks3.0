@@ -431,11 +431,51 @@ function ($scope, $stateParams, $http) {
                                         });
                                     }
                     */
-                google.maps.event.addDomListener(window, 'load', initialize);
+                    function findCoordinates(lat, long, range) {
+                        console.log("findCoordinates")
+                        // How many points do we want? 
+                        var numberOfPoints = 16;
+                        var degreesPerPoint = 360 / numberOfPoints;
+
+                        // Keep track of the angle from centre to radius
+                        var currentAngle = 0;
+
+                        // The points on the radius will be lat+x2, long+y2
+                        var x2;
+                        var y2;
+                        // Track the points we generate to return at the end
+
+                        for (var i = 1; i < numberOfPoints; i++) {
+
+                            // X2 point will be cosine of angle * radius (range)
+                            x2 = Math.cos(currentAngle) * range;
+                            // Y2 point will be sin * range
+                            y2 = Math.sin(currentAngle) * range;
+
+                            // Assuming here you're using points for each x,y..             
+                            newLat = lat + x2;
+                            newLong = long + y2;
+                            lat_long = new google.maps.LatLng(newLat, newLong);
+                            trackPoints[i] = lat_long;
+                            // Shift our angle around for the next point
+                            currentAngle += degreesPerPoint;
+                        }
+
+                        // Return the points we've generated
+                        //gets random coordinate from our array of coords
+                        //Add the last point to array that is the start point so that we start and stop at same position
+                        //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
+                        randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                        randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                        randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                    }
+                    google.maps.event.addDomListener(window, 'load', initialize);
                 }
             );
             })
     }
+
+
 }])
    
 .controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -1233,11 +1273,35 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendesRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
+    $scope.getFriendsData = function () {
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        console.log("jwt", jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users/',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            $scope.myData = data.Userdata.friends;
+
+        })
+    }
+
+    $scope.getFriendsRoutes = function (id) {
+        var friendId = id;
+        listItmeDataService.set('friendId', friendId);
+        $state.go("menu.myRoutes")
+    }
 
 }])
 
@@ -1291,8 +1355,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
             }
         }
 
-        $http(req).then(function () {
-            $scope.getFriends();
+        $http(req).then(function (response) {
+            console.log(response)
+            newFriendsList = response.data.friends;
+            $state.go('menu.EditFriends', {}, { reload: true });
         });
 
     };
