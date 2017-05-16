@@ -6,9 +6,9 @@
           Press on your friend to get their walked routes</p>
 
           <ion-list ng-init="getFriendsData()">
-              <ion-item class="item item-icon-left" ng-repeat="x in myData" ng-click="getRouteInfo(x)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
-                  <i class="item item-icon-left item-icon-right"></i>
-              <p style="color:white; font-size:larger"> Username: </p>
+              <ion-item class="item item-icon-left" ng-repeat="friend in myData" ng-click="getRouteInfo(x)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
+                  <i class="icon ion-person placeholder-icon"></i>
+              <p style="color:white; font-size:larger"> Username: {{friend}} </p>
               <p style="color:white"> Walked routes: </p>
               <p style="color:white"> Distance: </p>
 

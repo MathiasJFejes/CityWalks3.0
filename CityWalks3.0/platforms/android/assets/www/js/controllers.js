@@ -1250,11 +1250,29 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendesRoutesCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
+    $scope.getFriendsData = function () {
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        console.log("jwt", jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users/',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            $scope.myData = data.Userdata.friends;
+
+        })
+    }
 
 }])
 
