@@ -1,5 +1,5 @@
 <ion-view title="Login" hide-nav-bar="true" hide-back-button="true" cache-view="false" nav-transition="none" id="page4">
-  <ion-content padding="true" style="background: linear-gradient(lightgray,#7253C3); no-repeat center;background-size:cover;" class="manual-ios-statusbar-padding" scroll="false">
+  <ion-content padding="true" style="background: linear-gradient(lightgray,#7253C3) no-repeat center; background-size:cover;" class="manual-ios-statusbar-padding" scroll="false">
     <form id="login-form1" class="list">
       <div id="login-markdown3" ng-if="error" class="show-list-numbers-and-dots error-box">
         <p style="color:#000000;">{{error}}</p>
@@ -13,24 +13,21 @@
 
 
             <ion-list id="login-list2" >
-                <label class="item item-input" id="login-input1" style="margin-left:10%; background:none; border:none; width:75%;">
+                <label class="item item-input" id="login-input1" style="margin-left:5%; background:none; border:none; width:85%;">
                     <i class="icon ion-person placeholder-icon" style="font-size:27px;"></i>
                     <input type="text" style="font-size: large; color:black; border-bottom: 1px solid #636060;" placeholder="Username" ng-model="data.username">
                 </label>
-                <label class="item item-input" id="login-input2" style="margin-left:10%; background:none; border:none; width:75%;">
+                <label class="item item-input" id="login-input2" style="margin-left:5%; background:none; border:none; width:85%;">
                     <i class="icon ion-locked placeholder-icon" style="font-size:27px;"></i>
                     <input type="password" style="font-size: large; border-bottom: 1px solid #636060;" placeholder="Password" ng-model="data.password">
                 </label>
             </ion-list>
+            <a ui-sref="requestResetPassword" id="login-button3" style="font-weight:600;color:#000000; margin-left:30%;" class="button button-light button-clear">Forgot password?</a>
             <div class="spacer" style="width: 300px; height: 10px;"></div>
-            <button id="login-button1" ng-click="login()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%;" class="button button-royal  button-block">Sign In</button>
+            <button id="login-button1" ng-click="login()" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:85% ;margin-left:8%;" class="button button-royal  button-block">Log In</button>
         
-        
-            <a ui-sref="requestResetPassword" id="login-button3" style="font-weight:600;color:#FFFFFF; margin-left:30%;" class="button button-light button-clear">Forgot password?</a>
-            <div id="login-markdown1" style="text-align:center;" class="show-list-numbers-and-dots">
-                <p style="color:#FFFFFF;">OR</p>
-            </div>
-            <a ui-sref="signup" id="login-button11" style="font-weight:600;color:#FFFFFF;margin-left:32%;" class="button button-light button-clear">Create account</a>
+            
+            <a ui-sref="signup" id="login-button11" style="font-weight:600;color:#000000; margin-left:40%;" class="button button-light button-clear">Sign Up</a>
 </form>
   </ion-content>
 </ion-view>
