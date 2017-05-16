@@ -180,22 +180,10 @@ function ($scope, $stateParams, $http) {
 
     $scope.range = {
         model: null,
-        availableOptions: [{ value: 100, name: '100 m' },
-                            { value: 500, name: '500 m' },
-                            { value: 1000, name: '1000 m' },
-                            { value: 2000, name: '2000 m' },
-                            { value: 5000, name: '5000 m' }]
-    }
-
-    $scope.place = {
-        model: null,
-        availableOptions: [{ value: 'park', name: 'Park' },
-                            { value: 'museum', name: 'Museum' },
-                            { value: 'art_gallery', name: 'Art gallery' },
-                            { value: 'cafe', name: 'Cafe' },
-                            { value: 'bar', name: 'Bar' },
-                            { value: 'university', name: 'University' },
-                            { value: 'library', name: 'Library' }]
+        availableOptions: [{ value: 100, name: 'Easy' },
+                           { value: 500, name: 'Medium' },
+                           { value: 1000, name: 'Hard' },
+                           { value: 2000, name: 'Expert' }]
     }
 
     $scope.startRandomRoute = function () {
@@ -212,7 +200,6 @@ function ($scope, $stateParams, $http) {
 
             var randCoordfirst;
             var randCoordsecond;
-            var randCoordthird;
 
             //Fires up a random coordinate generation based upon range input and start
             findCoordinates(init_lat, init_lon, radius);
@@ -233,15 +220,15 @@ function ($scope, $stateParams, $http) {
 
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 directionsDisplay.setMap(map);
+                //directionsDisplay.setOptions({ suppressMarkers: true });
             }
 
             var request = {
                 origin: startend,
                 destination: startend,
                 waypoints: [{ location: randCoordfirst, stopover: false },
-                            { location: randCoordsecond, stopover: false },
-                            { location: randCoordthird, stopover: false }],
-                optimizeWaypoints: true,
+                            { location: randCoordsecond, stopover: false }],
+                optimizeWaypoints: true, 
                 travelMode: google.maps.TravelMode.WALKING,
                 avoidHighways: true
             }
@@ -249,17 +236,16 @@ function ($scope, $stateParams, $http) {
             directionsService.route(request, function (response, status) {
 
                 if (status == google.maps.DirectionsStatus.OK) {
+                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
                     directionsDisplay.setDirections(response);
-                    console.log(response.routes[0].legs[0].distance.value + " m");
                 } else {
                     alert('You broke it.');
                 }
             });
 
-
-
             function findCoordinates(lat, long, range) {
-                console.log("findCoordinates")
+                
                 // How many points do we want? 
                 var numberOfPoints = 16;
                 var degreesPerPoint = 360 / numberOfPoints;
@@ -294,11 +280,43 @@ function ($scope, $stateParams, $http) {
                 //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
             }
             google.maps.event.addDomListener(window, 'load', initialize);
         }
         );
+    }
+
+    $scope.placeOne = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeTwo = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeThree = {
+        model: null,
+        availableOptions: [{ value: 'park', name: 'Park' },
+                           { value: 'museum', name: 'Museum' },
+                           { value: 'art_gallery', name: 'Art gallery' },
+                           { value: 'cafe', name: 'Cafe' },
+                           { value: 'university', name: 'University' },
+                           { value: 'bar', name: 'Bar' },
+                           { value: 'library', name: 'Library' }]
     }
 
     $scope.startRecordRoute = function () {
@@ -319,6 +337,8 @@ function ($scope, $stateParams, $http) {
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
                     trackPoints = [];
+                    var checkpoints = [];
+                    addCheckPoints();
 
                     var startend = new google.maps.LatLng(init_lat, init_lon);
                     var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
@@ -326,17 +346,18 @@ function ($scope, $stateParams, $http) {
                     var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
 
-                    var randCoordfirst;
-                    var randCoordsecond;
-                    var randCoordthird;
+                    function addCheckPoints() {
+                        checkpoints.push($scope.placeOne.model);
+                        checkpoints.push($scope.placeTwo.model);
+                        checkpoints.push($scope.placeThree.model);
+                    }
 
-                    //Fires up a random coordinate generation based upon range input and start
-                    findCoordinates(init_lat, init_lon, $scope.range.model);
                     initialize();
 
                     var map;
                     var infowindow;
                     var directionsDisplay;
+                    //directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -353,10 +374,11 @@ function ($scope, $stateParams, $http) {
                         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
+
                         service.nearbySearch({
                             location: currentpos,
                             radius: $scope.range.model,
-                            type: [$scope.place.model]
+                            type: [$scope.placeOne.model]
                         }, callback);
 
                         function callback(results, status) {
@@ -368,6 +390,7 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
                                         stopover: false
                                     });
+                                    var currentpos = location;
                                     //createMarker(results[i]);
                                     console.log(results[i])
                                 }
@@ -376,9 +399,7 @@ function ($scope, $stateParams, $http) {
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts, /*[{ location: randCoordfirst, stopover: false },
-                                { location: randCoordsecond, stopover: false },
-                                { location: randCoordthird, stopover: false }],*/
+                                waypoints: waypts,
                                 optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
@@ -388,7 +409,9 @@ function ($scope, $stateParams, $http) {
 
                                 if (status == google.maps.DirectionsStatus.OK) {
                                     directionsDisplay.setDirections(response);
-                                    console.log(response.routes[0].legs[0].distance.value + " m");
+                                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
+                                    console.log(response);
                                 } else {
                                     alert('You broke it.');
                                 }
