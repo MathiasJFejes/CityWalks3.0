@@ -180,11 +180,10 @@ function ($scope, $stateParams, $http) {
 
     $scope.range = {
         model: null,
-        availableOptions: [{ value: 100, name: '100 m' },
-                           { value: 500, name: '500 m' },
-                           { value: 1000, name: '1000 m' },
-                           { value: 2000, name: '2000 m' },
-                           { value: 5000, name: '5000 m' }]
+        availableOptions: [{ value: 100, name: 'Easy' },
+                           { value: 500, name: 'Medium' },
+                           { value: 1000, name: 'Hard' },
+                           { value: 2000, name: 'Expert' }]
     }
 
     $scope.startRandomRoute = function () {
@@ -201,7 +200,6 @@ function ($scope, $stateParams, $http) {
 
             var randCoordfirst;
             var randCoordsecond;
-            var randCoordthird;
 
             //Fires up a random coordinate generation based upon range input and start
             findCoordinates(init_lat, init_lon, radius);
@@ -229,9 +227,8 @@ function ($scope, $stateParams, $http) {
                 origin: startend,
                 destination: startend,
                 waypoints: [{ location: randCoordfirst, stopover: false },
-                            { location: randCoordsecond, stopover: false },
-                            { location: randCoordthird, stopover: false }],
-                optimizeWaypoints: true,
+                            { location: randCoordsecond, stopover: false }],
+                optimizeWaypoints: true, 
                 travelMode: google.maps.TravelMode.WALKING,
                 avoidHighways: true
             }
@@ -239,8 +236,9 @@ function ($scope, $stateParams, $http) {
             directionsService.route(request, function (response, status) {
 
                 if (status == google.maps.DirectionsStatus.OK) {
+                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
                     directionsDisplay.setDirections(response);
-                    console.log(response.routes[0].legs[0].distance.value + " m");
                 } else {
                     alert('You broke it.');
                 }
@@ -282,7 +280,6 @@ function ($scope, $stateParams, $http) {
                 //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
-                randCoordthird = trackPoints[Math.floor(Math.random() * trackPoints.length)];
             }
             google.maps.event.addDomListener(window, 'load', initialize);
         }
@@ -350,14 +347,12 @@ function ($scope, $stateParams, $http) {
                     var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
 
                     function addCheckPoints() {
-                        checkpoints.push($scope.placeOne);
-                        checkpoints.push($scope.placeTwo);
-                        checkpoints.push($scope.placeThree);
+                        checkpoints.push($scope.placeOne.model);
+                        checkpoints.push($scope.placeTwo.model);
+                        checkpoints.push($scope.placeThree.model);
                     }
-                    
-                    initialize();
 
-                    console.log(checkpoints);
+                    initialize();
 
                     var map;
                     var infowindow;
@@ -414,7 +409,9 @@ function ($scope, $stateParams, $http) {
 
                                 if (status == google.maps.DirectionsStatus.OK) {
                                     directionsDisplay.setDirections(response);
-                                    console.log(response.routes[0].legs[0].distance.value + " m");
+                                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
+                                    console.log(response);
                                 } else {
                                     alert('You broke it.');
                                 }
