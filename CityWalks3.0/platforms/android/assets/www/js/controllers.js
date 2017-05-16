@@ -601,7 +601,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
            position_data.push(position);  // For current position = last element
 
            //Route data
-           var tracking_data = listItmeDataService.get(); 
+           var tracking_data = listItmeDataService.get().routeId;
            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
            var first_element = tracking_data.coords[0];
 
@@ -741,10 +741,10 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                 console.log(latest_tracking_data)
 
                 var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeWalkComment, "date": "2017-05-09T14:09:33.552Z" })
+                newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.routeWalkComment })
 
                 var newLikeList = latest_tracking_data.score;
-                newLikeList.push({ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeWalkLike})
+                newLikeList.push({ "userId": listItmeDataService.get().Userdata._id, "score": $scope.data.routeWalkLike })
 
                 var req = {
                     crossDomain: true,
@@ -799,7 +799,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
 
             var newCommentList = latest_tracking_data.comments;
-            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
+            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message})
 
             var req = {
                 crossDomain: true,
@@ -1164,8 +1164,6 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
-        console.log('userId', userInfo)
-        var testUser = "5911cd9d8b242d06d3d30c09"
         var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
 
         var req = {
