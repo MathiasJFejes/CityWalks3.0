@@ -1274,6 +1274,12 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
         })
     }
 
+    $scope.getFriendsRoutes = function (id) {
+        var friendId = id;
+        listItmeDataService.set('friendId', friendId);
+        $state.go("menu.myRoutes")
+    }
+
 }])
 
 
@@ -1326,8 +1332,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
             }
         }
 
-        $http(req).then(function () {
-            $scope.getFriends();
+        $http(req).then(function (response) {
+            console.log(response)
+            newFriendsList = response.data.friends;
+            $state.go('menu.EditFriends', {}, { reload: true });
         });
 
     };
