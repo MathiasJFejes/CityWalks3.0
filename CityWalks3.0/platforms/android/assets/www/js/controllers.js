@@ -19,11 +19,11 @@ function ($scope, $stateParams, $state, listItmeDataService) {
 
 }])
    
-.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', 
+.controller('loginCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', '$ionicPopup', 
 // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http, listItmeDataService) {
+function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup) {
 
     $scope.error = '';
 
@@ -68,20 +68,28 @@ function ($scope, $stateParams, $state, $http, listItmeDataService) {
                 $state.go('menu.createRoute')
 
             });
+        }, function errorCallback(response) {
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Wrong Username or Password',
+                //template: 'Click <i>Forgot password </i>if you dont remember your username or password',
+                okType: 'button-balanced'
+            });
+
         });
     };
 
 }])
    
-.controller('signupCtrl', ['$scope', '$stateParams', '$state', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('signupCtrl', ['$scope', '$stateParams', '$state', '$http', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http) {
+function ($scope, $stateParams, $state, $http, $ionicPopup) {
     
     $scope.data = {
         'name': '',
         'email': '',
-        'password': ''
+        'newpassword': ''
     }
     
     $scope.error='';
@@ -95,13 +103,24 @@ function ($scope, $stateParams, $state, $http) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.password }
+            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.newpassword }
 
         }
         $http(req).then(function successCallback (response) {
             $state.go('login')
+            $ionicPopup.alert({
+                title: 'Welcome!',
+                template: 'Your account was succesfully created',
+                okType: 'button-balanced'
+            });
         }, function errorCallback(response) {
-            console.log('error',response)
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Error creating account',
+                template: 'Please type in username, email and password',
+                okType: 'button-balanced'
+            });
+
         });
 
 
