@@ -384,7 +384,7 @@ function ($scope, $stateParams, $http) {
 
                         var mapOptions = {
                             zoom: 25,
-                            suppressMarkers: true,
+                            suppressMarkers: false,
                             center: currentpos
                         };
 
@@ -395,21 +395,21 @@ function ($scope, $stateParams, $http) {
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 500,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 500,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeTwo.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 500,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeThree.model]
                         }, callback);
@@ -431,7 +431,7 @@ function ($scope, $stateParams, $http) {
                                 origin: startend,
                                 destination: startend,
                                 waypoints: waypts,
-                                optimizeWaypoints: true,
+                                optimizeWaypoints: false,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
