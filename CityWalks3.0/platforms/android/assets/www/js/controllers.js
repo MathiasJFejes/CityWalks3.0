@@ -318,6 +318,7 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
     }
 
@@ -329,6 +330,7 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
     }
 
@@ -340,6 +342,7 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
     }
 
@@ -388,6 +391,7 @@ function ($scope, $stateParams, $http) {
                         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
+                        var waypts = [];
 
                         service.nearbySearch({
                             location: currentpos,
@@ -396,18 +400,31 @@ function ($scope, $stateParams, $http) {
                             type: [$scope.placeOne.model]
                         }, callback);
 
+                        service.nearbySearch({
+                            location: currentpos,
+                            radius: 500,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
+                            type: [$scope.placeTwo.model]
+                        }, callback);
+
+                        service.nearbySearch({
+                            location: currentpos,
+                            radius: 500,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
+                            type: [$scope.placeThree.model]
+                        }, callback);
+
                         function callback(results, status) {
-                            var waypts = [];
 
                             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                                for (var i = 0; i < results.length; i++) {
+                                //for (var i = 0; i < results.length; i++) {
                                     waypts.push({
-                                        location: new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
+                                        location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
                                     var currentpos = location;
-                                    console.log(results[i])
-                                }
+                                    console.log(results[0])
+                                //}
                             }
 
                             var request = {
