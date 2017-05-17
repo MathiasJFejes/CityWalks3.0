@@ -245,7 +245,7 @@ function ($scope, $stateParams, $http) {
                     destination: startend,
                     waypoints: [{ location: randCoordfirst, stopover: false },
                                 { location: randCoordsecond, stopover: false }],
-                    optimizeWaypoints: true, 
+                    optimizeWaypoints: false, 
                     travelMode: google.maps.TravelMode.WALKING,
                     avoidHighways: true
                     }
