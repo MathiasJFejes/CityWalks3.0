@@ -1267,10 +1267,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 }])
 
 
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
 
     $scope.data = {
         'username': '',
@@ -1325,26 +1325,41 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     };
 
     $scope.deleteFriend = function (item) {
+        $ionicPopup.alert({
+                title: 'Error deleting friend',
+                //template: 'Please type in username, email and password',
+                okType: 'button-balanced'
+            })
 
-        $http({
-            method: 'DELETE',
-            url: 'http://46.101.219.139:5000/users/' + item._id
-        }).then(function () {
-            $scope.getFriends();
-        })
+        //$http({
+        //    method: 'DELETE',
+        //    url: 'http://46.101.219.139:5000/users/' + item_id
+        //}).then(function () {
+        //    $scope.getFriends();
+        //}, function errorCallback(response) {
+        //    console.log('error', response)
+        //    ;
+
+        //})
     };
 
 }])
 
 
-.controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $state, $stateParams, listItmeDataService) {
+function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup) {
+
+
+    $scope.data = {
+        'password': '',
+    }
 
     $scope.getSettingsData = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
+        var id = data.Userdata._id;
 
         console.log("jwt", data);
         var req = {
@@ -1362,5 +1377,44 @@ function ($scope, $http, $state, $stateParams, listItmeDataService) {
             function errorCallback(response) {
                 console.log('error', response)
             })
+    };
+
+
+    $scope.changePassword = function () {
+        console.log("inne i funktionen")
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+        var id = data.Userdata._id;
+        console.log('id', id)
+        console.log('jwt', jwt)
+
+        var req = {
+            crossDomain: true,
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + id,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            data: {'password': $scope.data.password }
+
+        }
+        $http(req).then(function successCallback(response) {
+            $ionicPopup.alert({
+                title: 'Success!',
+                template: 'Your password was changed',
+                okType: 'button-balanced'
+            });
+        }, function errorCallback(response) {
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Error changing password',
+                //template: 'Please type in username, email and password',
+                okType: 'button-balanced'
+            });
+
+        });
+
+
     };
 }])
