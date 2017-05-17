@@ -5,12 +5,10 @@
         <div ng-init="initPosition()" id="map_canvas_current" ng-hide="clickedStart" style="block;position:relative;top:0%;left:0;width:100%;height:92%;"> </div>
         
          <button style="position:absolute;bottom:0%;left:0%;width:50%" id="recordRoute-button24" ng-click="initPosition()" ng-hide="clickedStart" class="button icon-left ion-navigate button-positive">My Location</button>
-         <button style="position:absolute;bottom:0%;left:50%;width:50%" id="recordRoute-button28" ng-click="startRecordingRoute(); clickedStart=true" ng-hide="clickedStart" class="button icon-left ion-play button-balanced">Start recording</button>
+         <button style="position:absolute;bottom:0%;left:50%;width:50%" id="recordRoute-button28" ng-click="startRecordingRoute();recordingPopup(); clickedStart=true" ng-hide="clickedStart" class="button icon-left ion-play button-balanced">Start recording</button>
    
 
         <!--REC VIEW-->
-        <div ng-show="clickedStart && !clickedStop" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
-        <div ng-show="clickedStart && !clickedStop" style="position:absolute;margin:auto;left:35%;top:50%;color:white"> Map is loading . . .  </div>
         <div ng-show="clickedStart && !clickedShare" id="map_canvas" style="block;position:relative;top:0;left:0;width:100%;height:92%;"> </div>
 
 

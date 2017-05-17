@@ -65,10 +65,12 @@
             </div>
 
         <!--Walks VIEW-->
+
+            <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
+            <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:35%;top:50%;color:white"> Map is loading . . .  </div>
         
             <div ng-show="clickedWalk" id="map_item_full" style="position:relative;top:0;left:0;width:100%;height:92%;"></div>
-             <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:43%;top:40%"> <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> </div>
-            <div ng-show="clickedWalk" style="position:absolute;margin:auto;left:35%;top:50%;color:white"> Map is loading . . .  </div>
+
             <button ng-show="clickedWalk" id="recordRoute-button25" style="position:relative;width:100%;margin:auto;bottom:0%" ng-click="stopWatchingRoute(); clickedWalk=false; clickedStop=true" class="button icon-left ion-stop button-assertive button-block"> Done Walking </button>
         
 
