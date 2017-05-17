@@ -214,22 +214,22 @@ function ($scope, $stateParams, $http) {
             var init_lat = position.coords.latitude;
             var init_lon = position.coords.longitude;
             var startend = new google.maps.LatLng(init_lat, init_lon);
-            trackPoints = [];
             var radius = ($scope.range.model) / 100000;
+            trackPoints = [];
 
             var randCoordfirst;
             var randCoordsecond;
 
             //Fires up a random coordinate generation based upon range input and start
             findCoordinates(init_lat, init_lon, radius);
-            initialize();
 
             var directionsDisplay;
-            var directionsService = new google.maps.DirectionsService();
+            var directionsService;
 
             function initialize() {
 
                 directionsDisplay = new google.maps.DirectionsRenderer();
+                directionsService = new google.maps.DirectionsService();
 
                 var mapOptions = {
                     zoom: 25,
@@ -239,29 +239,28 @@ function ($scope, $stateParams, $http) {
 
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 directionsDisplay.setMap(map);
-                //directionsDisplay.setOptions({ suppressMarkers: true });
-            }
 
-            var request = {
-                origin: startend,
-                destination: startend,
-                waypoints: [{ location: randCoordfirst, stopover: false },
-                            { location: randCoordsecond, stopover: false }],
-                optimizeWaypoints: true, 
-                travelMode: google.maps.TravelMode.WALKING,
-                avoidHighways: true
-            }
+                var request = {
+                    origin: startend,
+                    destination: startend,
+                    waypoints: [{ location: randCoordfirst, stopover: false },
+                                { location: randCoordsecond, stopover: false }],
+                    optimizeWaypoints: true, 
+                    travelMode: google.maps.TravelMode.WALKING,
+                    avoidHighways: true
+                    }
 
-            directionsService.route(request, function (response, status) {
+                    directionsService.route(request, function (response, status) {
 
-                if (status == google.maps.DirectionsStatus.OK) {
-                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
-                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
-                    directionsDisplay.setDirections(response);
-                } else {
-                    alert('You broke it.');
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                        $scope.routeTime = response.routes["0"].legs["0"].duration.text;
+                        directionsDisplay.setDirections(response);
+                        } else {
+                            alert('You broke it.');
+                        }
+                    });
                 }
-            });
 
             function findCoordinates(lat, long, range) {
                 
@@ -296,12 +295,18 @@ function ($scope, $stateParams, $http) {
                 // Return the points we've generated
                 //gets random coordinate from our array of coords
                 //Add the last point to array that is the start point so that we start and stop at same position
-                //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                
+                if (randCoordfirst == undefined || randCoordsecond == undefined) {
+                    randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                    randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                }
+
+                initialize();
             }
             google.maps.event.addDomListener(window, 'load', initialize);
-        }
+            }
         );
     }
 
@@ -367,7 +372,6 @@ function ($scope, $stateParams, $http) {
                     var map;
                     var infowindow;
                     var directionsDisplay;
-                    //directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -417,9 +421,9 @@ function ($scope, $stateParams, $http) {
 
                             directionsService.route(request, function (response, status) {
                            
-                                $scope.routeDistance = response.routes[0].legs[0].distance.text;
-                                $scope.routeTime = response.routes[0].legs[0].duration.text;
                                 if (status == google.maps.DirectionsStatus.OK) {
+                                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                    $scope.routeTime = response.routes[0].legs[0].duration.text;
                                     directionsDisplay.setDirections(response);
                                 } else {
                                     alert('You broke it.');
