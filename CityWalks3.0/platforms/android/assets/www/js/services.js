@@ -18,12 +18,47 @@ angular.module('app.services', [])
 
     return {
         set: set,
-        get: get
+        get: get,
+        drop: drop
 
     }
 })
 
 
-.service('BlankService', [function(){
+.factory('handleUser', function () {
+    var returnValue = {}
 
-}]);
+    function findName(id, userArray) {
+        angular.forEach(userArray, function (value, key) {
+            if (id == value._id) {
+                returnValue['userName'] = value.username
+                returnValue['key'] = key
+            }
+
+        })
+        return returnValue
+    }
+
+    function findId(name, userArray) {
+        console.log("inne i service;", name, userArray)
+        angular.forEach(userArray, function (value, key) {
+            if (name == value.username) {
+                returnValue['_id'] = value._id
+                console.log(returnValue)
+            }
+
+        })
+        return returnValue._id
+    }
+    function drop() {
+        returnValue = {}
+        
+    }
+
+    return {
+        findName: findName,
+        findId: findId,
+        drop: drop
+
+    }
+})
