@@ -116,12 +116,12 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menu.friendesRoutes', {
+  .state('menu.friends', {
     url: '/page16',
     views: {
       'side-menu21': {
-        templateUrl: 'templates/friendesRoutes.html',
-        controller: 'friendesRoutesCtrl'
+        templateUrl: 'templates/friends.html',
+        controller: 'friendsCtrl'
       }
     }
   })
@@ -134,6 +134,16 @@ angular.module('app.routes', [])
           controller: 'EditFriendsCtrl'
       }
     }
+  })
+
+  .state('menu.friendsRoutes', {
+      url: '/page45',
+      views: {
+          'side-menu21': {
+              templateUrl: 'templates/friendsRoutes.html',
+              controller: 'friendsRoutesCtrl'
+          }
+      }
   })
 
 

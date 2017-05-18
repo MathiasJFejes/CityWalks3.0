@@ -1,4 +1,4 @@
-﻿﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" >
+﻿﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" cache-view="false">
 
     <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
 
@@ -24,7 +24,7 @@
                     <p style="color:white; font-size:larger">
                        {{friend["0"]}}
                     </p>
-                    <i class="icon ion-android-delete" ng-click="deleteFriend()"></i>
+                    <i class="icon ion-android-delete" ng-click="deleteFriend(friend)"></i>
                 </ion-item>
             </ion-list>
     </ion-content>

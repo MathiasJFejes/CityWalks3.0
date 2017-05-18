@@ -1245,7 +1245,7 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
@@ -1279,13 +1279,55 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     
 
     $scope.getFriendsRoutes = function (id) {
-        var friendId = id;
-        listItmeDataService.set('friendId', friendId);
-        $state.go("menu.myRoutes")
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+
+        var friendId = id[1];
+        console.log('id:', friendId)
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes?creatorId='+friendId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            listItmeDataService.set('friendsRoutes', response)
+            listItmeDataService.set('friendsRoutesName', id[0])
+            console.log('response', response)
+            $state.go("menu.friendsRoutes")
+        })
+       
     }
 
 }])
 
+
+.controller('friendsRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
+
+    $scope.creatorName = listItmeDataService.get().friendsRoutesName;
+    $scope.getRouteData = function () {
+        var friendsRoutes = listItmeDataService.get().friendsRoutes;
+        console.log('friendsRoutes', friendsRoutes)
+        $scope.myData = friendsRoutes.data;
+        console.log('my data', friendsRoutes.data)
+    }
+
+    $scope.getRouteInfo = function (route) {
+        var route = route;
+        listItmeDataService.set('routeId', route);
+        $state.go("menu.myRoutes")
+
+        console.log('routeID', listItmeDataService.get().routeId);
+
+    }
+
+    
+}])
 
 .controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -1304,7 +1346,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
             var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
             finalList.push([nameAndKey.userName, value])
         })
-        console.log(finalList)
         $scope.myData = finalList;
     }
             
@@ -1313,10 +1354,15 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
         var data = listItmeDataService.get();
         var jwt = data.jwt;
         var newFriendsList = data.Userdata.friends;
-
         var id = handleUser.findId($scope.data.username, listItmeDataService.get().allUsers);
-        
-        console.log("newFriendsList", newFriendsList)
+
+        //check if input already exists in friendlist
+        var friendExist = false;
+        for (i = 0; i < newFriendsList.length; i++) {
+            if (id == newFriendsList[i]) {
+                friendExist = true;
+            }
+        };
 
         if ($scope.data.username == "") {
             $ionicPopup.alert({
@@ -1324,16 +1370,21 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
                 //template: '',
                 okType: 'button-balanced'
             });
-        }
-        if (typeof id == 'undefined'){
+        } else if (typeof id == 'undefined'){
             $ionicPopup.alert({
-                title: 'Invalid Username, Usernames are case-sensitive ',
+                title: 'Invalid Username',
+                template: 'Usernames are case-sensitive',
+                okType: 'button-balanced'
+            });
+        } else if (friendExist) {
+            $ionicPopup.alert({
+                title: 'You already have '+ $scope.data.username +' as a friend ',
                 //template: '',
                 okType: 'button-balanced'
             });
-        }
-        else {
+        } else {
             newFriendsList.push(id);
+            handleUser.drop()
         var req = {
             crossDomain: true,
             method: 'PATCH',
@@ -1348,22 +1399,47 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
         }
 
         $http(req).then(function (response) {
-            console.log(response)
             newFriendsList = response.data.friends;
-            $state.go('menu.EditFriends', {}, { reload: true });
-        });
+            $ionicPopup.alert({
+                title: $scope.data.username + ' was added as a friend',
+                //template: '',
+                okType: 'button-balanced'
+            });
+            $state.go($state.current, {}, {reload: true});
 
+        });
         }
     };
 
     $scope.deleteFriend = function (item) {
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+        var newFriendsList = data.Userdata.friends;
+        newFriendsList.splice(newFriendsList.indexOf(item[1]), 1);
 
-        $http({
-            method: 'DELETE',
-            url: 'http://46.101.219.139:5000/users/' + item._id
-        }).then(function () {
-            $scope.getFriends();
-        })
+        var req = {
+            crossDomain: true,
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            data: {
+                "friends": newFriendsList
+            }
+        }
+
+        $http(req).then(function (response) {
+            newFriendsList = response.data.friends;
+            $ionicPopup.alert({
+                title: item[0] + ' was deleted as a friend',
+                //template: '',
+                okType: 'button-balanced'
+            });
+            $state.go($state.current, {}, { reload: true });
+
+        });
     };
 
 }])

@@ -51,12 +51,14 @@ angular.module('app.services', [])
         return returnValue._id
     }
     function drop() {
-        savedData = {}
+        returnValue = {}
+        
     }
 
     return {
         findName: findName,
-        findId: findId
+        findId: findId,
+        drop: drop
 
     }
 })
