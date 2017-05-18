@@ -346,6 +346,23 @@ function ($scope, $stateParams, $http) {
                            { value: 'library', name: 'Library' }]
     }
 
+    $scope.placeNation = {
+        model: null,
+        availableOptions: [{ id: '0', name: 'Södermanlands-Nerikes' },
+                           { id: '1', name: 'Stockholms' },
+                           { id: '2', name: 'Värmlands' },
+                           { id: '3', name: 'Gästrike-Hälsinge' },
+                           { id: '4', name: 'Östgöta' },
+                           { id: '5', name: 'Västgöta' },
+                           { id: '6', name: 'Norrlands' },
+                           { id: '7', name: 'Gotlands' },
+                           { id: '8', name: 'Smålands' },
+                           { id: '9', name: 'Göteborgs' },
+                           { id: '10', name: 'Uplands' },
+                           { id: '11', name: 'Västmanlands-Dala' },
+                           { id: '12', name: 'Kalmar' }]
+    }
+
     $scope.startRecordRoute = function () {
 
         navigator.geolocation.getCurrentPosition(
@@ -356,19 +373,11 @@ function ($scope, $stateParams, $http) {
                     method: 'GET',
                     url: 'http://46.101.219.139:5000/api/checkpoints?type=Nation'
                 }).then(function (response) {
-                    var checkpointStockholms = response.data["1"].coord;
-                    var checkpointNorrlands = response.data["6"].coord;
-                    var checkpointUplands = response.data["10"].coord;
-                    var checkpointKalmar = response.data["12"].coord;
 
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
-
                     var startend = new google.maps.LatLng(init_lat, init_lon);
-                    var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
-                    var norrlands = new google.maps.LatLng(checkpointNorrlands[0], checkpointNorrlands[1]);
-                    var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
-                    var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
+                    var wayptsNation = response.data[$scope.placeNation.model].coord;
 
                     initialize();
 
@@ -392,6 +401,10 @@ function ($scope, $stateParams, $http) {
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
                         var waypts = [];
+                        waypts.push({
+                            location: new google.maps.LatLng(wayptsNation[0], wayptsNation[1]),
+                            stopover: false
+                        });
 
                         service.nearbySearch({
                             location: currentpos,
@@ -415,14 +428,13 @@ function ($scope, $stateParams, $http) {
                         }, callback);
 
                         function callback(results, status) {
-
+                            
                             if (status === google.maps.places.PlacesServiceStatus.OK) {
                                 //for (var i = 0; i < results.length; i++) {
                                     waypts.push({
                                         location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
-                                    console.log(results[0])
                                 //}
                             }
 
