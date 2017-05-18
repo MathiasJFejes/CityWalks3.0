@@ -8,17 +8,12 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('menuCtrl', ['$scope', '$stateParams', '$state','listItmeDataService','$ionicHistory','$window','$location', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('menuCtrl', ['$scope', '$stateParams', '$state','listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, listItmeDataService, $ionicHistory, $window, $location) {
-    $scope.logout = function () {
-        $window.localStorage.clear();
-        $ionicHistory.clearCache();
-        $ionicHistory.clearHistory();
-        listItmeDataService.drop()
-        $location.path('login');
-        $window.location.reload();
+function ($scope, $stateParams, $state, listItmeDataService) {
+    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
+    $scope.logout = function(){
         $state.go('login');
     }
 
@@ -71,18 +66,6 @@ function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup)
             $http(getReq).then(function (response) {
                 listItmeDataService.set('Userdata', response.data["0"])
                 $state.go('menu.createRoute')
-
-            });
-            var getReqAll = {
-                method: 'GET',
-                url: 'http://46.101.219.139:5000/users',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': jwt
-                }
-            }
-            $http(getReqAll).then(function (response) {
-                listItmeDataService.set('allUsers', response.data)
 
             });
         }, function errorCallback(response) {
@@ -630,7 +613,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
            position_data.push(position);  // For current position = last element
 
            //Route data
-           var tracking_data = listItmeDataService.get().routeId;
+           var tracking_data = listItmeDataService.get(); 
            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
            var first_element = tracking_data.coords[0];
 
@@ -770,10 +753,10 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                 console.log(latest_tracking_data)
 
                 var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.routeWalkComment })
+                newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeWalkComment, "date": "2017-05-09T14:09:33.552Z" })
 
                 var newLikeList = latest_tracking_data.score;
-                newLikeList.push({ "userId": listItmeDataService.get().Userdata._id, "score": $scope.data.routeWalkLike })
+                newLikeList.push({ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeWalkLike})
 
                 var req = {
                     crossDomain: true,
@@ -828,7 +811,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
 
             var newCommentList = latest_tracking_data.comments;
-            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message})
+            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
 
             var req = {
                 crossDomain: true,
@@ -1193,6 +1176,8 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
+        console.log('userId', userInfo)
+        var testUser = "5911cd9d8b242d06d3d30c09"
         var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
 
         var req = {
@@ -1277,102 +1262,43 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
     $scope.getFriendsData = function () {
         var data = listItmeDataService.get();
-        var finalList = [];
-            angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
-                var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
-                var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length
-                finalList.push([nameAndKey.userName, value, numRoutes])
-            })
-            console.log(finalList)
-            $scope.myData = finalList;
-
-        }
-
-        //console.log("jwt", jwt);
-        //var req = {
-        //    method: 'GET',
-        //    url: 'http://46.101.219.139:5000/users/',
-        //    headers: {
-        //        'Content-Type': 'application/json',
-        //        'Authorization': jwt
-        //    }
-        //}
-        //$http(req).then(function (response) {
-        //    $scope.myData = data.Userdata.friends;
-
-        //})
-    
-
-    $scope.getFriendsRoutes = function (id) {
-        var data = listItmeDataService.get();
         var jwt = data.jwt;
 
-        var friendId = id[1];
-        console.log('id:', friendId)
+        console.log("jwt", jwt);
         var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/api/routes?creatorId='+friendId,
+            url: 'http://46.101.219.139:5000/users/',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             }
         }
         $http(req).then(function (response) {
-            listItmeDataService.set('friendsRoutes', response)
-            listItmeDataService.set('friendsRoutesName', id[0])
-            console.log('response', response)
-            $state.go("menu.friendsRoutes")
+            $scope.myData = data.Userdata.friends;
+
         })
-       
     }
 
-}])
-
-
-.controller('friendsRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
-
-    $scope.creatorName = listItmeDataService.get().friendsRoutesName;
-    $scope.getRouteData = function () {
-        var friendsRoutes = listItmeDataService.get().friendsRoutes;
-        console.log('friendsRoutes', friendsRoutes)
-        $scope.myData = friendsRoutes.data;
-        console.log('my data', friendsRoutes.data)
-    }
-
-    $scope.getRouteInfo = function (route) {
-        var route = route;
-        listItmeDataService.set('routeId', route);
+    $scope.getFriendsRoutes = function (id) {
+        var friendId = id;
+        listItmeDataService.set('friendId', friendId);
         $state.go("menu.myRoutes")
-
-        console.log('routeID', listItmeDataService.get().routeId);
-
     }
 
-    
 }])
 
-<<<<<<< HEAD
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, $ionicPopup) {
-=======
 
 .controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
 
     $scope.data = {
         'username': '',
@@ -1381,50 +1307,30 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
     $scope.getFriends = function () {
         var data = listItmeDataService.get();
-        var finalList = [];
-        angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
-            var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
-            finalList.push([nameAndKey.userName, value])
+        var jwt = data.jwt;
+
+        console.log("jwt", jwt);
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/users/',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            $scope.myData = data.Userdata.friends;
+
         })
-        $scope.myData = finalList;
     }
-            
 
     $scope.addFriend = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
+ 
         var newFriendsList = data.Userdata.friends;
-        var id = handleUser.findId($scope.data.username, listItmeDataService.get().allUsers);
+        newFriendsList.push([$scope.data.username]);
 
-        //check if input already exists in friendlist
-        var friendExist = false;
-        for (i = 0; i < newFriendsList.length; i++) {
-            if (id == newFriendsList[i]) {
-                friendExist = true;
-            }
-        };
-
-        if ($scope.data.username == "") {
-            $ionicPopup.alert({
-                title: 'Please type in a username',
-                //template: '',
-                okType: 'button-balanced'
-            });
-        } else if (typeof id == 'undefined'){
-            $ionicPopup.alert({
-                title: 'Invalid Username',
-                template: 'Usernames are case-sensitive',
-                okType: 'button-balanced'
-            });
-        } else if (friendExist) {
-            $ionicPopup.alert({
-                title: 'You already have '+ $scope.data.username +' as a friend ',
-                //template: '',
-                okType: 'button-balanced'
-            });
-        } else {
-            newFriendsList.push(id);
-            handleUser.drop()
         var req = {
             crossDomain: true,
             method: 'PATCH',
@@ -1439,49 +1345,8 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
         }
 
         $http(req).then(function (response) {
+            console.log(response)
             newFriendsList = response.data.friends;
-            $ionicPopup.alert({
-                title: $scope.data.username + ' was added as a friend',
-                //template: '',
-                okType: 'button-balanced'
-            });
-            $state.go($state.current, {}, {reload: true});
-
-        });
-        }
-    };
-
-    $scope.deleteFriend = function (item) {
-        var data = listItmeDataService.get();
-        var jwt = data.jwt;
-        var newFriendsList = data.Userdata.friends;
-        newFriendsList.splice(newFriendsList.indexOf(item[1]), 1);
-
-        var req = {
-            crossDomain: true,
-            method: 'PATCH',
-            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwt
-            },
-            data: {
-                "friends": newFriendsList
-            }
-        }
-
-        $http(req).then(function (response) {
-            newFriendsList = response.data.friends;
-<<<<<<< HEAD
-            $ionicPopup.alert({
-                title: item[0] + ' was deleted as a friend',
-                //template: '',
-                okType: 'button-balanced'
-            });
-            $state.go($state.current, {}, { reload: true });
-
-        });
-=======
             $state.go('menu.EditFriends', {}, { reload: true });
         });
 
@@ -1504,7 +1369,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
         //    ;
 
         //})
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
     };
 
 }])
@@ -1513,17 +1377,12 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-<<<<<<< HEAD
-function ($scope, $http, $state, $stateParams, listItmeDataService) {
-    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
-=======
 function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup) {
 
 
     $scope.data = {
         'password': '',
     }
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
 
     $scope.getSettingsData = function () {
         var data = listItmeDataService.get();

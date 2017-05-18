@@ -231,22 +231,22 @@ function ($scope, $stateParams, $http) {
             var init_lat = position.coords.latitude;
             var init_lon = position.coords.longitude;
             var startend = new google.maps.LatLng(init_lat, init_lon);
-            trackPoints = [];
             var radius = ($scope.range.model) / 100000;
+            trackPoints = [];
 
             var randCoordfirst;
             var randCoordsecond;
 
             //Fires up a random coordinate generation based upon range input and start
             findCoordinates(init_lat, init_lon, radius);
-            initialize();
 
             var directionsDisplay;
-            var directionsService = new google.maps.DirectionsService();
+            var directionsService;
 
             function initialize() {
 
                 directionsDisplay = new google.maps.DirectionsRenderer();
+                directionsService = new google.maps.DirectionsService();
 
                 var mapOptions = {
                     zoom: 25,
@@ -256,29 +256,28 @@ function ($scope, $stateParams, $http) {
 
                 var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                 directionsDisplay.setMap(map);
-                //directionsDisplay.setOptions({ suppressMarkers: true });
-            }
 
-            var request = {
-                origin: startend,
-                destination: startend,
-                waypoints: [{ location: randCoordfirst, stopover: false },
-                            { location: randCoordsecond, stopover: false }],
-                optimizeWaypoints: true, 
-                travelMode: google.maps.TravelMode.WALKING,
-                avoidHighways: true
-            }
+                var request = {
+                    origin: startend,
+                    destination: startend,
+                    waypoints: [{ location: randCoordfirst, stopover: false },
+                                { location: randCoordsecond, stopover: false }],
+                    optimizeWaypoints: false, 
+                    travelMode: google.maps.TravelMode.WALKING,
+                    avoidHighways: true
+                    }
 
-            directionsService.route(request, function (response, status) {
+                    directionsService.route(request, function (response, status) {
 
-                if (status == google.maps.DirectionsStatus.OK) {
-                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
-                    $scope.routeTime = response.routes["0"].legs["0"].duration.text;
-                    directionsDisplay.setDirections(response);
-                } else {
-                    alert('You broke it.');
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                        $scope.routeTime = response.routes["0"].legs["0"].duration.text;
+                        directionsDisplay.setDirections(response);
+                        } else {
+                            alert('You broke it.');
+                        }
+                    });
                 }
-            });
 
             function findCoordinates(lat, long, range) {
                 
@@ -313,12 +312,18 @@ function ($scope, $stateParams, $http) {
                 // Return the points we've generated
                 //gets random coordinate from our array of coords
                 //Add the last point to array that is the start point so that we start and stop at same position
-                //trackPoints[numberOfPoints] = new google.maps.LatLng(init_lat, init_lon);
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                
+                if (randCoordfirst == undefined || randCoordsecond == undefined) {
+                    randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                    randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
+                }
+
+                initialize();
             }
             google.maps.event.addDomListener(window, 'load', initialize);
-        }
+            }
         );
     }
 
@@ -330,6 +335,7 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
     }
 
@@ -341,6 +347,7 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
     }
 
@@ -352,7 +359,25 @@ function ($scope, $stateParams, $http) {
                            { value: 'cafe', name: 'Cafe' },
                            { value: 'university', name: 'University' },
                            { value: 'bar', name: 'Bar' },
+                           { value: 'church', name: 'Church' },
                            { value: 'library', name: 'Library' }]
+    }
+
+    $scope.placeNation = {
+        model: null,
+        availableOptions: [{ id: '0', name: 'Södermanlands-Nerikes' },
+                           { id: '1', name: 'Stockholms' },
+                           { id: '2', name: 'Värmlands' },
+                           { id: '3', name: 'Gästrike-Hälsinge' },
+                           { id: '4', name: 'Östgöta' },
+                           { id: '5', name: 'Västgöta' },
+                           { id: '6', name: 'Norrlands' },
+                           { id: '7', name: 'Gotlands' },
+                           { id: '8', name: 'Smålands' },
+                           { id: '9', name: 'Göteborgs' },
+                           { id: '10', name: 'Uplands' },
+                           { id: '11', name: 'Västmanlands-Dala' },
+                           { id: '12', name: 'Kalmar' }]
     }
 
     $scope.startRecordRoute = function () {
@@ -365,26 +390,17 @@ function ($scope, $stateParams, $http) {
                     method: 'GET',
                     url: 'http://46.101.219.139:5000/api/checkpoints?type=Nation'
                 }).then(function (response) {
-                    var checkpointStockholms = response.data["1"].coord;
-                    var checkpointNorrlands = response.data["6"].coord;
-                    var checkpointUplands = response.data["10"].coord;
-                    var checkpointKalmar = response.data["12"].coord;
 
                     var init_lat = position.coords.latitude;
                     var init_lon = position.coords.longitude;
-
                     var startend = new google.maps.LatLng(init_lat, init_lon);
-                    var stockholms = new google.maps.LatLng(checkpointStockholms[0], checkpointStockholms[1]);
-                    var norrlands = new google.maps.LatLng(checkpointNorrlands[0], checkpointNorrlands[1]);
-                    var uplands = new google.maps.LatLng(checkpointUplands[0], checkpointUplands[1]);
-                    var kalmar = new google.maps.LatLng(checkpointKalmar[0], checkpointKalmar[1]);
+                    var wayptsNation = response.data[$scope.placeNation.model].coord;
 
                     initialize();
 
                     var map;
                     var infowindow;
                     var directionsDisplay;
-                    //directionsDisplay.setOptions({ suppressMarkers: true });
                     var directionsService = new google.maps.DirectionsService();
 
                     function initialize() {
@@ -394,49 +410,65 @@ function ($scope, $stateParams, $http) {
 
                         var mapOptions = {
                             zoom: 25,
-                            suppressMarkers: true,
+                            suppressMarkers: false,
                             center: currentpos
                         };
 
                         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
+                        var waypts = [];
+                        waypts.push({
+                            location: new google.maps.LatLng(wayptsNation[0], wayptsNation[1]),
+                            stopover: false
+                        });
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 500,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
-                        function callback(results, status) {
-                            var waypts = [];
+                        service.nearbySearch({
+                            location: currentpos,
+                            radius: 1000,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
+                            type: [$scope.placeTwo.model]
+                        }, callback);
 
+                        service.nearbySearch({
+                            location: currentpos,
+                            radius: 1000,
+                            //rankBy: google.maps.places.RankBy.DISTANCE,
+                            type: [$scope.placeThree.model]
+                        }, callback);
+
+                        function callback(results, status) {
+                            
                             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                                for (var i = 0; i < results.length; i++) {
+                                //for (var i = 0; i < results.length; i++) {
                                     waypts.push({
-                                        location: new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
+                                        location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
-                                    var currentpos = location;
-                                    console.log(results[i])
-                                }
+                                //}
                             }
 
                             var request = {
                                 origin: startend,
                                 destination: startend,
                                 waypoints: waypts,
-                                optimizeWaypoints: true,
+                                optimizeWaypoints: false,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
 
                             directionsService.route(request, function (response, status) {
                            
-                                $scope.routeDistance = response.routes[0].legs[0].distance.text;
-                                $scope.routeTime = response.routes[0].legs[0].duration.text;
                                 if (status == google.maps.DirectionsStatus.OK) {
+                                    $scope.routeDistance = response.routes[0].legs[0].distance.text;
+                                    $scope.routeTime = response.routes[0].legs[0].duration.text;
                                     directionsDisplay.setDirections(response);
                                 } else {
                                     alert('You broke it.');
@@ -1329,6 +1361,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     
 }])
 
+
 .controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
@@ -1440,20 +1473,24 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
             $state.go($state.current, {}, { reload: true });
 
         });
+
     };
 
 }])
 
 
-.controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
+
 function ($scope, $http, $state, $stateParams, listItmeDataService) {
     $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
+
 
     $scope.getSettingsData = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
+        var id = data.Userdata._id;
 
         console.log("jwt", data);
         var req = {
@@ -1471,5 +1508,44 @@ function ($scope, $http, $state, $stateParams, listItmeDataService) {
             function errorCallback(response) {
                 console.log('error', response)
             })
+    };
+
+
+    $scope.changePassword = function () {
+        console.log("inne i funktionen")
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+        var id = data.Userdata._id;
+        console.log('id', id)
+        console.log('jwt', jwt)
+
+        var req = {
+            crossDomain: true,
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + id,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            data: {'password': $scope.data.password }
+
+        }
+        $http(req).then(function successCallback(response) {
+            $ionicPopup.alert({
+                title: 'Success!',
+                template: 'Your password was changed',
+                okType: 'button-balanced'
+            });
+        }, function errorCallback(response) {
+            console.log('error', response)
+            $ionicPopup.alert({
+                title: 'Error changing password',
+                //template: 'Please type in username, email and password',
+                okType: 'button-balanced'
+            });
+
+        });
+
+
     };
 }])
