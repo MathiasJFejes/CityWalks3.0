@@ -1361,18 +1361,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     
 }])
 
-<<<<<<< HEAD
 .controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, $ionicPopup) {
-=======
-
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
 
     $scope.data = {
         'username': '',
@@ -1472,7 +1464,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
         $http(req).then(function (response) {
             newFriendsList = response.data.friends;
-<<<<<<< HEAD
             $ionicPopup.alert({
                 title: item[0] + ' was deleted as a friend',
                 //template: '',
@@ -1481,30 +1472,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
             $state.go($state.current, {}, { reload: true });
 
         });
-=======
-            $state.go('menu.EditFriends', {}, { reload: true });
-        });
 
-    };
-
-    $scope.deleteFriend = function (item) {
-        $ionicPopup.alert({
-                title: 'Error deleting friend',
-                //template: 'Please type in username, email and password',
-                okType: 'button-balanced'
-            })
-
-        //$http({
-        //    method: 'DELETE',
-        //    url: 'http://46.101.219.139:5000/users/' + item_id
-        //}).then(function () {
-        //    $scope.getFriends();
-        //}, function errorCallback(response) {
-        //    console.log('error', response)
-        //    ;
-
-        //})
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
     };
 
 }])
@@ -1513,17 +1481,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-<<<<<<< HEAD
+
 function ($scope, $http, $state, $stateParams, listItmeDataService) {
     $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
-=======
-function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup) {
 
-
-    $scope.data = {
-        'password': '',
-    }
->>>>>>> af6e2e141f2eb37034af71dcfed8d6cbf5469797
 
     $scope.getSettingsData = function () {
         var data = listItmeDataService.get();
