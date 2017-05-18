@@ -422,7 +422,6 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
-                                    var currentpos = location;
                                     console.log(results[0])
                                 //}
                             }
