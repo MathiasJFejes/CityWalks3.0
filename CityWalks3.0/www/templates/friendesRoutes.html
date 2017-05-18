@@ -8,8 +8,8 @@
           <ion-list ng-init="getFriendsData()">
               <ion-item class="item item-icon-left" ng-repeat="friend in myData" ng-click="getFriendsRoutes(friend)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
                   <i class="icon ion-person placeholder-icon"></i>
-              <p style="color:white; font-size:larger"> {{friend}} </p>
-              <p style="color:white"> Walked routes: </p>
+              <p style="color:white; font-size:larger"> {{friend["0"]}} </p>
+              <p style="color:white"> Walked routes: {{friend["2"]}} </p>
 
           </ion-item>
       </ion-list>

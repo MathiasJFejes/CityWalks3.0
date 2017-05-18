@@ -1253,13 +1253,14 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     $scope.getFriendsData = function () {
         var data = listItmeDataService.get();
         var finalList = [];
-            angular.forEach(data.Userdata.friends, function (value, key) {
-                var name = handleUser.findName(value, listItmeDataService.get().allUsers)
-                console.log(name)
-                finalList.push(name)
+            angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
+                var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
+                var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length
+                finalList.push([nameAndKey.userName, value, numRoutes])
             })
             console.log(finalList)
             $scope.myData = finalList;
+
         }
 
         //console.log("jwt", jwt);
@@ -1286,10 +1287,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
 }])
 
 
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, $ionicPopup) {
 
     $scope.data = {
         'username': '',
@@ -1298,24 +1299,41 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
 
     $scope.getFriends = function () {
         var data = listItmeDataService.get();
-        var allUsers = data.allUsers;
-        angular.forEach(data.Userdata.friends, function (value, key) {
-            var name = handleUser.findName(value, allUsers)
-            //console.log(name)
-            allUsers.value.push({"userName": name})
-            console.log("allUsers:", allUsers)
-            })
-            $scope.myData = allUsers;
-        }
+        var finalList = [];
+        angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
+            var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
+            finalList.push([nameAndKey.userName, value])
+        })
+        console.log(finalList)
+        $scope.myData = finalList;
+    }
             
 
     $scope.addFriend = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
- 
         var newFriendsList = data.Userdata.friends;
-        newFriendsList.push([$scope.data.username]);
 
+        var id = handleUser.findId($scope.data.username, listItmeDataService.get().allUsers);
+        
+        console.log("newFriendsList", newFriendsList)
+
+        if ($scope.data.username == "") {
+            $ionicPopup.alert({
+                title: 'Please type in a username',
+                //template: '',
+                okType: 'button-balanced'
+            });
+        }
+        if (typeof id == 'undefined'){
+            $ionicPopup.alert({
+                title: 'Invalid Username, Usernames are case-sensitive ',
+                //template: '',
+                okType: 'button-balanced'
+            });
+        }
+        else {
+            newFriendsList.push(id);
         var req = {
             crossDomain: true,
             method: 'PATCH',
@@ -1335,6 +1353,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
             $state.go('menu.EditFriends', {}, { reload: true });
         });
 
+        }
     };
 
     $scope.deleteFriend = function (item) {

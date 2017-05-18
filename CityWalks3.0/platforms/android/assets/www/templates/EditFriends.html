@@ -22,7 +22,7 @@
                 <ion-item class="item item-icon-left item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1 ,#7253C3 );color:white;border:none">
                     <i class="icon ion-person placeholder-icon"></i>
                     <p style="color:white; font-size:larger">
-                       {{friend}}
+                       {{friend["0"]}}
                     </p>
                     <i class="icon ion-android-delete" ng-click="deleteFriend()"></i>
                 </ion-item>

@@ -32,16 +32,19 @@ angular.module('app.services', [])
         angular.forEach(userArray, function (value, key) {
             if (id == value._id) {
                 returnValue['userName'] = value.username
+                returnValue['key'] = key
             }
 
         })
-        return returnValue.userName
+        return returnValue
     }
 
     function findId(name, userArray) {
+        console.log("inne i service;", name, userArray)
         angular.forEach(userArray, function (value, key) {
-            if (name == value.userName) {
+            if (name == value.username) {
                 returnValue['_id'] = value._id
+                console.log(returnValue)
             }
 
         })
