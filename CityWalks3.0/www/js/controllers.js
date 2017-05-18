@@ -65,7 +65,7 @@ function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup)
             }
             $http(getReq).then(function (response) {
                 listItmeDataService.set('Userdata', response.data["0"])
-                $state.go('menu.createRoute')
+                $state.go('menu.createRoute', {}, { reload: true })
 
             });
         }, function errorCallback(response) {
@@ -110,7 +110,7 @@ function ($scope, $stateParams, $state, $http, $ionicPopup) {
             $state.go('login')
             $ionicPopup.alert({
                 title: 'Welcome!',
-                template: 'Your account was succesfully created',
+                template: 'Your account was succesfully created </br> </br> Please add your username and password to log in!',
                 okType: 'button-balanced'
             });
         }, function errorCallback(response) {
@@ -454,6 +454,8 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
             console.log(response)
             $scope.myData = response.data;
 
+            //timeformat
+
 
         })
     }
@@ -487,23 +489,19 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
     $scope.itemData = listItmeDataService.get().routeId;
     var tracking_data = listItmeDataService.get().routeId;
+    $scope.totalLikes = tracking_data.score.length;
+    $scope.totalComments = tracking_data.comments.length;
 
     $scope.itemMapSmall = function() { 
-            console.log('First Map')
             var tracking_data = listItmeDataService.get().routeId;
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
-            console.log(last_element);
-            console.log(tracking_data);
-            console.log(first_element);
 
             //Latest Coordinates
             var myLatLng = new google.maps.LatLng(last_element["0"], last_element["1"]);
             //First Coordinates
             var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
 
-            console.log(myLatLng);
-            console.log(myLatLng_first);
 
             // Google Map options center at current pos
             var myOptions = {
@@ -558,7 +556,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
 
             // Apply the line to the map
             trackPath.setMap(map);
-            console.log('Last Map')
+
     }
 
     var watch_id = "WatchCurrentID";    // ID of the geolocation
@@ -625,7 +623,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                            path: trackCoords,
                            strokeColor: "#7253c3",
                            strokeOpacity: 1.0,
-                           strokeWeight: 5,
+                           strokeWeight: 4,
                            map: map_current
                        });
 
@@ -688,7 +686,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
         //Clear input values
         $scope.data = {
             routeWalkComment: '',
-            routeWalkLike: 0
+            routeWalkLike: false
         };
         $state.go('menu.myRoutes', {}, { reload: true });
     }
@@ -696,20 +694,67 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
 
     $scope.sendCommentRating = function () {
 
+
             $http({
                 method: 'GET',
                 url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
             }).then(function (response) {
                 var latest_tracking_data = response.data;
-                console.log('latest_tracking_data')
-                console.log(latest_tracking_data)
 
-                var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeWalkComment, "date": "2017-05-09T14:09:33.552Z" })
+                //Input new comment
+                if ($scope.data.routeWalkComment !== '') {
+                    var newCommentList = latest_tracking_data.comments;
+                    newCommentList.push({ "userId": userInfo, "comment": $scope.data.routeWalkComment})
+                }
+                else {
+                    newCommentList = newCommentList;
+                }
 
+                //input new like if liked and your user id not in score list
+                var willAddRating = true;
+                var userInfo = listItmeDataService.get().Userdata._id;
                 var newLikeList = latest_tracking_data.score;
-                newLikeList.push({ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeWalkLike})
+                for (i = 0; i < newLikeList.length; i++) {
+                    if (newLikeList[i].userId == userInfo) {
+                        var willAddRating = false;
+                        var indexForRemove = i;
+                        console.log('false')
+                    }
+                }
+                console.log('likelist', newLikeList)
+                console.log('likevalue',$scope.data.routeWalkLike)
+                if (willAddRating == true && $scope.data.routeWalkLike == true) {
+                    newLikeList.push({ "userId": userInfo, "score": 1 })
+                    console.log('true1', newLikeList)
+                }
+                if (willAddRating == false && $scope.data.routeWalkLike !== true) {
+                    newLikeList.splice(indexForRemove, 1);
+                    console.log('false0', newLikeList)
+                }
+                if (willAddRating == false && $scope.data.routeWalkLike == true) {
+                    newLikeList = newLikeList;
+                    console.log('false else', newLikeList)
+                }
 
+                //add userid to walkerslist
+                var walksersList = latest_tracking_data.walkersId;
+                
+                var willAddWalkerId = true;
+                for (i = 0; i < walksersList.length; i++) {
+                    if (walksersList[i] == userInfo) {
+                        var willAddWalkerId = false;
+                    }
+                }
+                if (willAddWalkerId == true) {
+                    walksersList.push(userInfo);
+                }
+                if (willAddWalkerId == false) {
+                    walksersList = walksersList;
+                }
+
+
+
+                //http request
                 var req = {
                     crossDomain: true,
                     method: 'PUT',
@@ -724,6 +769,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                         "createdAt": latest_tracking_data.createdAt,
                         "updatedAt": latest_tracking_data.updatedAt,
                         "coords": latest_tracking_data.coords,
+                        "walkersId": walksersList,
                         "time": latest_tracking_data.time,
                         "score": newLikeList,
                         "comments": newCommentList,
@@ -734,6 +780,11 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 }
 
                 $http(req).then(function () {
+                    $ionicPopup.alert({
+                        title: 'Thanks for walking this route!',
+                        template: '<div style="text-align:center"> Your comment and choise of recommendation has been added to this route so that other people can see your thoughts of it. </br> </br> Also, your username has been added to this route so that other people can see that you have walked this route. </div>',
+                        okType: 'button-balanced'
+                    });
                     $scope.data = {
                         routeWalkComment: '',
                         routeWalkLike: 0
@@ -897,9 +948,9 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
         // An elaborate, custom popup
         var myPopup = $ionicPopup.show({
-            template: '<ion-list style="text-align:center;">  <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> &nbsp; <p> Initializing your map </p>  </ion-list> ',
+            template: '<ion-list style="text-align:center;">  <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> &nbsp; <p> Map is loading . . . </p>  </ion-list> ',
             cssClass: 'balanced',
-            title: 'You are now recording a route!',
+            title: 'Please wait for the map to load!',
             scope: $scope,
         });
         myPopup;
@@ -1089,18 +1140,50 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
     $scope.data = {
         routeComment: '',
-        routeTitle: ''
+        routeTitle: '',
+        routeLike: false
     };
 
     // $scope.getUserData = factory.user();
 
     $scope.sendRecordedRoute = function () {
 
+        //require title, dont change boolean values
+        if ($scope.data.routeTitle == '') {
+            $ionicPopup.alert({
+                title: 'Please add a title!',
+                okType: 'button-assertive'
+            });
+        }
+        // title,  change boolean values
+        if ($scope.data.routeTitle !== '') {
+
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
         console.log('userId', userInfo)
         var testUser = "5911cd9d8b242d06d3d30c09"
         var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
+        
+        
+
+        //comment array
+        var routeCommentArray = [];
+        if ($scope.data.routeComment !== '') {
+            routeCommentArray = [{ "userId": userInfo, "comment": $scope.data.routeComment }];
+        }
+        if ($scope.data.routeComment == '') {
+            routeCommentArray = [];
+        }
+
+        //like array
+        var routeLikesArray = [];
+        if ($scope.data.routeLike == true) {
+            routeLikesArray = [{"userId": userInfo, "score": 1 }];
+        }
+        if ($scope.data.routeLike == false) {
+            routeLikesArray = [];
+        }
+
 
         var req = {
             crossDomain: true,
@@ -1113,9 +1196,10 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                 "title": $scope.data.routeTitle,
                 "creatorId": userInfo,
                 "coords": routeCoords,
+                "walkersId": userInfo,
                 "time": time,
-                "score": [{"userId": userInfo, "score": $scope.data.routeLike }],
-                "comments": [{ "userId": userInfo, "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
+                "score": routeLikesArray,
+                "comments": routeCommentArray,
                 "distance": total_km_rounded
             }
         }
@@ -1150,14 +1234,14 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                 routeComment: '',
                 routeTitle: ''
             };
-            $state.go('menu.recordRoute'),
-            $scope.error = 'Error logging in.'
+            $state.go('menu.recordRoute', {}, { reload: true }),
+            $scope.error = 'Error sharing route.'
         });
 
 
     };
 
-
+    }
 
 
 }])
@@ -1211,7 +1295,8 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
     $scope.getFriendsRoutes = function (id) {
         var friendId = id;
         listItmeDataService.set('friendId', friendId);
-        $state.go("menu.myRoutes")
+        $state.go('menu.myRoutes', {}, { reload: true })
+
     }
 
 }])
