@@ -1,13 +1,13 @@
 
 <ion-view title="Friends" id="page16" cache-view="false">
-  <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+  <ion-content padding="false" class="has-header" style="background: linear-gradient(#8e75cf,#7253C3)">
       <a ui-sref="menu.EditFriends" style="font-weight:600;color:#FFFFFF;border-radius:15px 15px 15px 15px; width:75% ;margin-left:12.5%; " class="button button-royal  button-block">Add/remove friends</a>
-      <p style="color:black;font-size:large; text-align:center;top:10%">
-          Press on your friend to get their walked routes</p>
+      <p style="color:black;font-size:large; text-align:center;top:10%; color:white">
+          Press on your friend to get their created routes</p>
 
           <ion-list ng-init="getFriendsData()">
               <ion-item class="item item-icon-left" ng-repeat="friend in myData" ng-click="getFriendsRoutes(friend)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
-                  <i class="icon ion-person placeholder-icon"></i>
+                  <i class="icon ion-person placeholder-icon" style="color:white"></i>
               <p style="color:white; font-size:larger"> {{friend["0"]}} </p>
               <p style="color:white"> Created routes: {{friend["2"]}} </p>
 
