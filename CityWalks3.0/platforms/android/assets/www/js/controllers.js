@@ -534,6 +534,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup,
 
 function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
 
+
     $scope.itemUser = listItmeDataService.get().routeId[0];
     $scope.itemData = listItmeDataService.get().routeId[1];
     var tracking_data = listItmeDataService.get().routeId[1];
