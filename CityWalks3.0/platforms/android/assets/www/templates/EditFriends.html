@@ -2,7 +2,7 @@
 ﻿﻿<ion-view title="Edit Friends" hide-back-button="false" id="page44" cache-view="false">
 
 
-    <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+    <ion-content padding="false" class="has-header" style="background: linear-gradient(#8e75cf, #7253C3)">
 
         <br />
         <p style="color:black;font-size:large; text-align:center; top:10%">
@@ -21,12 +21,11 @@
                 <p style="color:black;font-size:large; text-align:center; top:10%">
                     My Friends:
                 </p>
-                <ion-item class="item item-icon-left item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1 ,#7253C3 );color:white;border:none">
-                    <i class="icon ion-person placeholder-icon"></i>
+                <ion-item class="item item-icon-right" ng-repeat="friend in myData" style="background: linear-gradient(#937bd1 ,#7253C3 );color:white;border:none">
                     <p style="color:white; font-size:larger">
                        {{friend["0"]}}
                     </p>
-                    <button class="icon ion-android-cancel" style="background: linear-gradient(#937bd1 ,#7253C3 ); color:#ef473a; border:none" ng-click="deleteFriend(friend)"></button>
+                    <button class="icon ion-ios-close-outline" style="background: linear-gradient(#937bd1 ,#7253C3 ); color:white; border:none" ng-click="deleteFriend(friend)"></button>
                 </ion-item>
             </ion-list>
     </ion-content>
