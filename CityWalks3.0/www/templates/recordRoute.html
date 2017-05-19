@@ -13,7 +13,7 @@
 
 
         <!-- SHOW THIS WHEN DONE WALKING-->
-        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:50%;bottom:5%">
+        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:60%;bottom:5%">
 
             <a class="item item-icon-left">
                 <i class="icon ion-map"></i>
@@ -22,7 +22,7 @@
 
             <a class="item item-icon-left">
                 <i class="icon ion-ios-timer-outline"></i>
-                {{routeTimeMin}}:{{routeTimeSec}} (m:s)
+                {{routeTimeMin}}:{{routeTimeSec}} (hh:mm:ss)
             </a>
         </div>
 
@@ -67,7 +67,7 @@
                     Route Distance: {{routeDistance}} (km)
                 </a>
                 <a class="item">
-                    Route Time: {{routeTimeMin}}:{{routeTimeSec}} (minutes:seconds)
+                    Route Time: {{routeTimeMin}}:{{routeTimeSec}} (hh:mm:ss)
                 </a>
             </div>
 

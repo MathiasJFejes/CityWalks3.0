@@ -1339,7 +1339,10 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
             }
         }
 
-        $http(req).then(function () {
+        $http(req).then(function (response) {
+            var createdRouteID = response.data._id;
+            var newRouteList = listItmeDataService.get().Userdata.routes;
+            newRouteList.push(createdRouteID)
             //Reload recording map
             navigator.geolocation.getCurrentPosition(
               // Success
@@ -1369,6 +1372,23 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                 routeComment: '',
                 routeTitle: ''
             };
+            var data = listItmeDataService.get();
+            var jwt = data.jwt;
+            var sendrouteid = {
+                crossDomain: true,
+                method: 'PATCH',
+                url: 'http://46.101.219.139:5000/users/' + userInfo,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                },
+                data: {
+                    "routes": newRouteList
+                }
+            }
+
+            $http(sendrouteid);
+
             $state.go('menu.recordRoute', {}, { reload: true }),
             $scope.error = 'Error sharing route.'
         });
