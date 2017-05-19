@@ -484,24 +484,24 @@ function ($scope, $stateParams, $http) {
 
 }])
    
-.controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', 'handleUser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup, handleUser) {
 
     $scope.getRouteData = function () {
-
+        
         $http({
             method: 'GET',
             url: 'http://46.101.219.139:5000/api/routes'
         }).then(function (response) {
-            console.log('response')
-            console.log(response)
-            $scope.myData = response.data;
-
-            //timeformat
-
-
+            var finalList = [];
+            for (i = 0; i < response.data.length; i++) {
+                var nameAndKey = handleUser.findName(response.data[i].creatorId, listItmeDataService.get().allUsers)   // get name of friend 
+                var usernamepush = nameAndKey.userName;
+                finalList.push([usernamepush, response.data[i]])
+            }
+            $scope.myData = finalList;
         })
     }
 
@@ -531,13 +531,17 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 .controller('myRoutesCtrl', ['$scope', '$stateParams', 'listItmeDataService', '$http', '$state', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
+
 function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
-    $scope.itemData = listItmeDataService.get().routeId;
-    var tracking_data = listItmeDataService.get().routeId;
-    
+
+    $scope.itemUser = listItmeDataService.get().routeId[0];
+    $scope.itemData = listItmeDataService.get().routeId[1];
+    var tracking_data = listItmeDataService.get().routeId[1];
+
 
     $scope.itemMapSmall = function() { 
-            var tracking_data = listItmeDataService.get().routeId;
+            console.log('First Map')
+            var tracking_data = listItmeDataService.get().routeId[1];
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
 
@@ -634,7 +638,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
            position_data.push(position);  // For current position = last element
 
            //Route data
-           var tracking_data = listItmeDataService.get().routeId;
+           var tracking_data = listItmeDataService.get().routeId[1];
            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
            var first_element = tracking_data.coords[0];
 
@@ -1406,7 +1410,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     $scope.getFriendsData = function () {
         var data = listItmeDataService.get();
         var finalList = [];
-            angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
+        angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
                 var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
                 var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length
                 finalList.push([nameAndKey.userName, value, numRoutes])
@@ -1678,6 +1682,8 @@ function ($scope, $http, $state, $stateParams, listItmeDataService) {
 function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
     var myUserId = listItmeDataService.get().Userdata._id;
+    var myUserName = listItmeDataService.get().Userdata.username;
+    $scope.myUserName = listItmeDataService.get().Userdata.username;
     var data = listItmeDataService.get();
     var jwt = data.jwt;
 
@@ -1692,11 +1698,15 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
             }
         }
         $http(req).then(function (response) {
-            $scope.allMyRoutes = response.data;
-
+            var finalList = [];
+            for (i = 0; i < response.data.length; i++) {
+                finalList.push([myUserName, response.data[i]])
+            }
+            $scope.allMyRoutes = finalList;
         })
 
     }
+
 
     $scope.getRouteInfo = function (route) {
         var route = route;
