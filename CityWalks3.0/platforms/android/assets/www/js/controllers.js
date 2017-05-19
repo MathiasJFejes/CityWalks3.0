@@ -534,8 +534,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
     $scope.itemData = listItmeDataService.get().routeId;
     var tracking_data = listItmeDataService.get().routeId;
-    $scope.totalLikes = tracking_data.score.length;
-    $scope.totalComments = tracking_data.comments.length;
+    
 
     $scope.itemMapSmall = function() { 
             var tracking_data = listItmeDataService.get().routeId;
@@ -548,7 +547,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
             var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
 
 
-            // Google Map options center at current pos
+            // Google Map options center at first pos
             var myOptions = {
                 zoom: 17,
                 center: myLatLng_first,
@@ -575,21 +574,30 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
             });
 
 
+
             //Marker for last position
-            var icon_current = {
-                url: "http://www.google.com/mapfiles/dd-end.png",
+            var icon_last = {
+                url: 'img/Icons/reddot.png',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
             }
 
             var marker = new google.maps.Marker({
                 position: myLatLng,
-                icon: icon_current,
+                icon: icon_last,
                 map: map,
-                title: 'Current position'
+                title: 'Last position'
             });
 
             //Marker for first position
             var icon_first = {
-                url: "http://www.google.com/mapfiles/dd-start.png",
+                url: 'img/Icons/greendot.png',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+
+
             }
 
             var marker = new google.maps.Marker({
@@ -611,6 +619,12 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
     var interval;
 
     $scope.walkRecordedRoute = function () {
+
+        $ionicPopup.alert({
+            title: 'You can now walk this route!',
+            template: '<div style="text-align:center"> Follow the purple line (the route) with the red marker (your position) and you will probably have </br> a great experience! </br></br> Good luck! </div>',
+            okType: 'button-balanced'
+        });
 
         watch_id = navigator.geolocation.watchPosition(
        // Success
@@ -649,6 +663,9 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                        // Google Map options center at current pos
                        var myOptions = {
                            zoom: 17,
+                           draggable: false,
+                           scrollwheel: false,
+                           disableDoubleClickZoom: true,
                            zoomControl: false,
                            center: myLatLng_current,
                            mapTypeId: google.maps.MapTypeId.WALKING
@@ -672,15 +689,32 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                            map: map_current
                        });
 
+                       //Marker for current position
+                       var icon_current = {
+                           url: 'img/Icons/bluecross.png',
+                           scaledSize: new google.maps.Size(30, 30), // scaled size
+                           origin: new google.maps.Point(0, 0), // origin
+                           anchor: new google.maps.Point(15, 15) // anchor
+
+
+                       }
+
                        var marker = new google.maps.Marker({
                            position: myLatLng_current,
+                           icon: icon_current,
                            map: map_current,
                            title: 'Current position'
                        });
 
+
                        //Marker for first position
                        var icon_first = {
-                           url: "http://www.google.com/mapfiles/dd-start.png"
+                           url: 'img/Icons/greendot.png',
+                           scaledSize: new google.maps.Size(30, 30), // scaled size
+                           origin: new google.maps.Point(0, 0), // origin
+                           anchor: new google.maps.Point(15, 15) // anchor
+
+
                        }
 
                        var marker = new google.maps.Marker({
@@ -691,14 +725,20 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                        });
 
                        //Marker for last position
-                       var icon_current = {
-                           url: "http://maps.google.com/mapfiles/dd-end.png"
+                       var icon_last = {
+                           url: 'img/Icons/reddot.png',
+                           scaledSize: new google.maps.Size(30, 30), // scaled size
+                           origin: new google.maps.Point(0, 0), // origin
+                           anchor: new google.maps.Point(15, 15) // anchor
+
+
                        }
+
 
                        var marker = new google.maps.Marker({
                            position: myLatLng_last,
                            map: map_current,
-                           icon: icon_current,
+                           icon: icon_last,
                            title: 'Final position'
                        });
 
@@ -901,7 +941,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                         message: ''
                     };
                     $scope.itemData = latest_tracking_data;
-                    $state.go('menu.myRoutes', {}, { reload: true });
+                    $state.go('menu.myRoutes', {}, { reload: false });
                 });
             })
             };
@@ -953,6 +993,7 @@ function ($scope, $http, $state, $stateParams,listItmeDataService) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService, $timeout) {
 
+
     $scope.initPosition = function () {
 
         navigator.geolocation.getCurrentPosition(
@@ -970,8 +1011,19 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
            // Create the Google Map, set options
            var map_current = new google.maps.Map(document.getElementById("map_canvas_current"), myOptionsCurrent);
 
+            //Marker for first position
+            var icon_first = {
+                url: 'img/Icons/bluecross.png',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
+
+
+                   }
+
            var marker = new google.maps.Marker({
                position: myLatLngCurrent,
+               icon: icon_first,
                map: map_current
            });
 
@@ -1037,6 +1089,9 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                    // Google Map options center at current pos
                    var myOptions = {
                        zoom: 17,
+                       draggable: false,
+                       scrollwheel: false,
+                       disableDoubleClickZoom: true,
                        zoomControl: false,
                        center: trackCoords[trackCoords.length - 1],
                        mapTypeId: google.maps.MapTypeId.WALKING
@@ -1056,17 +1111,32 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                        map: map
                    });
 
+                   //Marker for first position
+                   var icon_current = {
+                       url: 'img/Icons/bluecross.png',
+                       scaledSize: new google.maps.Size(30, 30), // scaled size
+                       origin: new google.maps.Point(0, 0), // origin
+                       anchor: new google.maps.Point(15, 15) // anchor
+
+
+                   }
 
                    var marker = new google.maps.Marker({
                        position: trackCoords[trackCoords.length - 1],
                        map: map,
+                       icon: icon_current,
                        title: 'Current position'
                    });
 
 
                    //Marker for first position
                    var icon_first = {
-                       url: "http://www.google.com/mapfiles/dd-start.png",
+                       url: 'img/Icons/greendot.png',
+                       scaledSize: new google.maps.Size(30, 30), // scaled size
+                       origin: new google.maps.Point(0, 0), // origin
+                       anchor: new google.maps.Point(15, 15) // anchor
+
+
                    }
 
                    var marker = new google.maps.Marker({
@@ -1145,11 +1215,23 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
         total_time_ms = end_time - start_time;
         total_time_s = total_time_ms / 1000;
-
+        //minutes
         final_time_m = Math.floor(total_time_s / 60);
-        $scope.routeTimeMin = final_time_m.toFixed(0);  //send time to html page
+        routeTimeMin = final_time_m.toFixed(0);
+        if (routeTimeMin < 10) {
+            routeTimeMin = "00:"+"0" + routeTimeMin;
+        }
+        if (routeTimeMin > 10) {
+            routeTimeMin = "00:" + routeTimeMin;
+        }
+        $scope.routeTimeMin = routeTimeMin;  //send time to html page
+        //seconds
         final_time_s = total_time_s - (final_time_m * 60);
-        $scope.routeTimeSec = final_time_s.toFixed(0);  //send time to html page
+        routeTimeSec = final_time_s.toFixed(0);
+        if (routeTimeSec < 10) {
+            routeTimeSec = "0" + routeTimeSec;
+        }
+        $scope.routeTimeSec = routeTimeSec;  //send time to html page
     };
 
     $scope.deleteRecordedRoute = function () {
@@ -1207,7 +1289,10 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
-        var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
+        console.log(routeTimeMin)
+        console.log(routeTimeSec)
+        var time = routeTimeMin + ":" + routeTimeSec;
+            console.log(time)
         
         
 
@@ -1585,4 +1670,39 @@ function ($scope, $http, $state, $stateParams, listItmeDataService) {
 
 
     };
+}])
+
+.controller('myRealRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
+
+    var myUserId = listItmeDataService.get().Userdata._id;
+    var data = listItmeDataService.get();
+    var jwt = data.jwt;
+
+    $scope.getMyRoutes = function () {
+
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes?creatorId=' + myUserId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            $scope.allMyRoutes = response.data;
+
+        })
+
+    }
+
+    $scope.getRouteInfo = function (route) {
+        var route = route;
+        listItmeDataService.set('routeId', route);
+        $state.go("menu.myRoutes")
+    }
+
+
 }])

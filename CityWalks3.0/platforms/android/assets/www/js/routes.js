@@ -86,6 +86,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('menu.myRealRoutes', {
+      url: '/page77',
+      views: {
+          'side-menu21': {
+              templateUrl: 'templates/myRealRoutes.html',
+              controller: 'myRealRoutesCtrl'
+          }
+      }
+  })
+
   .state('menu.settings', {
     url: '/page12',
     views: {
