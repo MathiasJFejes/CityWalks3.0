@@ -12,14 +12,14 @@
           <ion-list id="createRandomRoute" class="list" style="position:absolute;top:34%;width:100%">
 
               <label class="item item-select" id="createRoute-range" ng-show="clickedRandom">
-                  <span class="input-label">Level <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"> *required</i> </span>
+                  <span class="input-label">Level <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"></i> </span>
                   <select name="repeatSelect" id="repeatSelect" ng-model="range.model">
                       <option ng-repeat="option in range.availableOptions" ng-value="option.value">{{option.name}}</option>
                   </select>
               </label>
 
               <label class="item item-select" id="createRoute-place" ng-hide="clickedRandom">
-                  <span class="input-label">Place 1 <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"> *required</i> </span>
+                  <span class="input-label">Place 1 <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"></i> </span>
                   <select name="repeatSelect" id="repeatSelect" ng-model="placeOne.model">
                       <option ng-repeat="option in placeOne.availableOptions" ng-value="option.value">{{option.name}}</option>
                   </select>
