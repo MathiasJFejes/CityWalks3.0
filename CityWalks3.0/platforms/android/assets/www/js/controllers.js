@@ -245,7 +245,7 @@ function ($scope, $stateParams, $http) {
                     destination: startend,
                     waypoints: [{ location: randCoordfirst, stopover: false },
                                 { location: randCoordsecond, stopover: false }],
-                    optimizeWaypoints: false, 
+                    optimizeWaypoints: true, 
                     travelMode: google.maps.TravelMode.WALKING,
                     avoidHighways: true
                     }
@@ -401,6 +401,7 @@ function ($scope, $stateParams, $http) {
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
                         var waypts = [];
+
                         waypts.push({
                             location: new google.maps.LatLng(wayptsNation[0], wayptsNation[1]),
                             stopover: false
@@ -435,18 +436,57 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
+                                    //console.log(results[0].geometry.location.lat())
                                 //}
                             }
 
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts,
-                                optimizeWaypoints: false,
+                                waypoints: waypts, /*getgreedy(),*/
+                                optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
 
+                            getgreedy();
+
+                            function getgreedy() {
+
+                                var greedywaypts = [];
+                                var places = 5;
+                                var mincost = 1000;
+                                var visits = 0;
+                                var pointer = currentpos;
+                                
+                                for (var i = 0; i < waypts.length; i++) {
+                                    var cost = getDistance(init_lat, init_lon, waypts[i].location.lat(), waypts[i].location.lng());
+                                    if (cost < mincost) {
+                                        mincost = cost;
+                                    }
+                                }
+                                console.log(mincost)
+                            }
+
+                            function getDistance(lat1, lon1, lat2, lon2) {
+                                var R = 6371; // Radius of the earth in km
+                                var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+                                var dLon = deg2rad(lon2 - lon1);
+                                var a =
+                                  Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                                  Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                                ;
+                                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                                var d = R * c; // Distance in km
+                                return d;
+                            }
+
+                            function deg2rad(deg) {
+                                return deg * (Math.PI / 180)
+                            }
+
+                            console.log(waypts)
                             directionsService.route(request, function (response, status) {
                            
                                 if (status == google.maps.DirectionsStatus.OK) {
