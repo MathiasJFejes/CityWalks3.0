@@ -8,12 +8,17 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('menuCtrl', ['$scope', '$stateParams', '$state','listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('menuCtrl', ['$scope', '$stateParams', '$state','listItmeDataService','$ionicHistory','$window','$location', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, listItmeDataService) {
-    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
-    $scope.logout = function(){
+function ($scope, $stateParams, $state, listItmeDataService, $ionicHistory, $window, $location) {
+    $scope.logout = function () {
+        $window.localStorage.clear();
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+        listItmeDataService.drop()
+        $location.path('login');
+        $window.location.reload();
         $state.go('login');
     }
 
@@ -65,7 +70,19 @@ function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup)
             }
             $http(getReq).then(function (response) {
                 listItmeDataService.set('Userdata', response.data["0"])
-                $state.go('menu.createRoute')
+                $state.go('menu.createRoute', {}, { reload: true })
+
+            });
+            var getReqAll = {
+                method: 'GET',
+                url: 'http://46.101.219.139:5000/users',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                }
+            }
+            $http(getReqAll).then(function (response) {
+                listItmeDataService.set('allUsers', response.data)
 
             });
         }, function errorCallback(response) {
@@ -110,7 +127,7 @@ function ($scope, $stateParams, $state, $http, $ionicPopup) {
             $state.go('login')
             $ionicPopup.alert({
                 title: 'Welcome!',
-                template: 'Your account was succesfully created',
+                template: 'Your account was succesfully created </br> </br> Please add your username and password to log in!',
                 okType: 'button-balanced'
             });
         }, function errorCallback(response) {
@@ -507,22 +524,24 @@ function ($scope, $stateParams, $http) {
 
 }])
    
-.controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('topRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', 'handleUser',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup, handleUser) {
 
     $scope.getRouteData = function () {
-
+        
         $http({
             method: 'GET',
             url: 'http://46.101.219.139:5000/api/routes'
         }).then(function (response) {
-            console.log('response')
-            console.log(response)
-            $scope.myData = response.data;
-
-
+            var finalList = [];
+            for (i = 0; i < response.data.length; i++) {
+                var nameAndKey = handleUser.findName(response.data[i].creatorId, listItmeDataService.get().allUsers)   // get name of friend 
+                var usernamepush = nameAndKey.userName;
+                finalList.push([usernamepush, response.data[i]])
+            }
+            $scope.myData = finalList;
         })
     }
 
@@ -549,33 +568,33 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
 }])
    
-.controller('myRoutesCtrl', ['$scope', '$stateParams', 'listItmeDataService', '$http', '$state',   // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('myRoutesCtrl', ['$scope', '$stateParams', 'listItmeDataService', '$http', '$state', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, listItmeDataService, $http, $state) {
-    $scope.itemData = listItmeDataService.get().routeId;
-    var tracking_data = listItmeDataService.get().routeId;
+
+function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
+
+
+    $scope.itemUser = listItmeDataService.get().routeId[0];
+    $scope.itemData = listItmeDataService.get().routeId[1];
+    var tracking_data = listItmeDataService.get().routeId[1];
+
 
     $scope.itemMapSmall = function() { 
             console.log('First Map')
-            var tracking_data = listItmeDataService.get().routeId;
+            var tracking_data = listItmeDataService.get().routeId[1];
             var last_element = tracking_data.coords[tracking_data.coords.length - 1];
             var first_element = tracking_data.coords[0];
-            console.log(last_element);
-            console.log(tracking_data);
-            console.log(first_element);
 
             //Latest Coordinates
             var myLatLng = new google.maps.LatLng(last_element["0"], last_element["1"]);
             //First Coordinates
             var myLatLng_first = new google.maps.LatLng(first_element["0"], first_element["1"]);
 
-            console.log(myLatLng);
-            console.log(myLatLng_first);
 
-            // Google Map options center at current pos
+            // Google Map options center at first pos
             var myOptions = {
-                zoom: 14,
+                zoom: 17,
                 center: myLatLng_first,
                 mapTypeId: google.maps.MapTypeId.WALKING
             };
@@ -596,14 +615,14 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                 path: trackCoords,
                 strokeColor: "#7253c3",
                 strokeOpacity: 1.0,
-                strokeWeight: 2
+                strokeWeight: 5
             });
 
 
+
             //Marker for last position
-            var icon_current = {
-                url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
-                fillColor: '#0099ff',
+            var icon_last = {
+                url: 'img/Icons/reddot.png',
                 scaledSize: new google.maps.Size(30, 30), // scaled size
                 origin: new google.maps.Point(0, 0), // origin
                 anchor: new google.maps.Point(15, 15) // anchor
@@ -611,18 +630,19 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
             var marker = new google.maps.Marker({
                 position: myLatLng,
-                icon: icon_current,
+                icon: icon_last,
                 map: map,
-                title: 'Current position'
+                title: 'Last position'
             });
 
             //Marker for first position
             var icon_first = {
-                url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
-                fillColor: '#7253C3',
+                url: 'img/Icons/greendot.png',
                 scaledSize: new google.maps.Size(30, 30), // scaled size
                 origin: new google.maps.Point(0, 0), // origin
                 anchor: new google.maps.Point(15, 15) // anchor
+
+
             }
 
             var marker = new google.maps.Marker({
@@ -634,7 +654,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
             // Apply the line to the map
             trackPath.setMap(map);
-            console.log('Last Map')
+
     }
 
     var watch_id = "WatchCurrentID";    // ID of the geolocation
@@ -645,6 +665,12 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
     $scope.walkRecordedRoute = function () {
 
+        $ionicPopup.alert({
+            title: 'You can now walk this route!',
+            template: '<div style="text-align:center"> Follow the purple line (the route) with the red marker (your position) and you will probably have </br> a great experience! </br></br> Good luck! </div>',
+            okType: 'button-balanced'
+        });
+
         watch_id = navigator.geolocation.watchPosition(
        // Success
        function (position) {
@@ -653,7 +679,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
            position_data.push(position);  // For current position = last element
 
            //Route data
-           var tracking_data = listItmeDataService.get(); 
+           var tracking_data = listItmeDataService.get().routeId[1];
            var last_element = tracking_data.coords[tracking_data.coords.length - 1];
            var first_element = tracking_data.coords[0];
 
@@ -664,10 +690,15 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
            var interval = setInterval(function () {
 
                if (1 < tracking_data.coords.length) {
-                       console.log(' inne i watch')
+                   console.log(' inne i watch')
 
+                       var positionCoords = []; // google maps lat lng coords for map
+                       // Add each GPS entry to array trackCoords
+                       for (i = 0; i < position_data.length; i++) {
+                           positionCoords.push(new google.maps.LatLng(position_data[i].coords.latitude, position_data[i].coords.longitude));
+                       }
                        //Latest Coordinates for current position marker
-                       var myLatLng_current = new google.maps.LatLng(position_last_element.coords.latitude, position_last_element.coords.longitude);
+                       var myLatLng_current = positionCoords[positionCoords.length - 1];
 
                        //Last Route Coordinates
                        var myLatLng_last = new google.maps.LatLng(last_element["0"], last_element["1"]);
@@ -677,6 +708,10 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                        // Google Map options center at current pos
                        var myOptions = {
                            zoom: 17,
+                           draggable: false,
+                           scrollwheel: false,
+                           disableDoubleClickZoom: true,
+                           zoomControl: false,
                            center: myLatLng_current,
                            mapTypeId: google.maps.MapTypeId.WALKING
                        };
@@ -695,17 +730,18 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                            path: trackCoords,
                            strokeColor: "#7253c3",
                            strokeOpacity: 1.0,
-                           strokeWeight: 2
+                           strokeWeight: 4,
+                           map: map_current
                        });
-
 
                        //Marker for current position
                        var icon_current = {
-                           url: "/img/Icons/ic_my_location_blue_24dp.png",
-                           fillColor: '#0099ff',
+                           url: 'img/Icons/bluecross.png',
                            scaledSize: new google.maps.Size(30, 30), // scaled size
                            origin: new google.maps.Point(0, 0), // origin
                            anchor: new google.maps.Point(15, 15) // anchor
+
+
                        }
 
                        var marker = new google.maps.Marker({
@@ -715,13 +751,15 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                            title: 'Current position'
                        });
 
+
                        //Marker for first position
                        var icon_first = {
-                           url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
-                           fillColor: '#7253C3',
+                           url: 'img/Icons/greendot.png',
                            scaledSize: new google.maps.Size(30, 30), // scaled size
                            origin: new google.maps.Point(0, 0), // origin
                            anchor: new google.maps.Point(15, 15) // anchor
+
+
                        }
 
                        var marker = new google.maps.Marker({
@@ -732,37 +770,39 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                        });
 
                        //Marker for last position
-                       var icon_current = {
-                           url: "/img/Icons/ic_radio_button_checked_red_24dp.png",
-                           fillColor: '#0099ff',
+                       var icon_last = {
+                           url: 'img/Icons/reddot.png',
                            scaledSize: new google.maps.Size(30, 30), // scaled size
                            origin: new google.maps.Point(0, 0), // origin
                            anchor: new google.maps.Point(15, 15) // anchor
+
+
                        }
+
 
                        var marker = new google.maps.Marker({
                            position: myLatLng_last,
-                           icon: icon_current,
                            map: map_current,
+                           icon: icon_last,
                            title: 'Final position'
                        });
 
-
+                           /*
                        // Apply the line to the map
-                       trackPath.setMap(map_current);
+                       trackPath.setMap(map_current);*/
                    }
                    counter++;
                    if (counter === 1) {
                        clearInterval(interval);
                    }
-               }}, 2000);
+               }}, 10000);
        },
        // Error
        function (error) {
            console.log(error);
        },
        // Settings
-       { frequency: 1000, enableHighAccuracy: true });
+       { enableHighAccuracy: false });
 
     }
 
@@ -776,7 +816,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
         //Clear input values
         $scope.data = {
             routeWalkComment: '',
-            routeWalkLike: 0
+            routeWalkLike: false
         };
         $state.go('menu.myRoutes', {}, { reload: true });
     }
@@ -784,20 +824,70 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
     $scope.sendCommentRating = function () {
 
+
             $http({
                 method: 'GET',
                 url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
             }).then(function (response) {
                 var latest_tracking_data = response.data;
-                console.log('latest_tracking_data')
-                console.log(latest_tracking_data)
 
-                var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": "5911cd9d8b242d06d3d30c09", "comment": $scope.data.routeWalkComment, "date": "2017-05-09T14:09:33.552Z" })
 
+                //Input new comment
+                if ($scope.data.routeWalkComment !== '') {
+                    var newCommentList = latest_tracking_data.comments;
+                    newCommentList.push({ "userId": userInfo, "comment": $scope.data.routeWalkComment})
+                }
+                else {
+                    newCommentList = newCommentList;
+                }
+
+
+                //input new like if liked and your user id not in score list
+                var willAddRating = true;
+                var userInfo = listItmeDataService.get().Userdata._id;
                 var newLikeList = latest_tracking_data.score;
-                newLikeList.push({ "userId": "5911cd9d8b242d06d3d30c09", "score": $scope.data.routeWalkLike})
 
+                for (i = 0; i < newLikeList.length; i++) {
+                    if (newLikeList[i].userId == userInfo) {
+                        var willAddRating = false;
+                        var indexForRemove = i;
+                        console.log('false')
+                    }
+                }
+                console.log('likelist', newLikeList)
+                console.log('likevalue',$scope.data.routeWalkLike)
+                if (willAddRating == true && $scope.data.routeWalkLike == true) {
+                    newLikeList.push({ "userId": userInfo, "score": 1 })
+                    console.log('true1', newLikeList)
+                }
+                if (willAddRating == false && $scope.data.routeWalkLike !== true) {
+                    newLikeList.splice(indexForRemove, 1);
+                    console.log('false0', newLikeList)
+                }
+                if (willAddRating == false && $scope.data.routeWalkLike == true) {
+                    newLikeList = newLikeList;
+                    console.log('false else', newLikeList)
+                }
+
+                //add userid to walkerslist
+                var walksersList = latest_tracking_data.walkersId;
+                
+                var willAddWalkerId = true;
+                for (i = 0; i < walksersList.length; i++) {
+                    if (walksersList[i] == userInfo) {
+                        var willAddWalkerId = false;
+                    }
+                }
+                if (willAddWalkerId == true) {
+                    walksersList.push(userInfo);
+                }
+                if (willAddWalkerId == false) {
+                    walksersList = walksersList;
+                }
+
+
+
+                //http request
                 var req = {
                     crossDomain: true,
                     method: 'PUT',
@@ -812,6 +902,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                         "createdAt": latest_tracking_data.createdAt,
                         "updatedAt": latest_tracking_data.updatedAt,
                         "coords": latest_tracking_data.coords,
+                        "walkersId": walksersList,
                         "time": latest_tracking_data.time,
                         "score": newLikeList,
                         "comments": newCommentList,
@@ -822,6 +913,11 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
                 }
 
                 $http(req).then(function () {
+                    $ionicPopup.alert({
+                        title: 'Thanks for walking this route!',
+                        template: '<div style="text-align:center"> Your comment and choise of recommendation has been added to this route so that other people can see your thoughts of it. </br> </br> Also, your username has been added to this route so that other people can see that you have walked this route. </div>',
+                        okType: 'button-balanced'
+                    });
                     $scope.data = {
                         routeWalkComment: '',
                         routeWalkLike: 0
@@ -841,50 +937,60 @@ function ($scope, $stateParams, listItmeDataService, $http, $state) {
 
     $scope.sendComment = function () {
 
-        $http({
-            method: 'GET',
-            url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
-        }).then(function (response) {
-            var latest_tracking_data = response.data;
-            console.log('latest_tracking_data')
-            console.log(latest_tracking_data)
+        var messageFromInput = $scope.data.message;
 
-
-            var newCommentList = latest_tracking_data.comments;
-            newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message, "date": "2017-05-09T14:09:33.552Z" })
-
-            var req = {
-                crossDomain: true,
-                method: 'PUT',
-                url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    "title": latest_tracking_data.title,
-                    "checkpoints": latest_tracking_data.checkpoints,
-                    "creatorId": latest_tracking_data.creatorId,
-                    "createdAt": latest_tracking_data.createdAt,
-                    "updatedAt": latest_tracking_data.updatedAt,
-                    "coords": latest_tracking_data.coords,
-                    "time": latest_tracking_data.time,
-                    "score": latest_tracking_data.score,
-                    "comments": newCommentList,
-                    "distance": latest_tracking_data.distance,
-                    "_v": latest_tracking_data._v,
-                    "__proto__": latest_tracking_data.__proto__
-                }
-            }
-
-            $http(req).then(function () {
-                $scope.data = {
-                    message: ''
-                };
-                $scope.itemData = latest_tracking_data;
-                $state.go('menu.myRoutes', {}, { reload: true });
+        if (messageFromInput == '') {
+            $ionicPopup.alert({
+                title: 'Comment must include text!',
+                okType: 'button-assertive'
             });
-        })
-    };
+        }
+        else {
+
+            $http({
+                method: 'GET',
+                url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
+            }).then(function (response) {
+                var latest_tracking_data = response.data;
+                console.log('latest_tracking_data')
+                console.log(latest_tracking_data)
+
+                var newCommentList = latest_tracking_data.comments;
+                newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message})
+
+                var req = {
+                    crossDomain: true,
+                    method: 'PUT',
+                    url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        "title": latest_tracking_data.title,
+                        "checkpoints": latest_tracking_data.checkpoints,
+                        "creatorId": latest_tracking_data.creatorId,
+                        "createdAt": latest_tracking_data.createdAt,
+                        "updatedAt": latest_tracking_data.updatedAt,
+                        "coords": latest_tracking_data.coords,
+                        "time": latest_tracking_data.time,
+                        "score": latest_tracking_data.score,
+                        "comments": newCommentList,
+                        "distance": latest_tracking_data.distance,
+                        "_v": latest_tracking_data._v,
+                        "__proto__": latest_tracking_data.__proto__
+                    }
+                }
+
+                $http(req).then(function () {
+                    $scope.data = {
+                        message: ''
+                    };
+                    $scope.itemData = latest_tracking_data;
+                    $state.go('menu.myRoutes', {}, { reload: false });
+                });
+            })
+            };
+    }
 
     $scope.updateItem = function () {
 
@@ -927,10 +1033,11 @@ function ($scope, $http, $state, $stateParams,listItmeDataService) {
          };
 }])
    
-.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup','listItmeDataService',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('recordRouteCtrl', ['$scope', '$state', '$stateParams', '$http', '$ionicPopup','listItmeDataService', '$timeout',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService) {
+function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService, $timeout) {
+
 
     $scope.initPosition = function () {
 
@@ -949,18 +1056,19 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
            // Create the Google Map, set options
            var map_current = new google.maps.Map(document.getElementById("map_canvas_current"), myOptionsCurrent);
 
+            //Marker for first position
+            var icon_first = {
+                url: 'img/Icons/bluecross.png',
+                scaledSize: new google.maps.Size(30, 30), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(15, 15) // anchor
 
-           var icon = {
-               url: "/img/Icons/ic_my_location_blue_24dp.png",
-               fillColor: '#0099ff',
-               scaledSize: new google.maps.Size(30, 30), // scaled size
-               origin: new google.maps.Point(0, 0), // origin
-               anchor: new google.maps.Point(15, 15) // anchor
-           }
+
+                   }
 
            var marker = new google.maps.Marker({
                position: myLatLngCurrent,
-               icon: icon,
+               icon: icon_first,
                map: map_current
            });
 
@@ -973,6 +1081,7 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
      )
     }
 
+
     var watch_id = "WatchID";    // ID of the geolocation
     var tracking_data = []; // Array containing GPS position objects
     var trackCoords = []; // google maps lat lng coords for map
@@ -981,74 +1090,40 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
     $scope.startRecordingRoute = function () {
 
-        $ionicPopup.alert({
-            title: 'You are now recording a route!',
-            template: 'After you\'re done you can save, add a title and description and share this recorded route to the CityWalks community! </br></br> If you would like to stop and discard the recording, just click \'Stop recording\' and then \'Delete recording\'  ',
-            okType: 'button-balanced'
+        // An elaborate, custom popup
+        var myPopup = $ionicPopup.show({
+            template: '<ion-list style="text-align:center;">  <ion-spinner icon="bubbles" class="spinner-balanced"> </ion-spinner> &nbsp; <p> Map is loading . . . </p>  </ion-list> ',
+            cssClass: 'balanced',
+            title: 'Please wait for the map to load!',
+            scope: $scope,
         });
+        myPopup;
+        $timeout(function () {
+            myPopup.close(); //close the popup after 25 seconds 
+        }, 25000);
+        
+
 
         watch_id = navigator.geolocation.watchPosition(
        // Success
        function (position) {
-           console.log('recording')
-           console.log('trackdata inne i rec')
            tracking_data.push(position);
+           console.log('tracking_data', tracking_data)
            var counter = 0;
            var last_element = tracking_data[tracking_data.length - 1];
+           console.log('last_element', last_element)
            var first_element = tracking_data[0];
+
+           //Latest Coordinates
+           var myLatLng = new google.maps.LatLng(last_element.coords.latitude, last_element.coords.longitude);
+           //First Coordinates
+           var myLatLng_first = new google.maps.LatLng(first_element.coords.latitude, first_element.coords.longitude);
+
            var interval = setInterval(function () {
 
-               if (1 == tracking_data.length) {
-                   console.log('trackdata inne i rec1')
-                   var myLatLng = new google.maps.LatLng(last_element.coords.latitude, last_element.coords.longitude);
-                   // Google Map options
-                   var myOptions = {
-                       zoom: 17,
-                       center: myLatLng,
-                       mapTypeId: google.maps.MapTypeId.WALKING
-                   };
-                   // Create the Google Map, set options
-                   var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-                   var icon = {
-                       url: "/img/Icons/ic_my_location_blue_24dp.png",
-                       fillColor: '#0099ff',
-                       scaledSize: new google.maps.Size(30, 30), // scaled size
-                       origin: new google.maps.Point(0, 0), // origin
-                       anchor: new google.maps.Point(15, 15) // anchor
-                   }
-
-                   var marker = new google.maps.Marker({
-                       position: myLatLng,
-                       icon: icon,
-                       map: map
-                   });
-
-                   // Apply the line to the map
-                   marker.setMap(map);
-               }
-
                if (1 < tracking_data.length) {
-                   console.log('trackdata inne i rec2')
-
-                   //Latest Coordinates
-                   var myLatLng = new google.maps.LatLng(last_element.coords.latitude, last_element.coords.longitude);
-                   //First Coordinates
-                   var myLatLng_first = new google.maps.LatLng(first_element.coords.latitude, first_element.coords.longitude);
-
-                   // Google Map options center at current pos
-                   var myOptions = {
-                       zoom: 17,
-                       center: myLatLng,
-                       mapTypeId: google.maps.MapTypeId.WALKING
-                   };
-
-                   // Create the Google Map, set options
-                   var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                    var trackCoords = []; // google maps lat lng coords for map
-
-                   var trackCoordsExtra = [];
 
                    // Add each GPS entry to array trackCoords
                    for (i = 0; i < tracking_data.length; i++) {
@@ -1056,62 +1131,82 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
                    }
 
+                   // Google Map options center at current pos
+                   var myOptions = {
+                       zoom: 17,
+                       draggable: false,
+                       scrollwheel: false,
+                       disableDoubleClickZoom: true,
+                       zoomControl: false,
+                       center: trackCoords[trackCoords.length - 1],
+                       mapTypeId: google.maps.MapTypeId.WALKING
+                   };
+
+                   // Create the Google Map, set options
+                   var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+
+
                    // Plot the GPS entries as a line on the Google Map
                    var trackPath = new google.maps.Polyline({
                        path: trackCoords,
                        strokeColor: "#7253c3",
                        strokeOpacity: 1.0,
-                       strokeWeight: 2
-                   });
-
-
-                   //Marker for current position
-                   var icon_current = {
-                       url: "/img/Icons/ic_my_location_blue_24dp.png",
-                       fillColor: '#0099ff',
-                       scaledSize: new google.maps.Size(30, 30), // scaled size
-                       origin: new google.maps.Point(0, 0), // origin
-                       anchor: new google.maps.Point(15, 15) // anchor
-                   }
-
-                   var marker = new google.maps.Marker({
-                       position: myLatLng,
-                       icon: icon_current,
-                       map: map,
-                       title: 'Current position'
+                       strokeWeight: 5,
+                       map: map
                    });
 
                    //Marker for first position
-                   var icon_first = {
-                       url: "/img/Icons/ic_radio_button_checked_green_24dp.png",
-                       fillColor: '#7253C3',
+                   var icon_current = {
+                       url: 'img/Icons/bluecross.png',
                        scaledSize: new google.maps.Size(30, 30), // scaled size
                        origin: new google.maps.Point(0, 0), // origin
                        anchor: new google.maps.Point(15, 15) // anchor
+
+
                    }
 
                    var marker = new google.maps.Marker({
-                       position: myLatLng_first,
+                       position: trackCoords[trackCoords.length - 1],
+                       map: map,
+                       icon: icon_current,
+                       title: 'Current position'
+                   });
+
+
+                   //Marker for first position
+                   var icon_first = {
+                       url: 'img/Icons/greendot.png',
+                       scaledSize: new google.maps.Size(30, 30), // scaled size
+                       origin: new google.maps.Point(0, 0), // origin
+                       anchor: new google.maps.Point(15, 15) // anchor
+
+
+                   }
+
+                   var marker = new google.maps.Marker({
+                       position: trackCoords[0],
                        icon: icon_first,
                        map: map,
                        title: 'Start position'
                    });
-
+                   /*
                    // Apply the line to the map
-                   trackPath.setMap(map);
+                   trackPath.setMap(map);*/
+
                }
                counter++;
                if (counter === 1) {
                    clearInterval(interval);
                }
-           }, 2000);
+           }, 10000);
        },
        // Error
        function (error) {
            console.log(error);
        },
        // Settings
-       { frequency: 1000, enableHighAccuracy: true });
+       {enableHighAccuracy: false });
 
     }
 
@@ -1165,11 +1260,23 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
         total_time_ms = end_time - start_time;
         total_time_s = total_time_ms / 1000;
-
+        //minutes
         final_time_m = Math.floor(total_time_s / 60);
-        $scope.routeTimeMin = final_time_m.toFixed(0);  //send time to html page
+        routeTimeMin = final_time_m.toFixed(0);
+        if (routeTimeMin < 10) {
+            routeTimeMin = "00:"+"0" + routeTimeMin;
+        }
+        if (routeTimeMin > 10) {
+            routeTimeMin = "00:" + routeTimeMin;
+        }
+        $scope.routeTimeMin = routeTimeMin;  //send time to html page
+        //seconds
         final_time_s = total_time_s - (final_time_m * 60);
-        $scope.routeTimeSec = final_time_s.toFixed(0);  //send time to html page
+        routeTimeSec = final_time_s.toFixed(0);
+        if (routeTimeSec < 10) {
+            routeTimeSec = "0" + routeTimeSec;
+        }
+        $scope.routeTimeSec = routeTimeSec;  //send time to html page
     };
 
     $scope.deleteRecordedRoute = function () {
@@ -1207,18 +1314,51 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
 
     $scope.data = {
         routeComment: '',
-        routeTitle: ''
+        routeTitle: '',
+        routeLike: false
     };
 
     // $scope.getUserData = factory.user();
 
     $scope.sendRecordedRoute = function () {
 
+        //require title, dont change boolean values
+        if ($scope.data.routeTitle == '') {
+            $ionicPopup.alert({
+                title: 'Please add a title!',
+                okType: 'button-assertive'
+            });
+        }
+        // title,  change boolean values
+        if ($scope.data.routeTitle !== '') {
+
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
-        console.log('userId', userInfo)
-        var testUser = "5911cd9d8b242d06d3d30c09"
-        var time = final_time_m.toFixed(0) + ":" + final_time_s.toFixed(0);
+        console.log(routeTimeMin)
+        console.log(routeTimeSec)
+        var time = routeTimeMin + ":" + routeTimeSec;
+            console.log(time)
+        
+        
+
+        //comment array
+        var routeCommentArray = [];
+        if ($scope.data.routeComment !== '') {
+            routeCommentArray = [{ "userId": userInfo, "comment": $scope.data.routeComment }];
+        }
+        if ($scope.data.routeComment == '') {
+            routeCommentArray = [];
+        }
+
+        //like array
+        var routeLikesArray = [];
+        if ($scope.data.routeLike == true) {
+            routeLikesArray = [{"userId": userInfo, "score": 1 }];
+        }
+        if ($scope.data.routeLike == false) {
+            routeLikesArray = [];
+        }
+
 
         var req = {
             crossDomain: true,
@@ -1231,14 +1371,18 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
                 "title": $scope.data.routeTitle,
                 "creatorId": userInfo,
                 "coords": routeCoords,
+                "walkersId": userInfo,
                 "time": time,
-                "score": [{"userId": userInfo, "score": $scope.data.routeLike }],
-                "comments": [{ "userId": userInfo, "comment": $scope.data.routeComment, "date": "2017-05-09T14:09:33.552Z" }],
+                "score": routeLikesArray,
+                "comments": routeCommentArray,
                 "distance": total_km_rounded
             }
         }
 
-        $http(req).then(function () {
+        $http(req).then(function (response) {
+            var createdRouteID = response.data._id;
+            var newRouteList = listItmeDataService.get().Userdata.routes;
+            newRouteList.push(createdRouteID)
             //Reload recording map
             navigator.geolocation.getCurrentPosition(
               // Success
@@ -1268,14 +1412,31 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService)
                 routeComment: '',
                 routeTitle: ''
             };
-            $state.go('menu.recordRoute'),
-            $scope.error = 'Error logging in.'
+            var data = listItmeDataService.get();
+            var jwt = data.jwt;
+            var sendrouteid = {
+                crossDomain: true,
+                method: 'PATCH',
+                url: 'http://46.101.219.139:5000/users/' + userInfo,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                },
+                data: {
+                    "routes": newRouteList
+                }
+            }
+
+            $http(sendrouteid);
+
+            $state.go('menu.recordRoute', {}, { reload: true }),
+            $scope.error = 'Error sharing route.'
         });
 
 
     };
 
-
+    }
 
 
 }])
@@ -1302,43 +1463,96 @@ function ($scope, $stateParams, $ionicPopup) {
 
 }])
    
-.controller('friendesRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
 
     $scope.getFriendsData = function () {
         var data = listItmeDataService.get();
+        var finalList = [];
+        angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
+                var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
+                var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length
+                finalList.push([nameAndKey.userName, value, numRoutes])
+            })
+            console.log(finalList)
+            $scope.myData = finalList;
+
+        }
+
+        //console.log("jwt", jwt);
+        //var req = {
+        //    method: 'GET',
+        //    url: 'http://46.101.219.139:5000/users/',
+        //    headers: {
+        //        'Content-Type': 'application/json',
+        //        'Authorization': jwt
+        //    }
+        //}
+        //$http(req).then(function (response) {
+        //    $scope.myData = data.Userdata.friends;
+
+        //})
+    
+
+    $scope.getFriendsRoutes = function (id) {
+        var data = listItmeDataService.get();
         var jwt = data.jwt;
 
-        console.log("jwt", jwt);
+        var friendId = id[1];
+        console.log('id:', friendId)
         var req = {
             method: 'GET',
-            url: 'http://46.101.219.139:5000/users/',
+            url: 'http://46.101.219.139:5000/api/routes?creatorId='+friendId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': jwt
             }
         }
         $http(req).then(function (response) {
-            $scope.myData = data.Userdata.friends;
-
+            listItmeDataService.set('friendsRoutes', response)
+            listItmeDataService.set('friendsRoutesName', id[0])
+            console.log('response', response)
+            $state.go("menu.friendsRoutes")
         })
+       
     }
 
-    $scope.getFriendsRoutes = function (id) {
-        var friendId = id;
-        listItmeDataService.set('friendId', friendId);
-        $state.go("menu.myRoutes")
-    }
 
 }])
 
 
-.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('friendsRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup) {
+function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) {
+
+    $scope.creatorName = listItmeDataService.get().friendsRoutesName;
+    $scope.getRouteData = function () {
+        var friendsRoutes = listItmeDataService.get().friendsRoutes;
+        console.log('friendsRoutes', friendsRoutes)
+        $scope.myData = friendsRoutes.data;
+        console.log('my data', friendsRoutes.data)
+    }
+
+    $scope.getRouteInfo = function (route) {
+        var route = route;
+        listItmeDataService.set('routeId', route);
+        $state.go("menu.myRoutes")
+
+        console.log('routeID', listItmeDataService.get().routeId);
+
+
+    }
+
+    
+}])
+
+.controller('EditFriendsCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', 'handleUser', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, $ionicPopup) {
 
     $scope.data = {
         'username': '',
@@ -1347,30 +1561,50 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 
     $scope.getFriends = function () {
         var data = listItmeDataService.get();
-        var jwt = data.jwt;
-
-        console.log("jwt", jwt);
-        var req = {
-            method: 'GET',
-            url: 'http://46.101.219.139:5000/users/',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwt
-            }
-        }
-        $http(req).then(function (response) {
-            $scope.myData = data.Userdata.friends;
-
+        var finalList = [];
+        angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
+            var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
+            finalList.push([nameAndKey.userName, value])
         })
+        $scope.myData = finalList;
     }
+            
 
     $scope.addFriend = function () {
         var data = listItmeDataService.get();
         var jwt = data.jwt;
- 
         var newFriendsList = data.Userdata.friends;
-        newFriendsList.push([$scope.data.username]);
+        var id = handleUser.findId($scope.data.username, listItmeDataService.get().allUsers);
 
+        //check if input already exists in friendlist
+        var friendExist = false;
+        for (i = 0; i < newFriendsList.length; i++) {
+            if (id == newFriendsList[i]) {
+                friendExist = true;
+            }
+        };
+
+        if ($scope.data.username == "") {
+            $ionicPopup.alert({
+                title: 'Please type in a username',
+                //template: '',
+                okType: 'button-balanced'
+            });
+        } else if (typeof id == 'undefined'){
+            $ionicPopup.alert({
+                title: 'Invalid Username',
+                template: 'Usernames are case-sensitive',
+                okType: 'button-balanced'
+            });
+        } else if (friendExist) {
+            $ionicPopup.alert({
+                title: 'You already have '+ $scope.data.username +' as a friend ',
+                //template: '',
+                okType: 'button-balanced'
+            });
+        } else {
+            newFriendsList.push(id);
+            handleUser.drop()
         var req = {
             crossDomain: true,
             method: 'PATCH',
@@ -1385,30 +1619,48 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
         }
 
         $http(req).then(function (response) {
-            console.log(response)
             newFriendsList = response.data.friends;
-            $state.go('menu.EditFriends', {}, { reload: true });
-        });
+            $ionicPopup.alert({
+                title: $scope.data.username + ' was added as a friend',
+                //template: '',
+                okType: 'button-balanced'
+            });
+            $state.go($state.current, {}, {reload: true});
 
+        });
+        }
     };
 
     $scope.deleteFriend = function (item) {
-        $ionicPopup.alert({
-                title: 'Error deleting friend',
-                //template: 'Please type in username, email and password',
+        var data = listItmeDataService.get();
+        var jwt = data.jwt;
+        var newFriendsList = data.Userdata.friends;
+        newFriendsList.splice(newFriendsList.indexOf(item[1]), 1);
+
+        var req = {
+            crossDomain: true,
+            method: 'PATCH',
+            url: 'http://46.101.219.139:5000/users/' + data.Userdata._id,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            data: {
+                "friends": newFriendsList
+            }
+        }
+
+        $http(req).then(function (response) {
+            newFriendsList = response.data.friends;
+            $ionicPopup.alert({
+                title: item[0] + ' was deleted as a friend',
+                //template: '',
                 okType: 'button-balanced'
-            })
+            });
+            $state.go($state.current, {}, { reload: true });
 
-        //$http({
-        //    method: 'DELETE',
-        //    url: 'http://46.101.219.139:5000/users/' + item_id
-        //}).then(function () {
-        //    $scope.getFriends();
-        //}, function errorCallback(response) {
-        //    console.log('error', response)
-        //    ;
+        });
 
-        //})
     };
 
 }])
@@ -1417,12 +1669,10 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup)
 .controller('settingsCtrl', ['$scope', '$http', '$state', '$stateParams', 'listItmeDataService', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup) {
 
+function ($scope, $http, $state, $stateParams, listItmeDataService) {
+    $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
 
-    $scope.data = {
-        'password': '',
-    }
 
     $scope.getSettingsData = function () {
         var data = listItmeDataService.get();
@@ -1485,4 +1735,45 @@ function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup)
 
 
     };
+}])
+
+.controller('myRealRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+// You can include any angular dependencies as parameters for this function
+// TIP: Access Route Parameters for your page via $stateParams.parameterName
+function ($scope, $state, $stateParams, $http, listItmeDataService) {
+
+    var myUserId = listItmeDataService.get().Userdata._id;
+    var myUserName = listItmeDataService.get().Userdata.username;
+    $scope.myUserName = listItmeDataService.get().Userdata.username;
+    var data = listItmeDataService.get();
+    var jwt = data.jwt;
+
+    $scope.getMyRoutes = function () {
+
+        var req = {
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes?creatorId=' + myUserId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        }
+        $http(req).then(function (response) {
+            var finalList = [];
+            for (i = 0; i < response.data.length; i++) {
+                finalList.push([myUserName, response.data[i]])
+            }
+            $scope.allMyRoutes = finalList;
+        })
+
+    }
+
+
+    $scope.getRouteInfo = function (route) {
+        var route = route;
+        listItmeDataService.set('routeId', route);
+        $state.go("menu.myRoutes")
+    }
+
+
 }])

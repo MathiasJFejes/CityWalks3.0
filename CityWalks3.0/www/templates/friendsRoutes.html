@@ -1,0 +1,14 @@
+﻿<ion-view title= "{{creatorName}}s Routes" hide-back-button="false" id="page45">
+
+    <ion-content padding="false" class="has-header" style="background: linear-gradient(#8e75cf,#7253C3)">
+        <ion-list ng-init="getRouteData()">
+            <ion-item class="item item-icon-left" ng-repeat="route in myData" ng-click="getRouteInfo(route)"style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
+                <i class="icon ion-map"></i>
+                <p style="color:white; font-size:larger"> {{route.title}} </p>
+                <p style="color:white"> Distance: {{route.distance}} km</p>
+                <p style="color:white"> Likes: {{route.score["0"].score}}</p>
+
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
