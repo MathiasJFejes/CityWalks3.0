@@ -1491,7 +1491,6 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
             })
             console.log(finalList)
             $scope.myData = finalList;
-
         }
 
         //console.log("jwt", jwt);
@@ -1524,9 +1523,14 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
             }
         }
         $http(req).then(function (response) {
-            listItmeDataService.set('friendsRoutes', response)
+            var friendsRoutes = [];
+            console.log('response', response.data)
+            angular.forEach(response.data, function (value, key) {                 
+                friendsRoutes.push([id[0], response.data[key]])
+            })
+            listItmeDataService.set('friendsRoutes', friendsRoutes)
             listItmeDataService.set('friendsRoutesName', id[0])
-            console.log('response', response)
+            console.log('friendsRo', friendsRoutes)
             $state.go("menu.friendsRoutes")
         })
        
@@ -1544,12 +1548,11 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     $scope.creatorName = listItmeDataService.get().friendsRoutesName;
     $scope.getRouteData = function () {
         var friendsRoutes = listItmeDataService.get().friendsRoutes;
-        console.log('friendsRoutes', friendsRoutes)
-        $scope.myData = friendsRoutes.data;
-        console.log('my data', friendsRoutes.data)
+        $scope.myData = friendsRoutes;
     }
 
     $scope.getRouteInfo = function (route) {
+        console.log('route', route)
         var route = route;
         listItmeDataService.set('routeId', route);
         $state.go("menu.myRoutes")
