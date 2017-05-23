@@ -106,39 +106,52 @@ function ($scope, $stateParams, $state, $http, $ionicPopup) {
     $scope.data = {
         'name': '',
         'email': '',
-        'newpassword': ''
+        'password': '',
+        'confirmpassword': ''
     }
     
     $scope.error='';
 
+
+
     $scope.signup = function () {
-        console.log("inne i funktionen")
-        var req = {
-            crossDomain: true,
-            method: 'POST',
-            url: 'http://46.101.219.139:5000/users',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.newpassword }
 
+        if ($scope.data.password == $scope.data.confirmpassword) {
+            console.log("inne i funktionen")
+            var req = {
+                crossDomain: true,
+                method: 'POST',
+                url: 'http://46.101.219.139:5000/users',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: { 'username': $scope.data.name, 'email': $scope.data.email, 'password': $scope.data.password }
+
+            }
+            $http(req).then(function successCallback(response) {
+                $state.go('login')
+                $ionicPopup.alert({
+                    title: 'Welcome!',
+                    template: 'Your account was succesfully created </br> </br> Please add your username and password to log in!',
+                    okType: 'button-balanced'
+                });
+            }, function errorCallback(response) {
+                console.log('error', response)
+                $ionicPopup.alert({
+                    title: 'Error creating account',
+                    template: 'Please type in username, email and password',
+                    okType: 'button-balanced'
+                });
+
+            });
         }
-        $http(req).then(function successCallback (response) {
-            $state.go('login')
+        else {
             $ionicPopup.alert({
-                title: 'Welcome!',
-                template: 'Your account was succesfully created </br> </br> Please add your username and password to log in!',
+                title: 'The two passwords do not match',
+                //template: '',
                 okType: 'button-balanced'
             });
-        }, function errorCallback(response) {
-            console.log('error', response)
-            $ionicPopup.alert({
-                title: 'Error creating account',
-                template: 'Please type in username, email and password',
-                okType: 'button-balanced'
-            });
-
-        });
+        }
 
 
     };
@@ -367,7 +380,7 @@ function ($scope, $stateParams, $http) {
                     destination: startend,
                     waypoints: [{ location: randCoordfirst, stopover: false },
                                 { location: randCoordsecond, stopover: false }],
-                    optimizeWaypoints: false, 
+                    optimizeWaypoints: true, 
                     travelMode: google.maps.TravelMode.WALKING,
                     avoidHighways: true
                     }
@@ -523,6 +536,7 @@ function ($scope, $stateParams, $http) {
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
                         var waypts = [];
+
                         waypts.push({
                             location: new google.maps.LatLng(wayptsNation[0], wayptsNation[1]),
                             stopover: false
@@ -557,18 +571,57 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
+                                    //console.log(results[0].geometry.location.lat())
                                 //}
                             }
 
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts,
-                                optimizeWaypoints: false,
+                                waypoints: waypts, /*getgreedy(),*/
+                                optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
 
+                            getgreedy();
+
+                            function getgreedy() {
+
+                                var greedywaypts = [];
+                                var places = 5;
+                                var mincost = 1000;
+                                var visits = 0;
+                                var pointer = currentpos;
+                                
+                                for (var i = 0; i < waypts.length; i++) {
+                                    var cost = getDistance(init_lat, init_lon, waypts[i].location.lat(), waypts[i].location.lng());
+                                    if (cost < mincost) {
+                                        mincost = cost;
+                                    }
+                                }
+                                console.log(mincost)
+                            }
+
+                            function getDistance(lat1, lon1, lat2, lon2) {
+                                var R = 6371; // Radius of the earth in km
+                                var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+                                var dLon = deg2rad(lon2 - lon1);
+                                var a =
+                                  Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                                  Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                                ;
+                                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                                var d = R * c; // Distance in km
+                                return d;
+                            }
+
+                            function deg2rad(deg) {
+                                return deg * (Math.PI / 180)
+                            }
+
+                            console.log(waypts)
                             directionsService.route(request, function (response, status) {
                            
                                 if (status == google.maps.DirectionsStatus.OK) {
@@ -1600,12 +1653,11 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
         var finalList = [];
         angular.forEach(data.Userdata.friends, function (value, key) {                  // for each of the users friends 
                 var nameAndKey = handleUser.findName(value, listItmeDataService.get().allUsers)   // get name of friend 
-                var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length
+                var numRoutes = listItmeDataService.get().allUsers[nameAndKey.key].routes.length 
                 finalList.push([nameAndKey.userName, value, numRoutes])
             })
             console.log(finalList)
             $scope.myData = finalList;
-
         }
 
         //console.log("jwt", jwt);
@@ -1638,9 +1690,14 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
             }
         }
         $http(req).then(function (response) {
-            listItmeDataService.set('friendsRoutes', response)
+            var friendsRoutes = [];
+            console.log('response', response.data)
+            angular.forEach(response.data, function (value, key) {                 
+                friendsRoutes.push([id[0], response.data[key]])
+            })
+            listItmeDataService.set('friendsRoutes', friendsRoutes)
             listItmeDataService.set('friendsRoutesName', id[0])
-            console.log('response', response)
+            console.log('friendsRo', friendsRoutes)
             $state.go("menu.friendsRoutes")
         })
        
@@ -1658,12 +1715,11 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser) 
     $scope.creatorName = listItmeDataService.get().friendsRoutesName;
     $scope.getRouteData = function () {
         var friendsRoutes = listItmeDataService.get().friendsRoutes;
-        console.log('friendsRoutes', friendsRoutes)
-        $scope.myData = friendsRoutes.data;
-        console.log('my data', friendsRoutes.data)
+        $scope.myData = friendsRoutes;
     }
 
     $scope.getRouteInfo = function (route) {
+        console.log('route', route)
         var route = route;
         listItmeDataService.set('routeId', route);
         $state.go("menu.myRoutes")
@@ -1797,72 +1853,113 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, handleUser, 
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 
-function ($scope, $http, $state, $stateParams, listItmeDataService) {
+function ($scope, $http, $state, $stateParams, listItmeDataService, $ionicPopup) {
+
+    $scope.data = {
+        'currentpassword': '',
+        'newpassword': '',
+        'confirmnewpassword': ''
+    }
+
+    var local = 'local';
+
     $scope.userData = [listItmeDataService.get().Userdata.username, listItmeDataService.get().Userdata.email];
 
 
-    $scope.getSettingsData = function () {
-        var data = listItmeDataService.get();
-        var jwt = data.jwt;
-        var id = data.Userdata._id;
+    //$scope.getSettingsData = function () {
+    //    var data = listItmeDataService.get();
+    //    var jwt = data.jwt;
+    //    var id = data.Userdata._id;
 
-        console.log("jwt", data);
-        var req = {
-            method: 'GET',
-            url: 'http://46.101.219.139:5000/users',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwt
-            }
-        }
+    //    console.log("jwt", data);
+    //    var req = {
+    //        method: 'GET',
+    //        url: 'http://46.101.219.139:5000/users',
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //            'Authorization': jwt
+    //        }
+    //    }
 
-        $http(req).then(function successCallback(response) {
-            console.log(response)
-        },
-            function errorCallback(response) {
-                console.log('error', response)
-            })
-    };
-
+    //    $http(req).then(function successCallback(response) {
+    //        console.log(response)
+    //    },
+    //        function errorCallback(response) {
+    //            console.log('error', response)
+    //        })
+    //};
+    
 
     $scope.changePassword = function () {
-        console.log("inne i funktionen")
-        var data = listItmeDataService.get();
-        var jwt = data.jwt;
-        var id = data.Userdata._id;
-        console.log('id', id)
-        console.log('jwt', jwt)
-
+       
         var req = {
             crossDomain: true,
-            method: 'PATCH',
-            url: 'http://46.101.219.139:5000/users/' + id,
+            method: 'POST',
+            url: 'http://46.101.219.139:5000/authentication',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': jwt
+                'Content-Type': 'application/json'
             },
-            data: {'password': $scope.data.password }
-
+            data: { 'strategy': local, 'username': listItmeDataService.get().Userdata.username, 'password': $scope.data.currentpassword }
         }
-        $http(req).then(function successCallback(response) {
+        $http(req).then(function () {
+
+        if ($scope.data.newpassword == $scope.data.confirmnewpassword) {
+            console.log("inne i första ifsatsen")
+            var data = listItmeDataService.get();
+            var jwt = data.jwt;
+            var id = data.Userdata._id;
+            console.log('id', id)
+            console.log('jwt', jwt)
+
+            var req = {
+                crossDomain: true,
+                method: 'PATCH',
+                url: 'http://46.101.219.139:5000/users/' + id,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                },
+                data: { 'password': $scope.data.newpassword }
+
+            }
+            $http(req).then(function successCallback() {
+                $ionicPopup.alert({
+                    title: 'Success!',
+                    template: 'Your password was changed',
+                    okType: 'button-balanced'
+                });
+            }, function errorCallback(response) {
+                console.log('error', response)
+                $ionicPopup.alert({
+                    title: 'Error changing password',
+                    //template: '',
+                    okType: 'button-balanced'
+                });
+
+            });
+
+        } else {
             $ionicPopup.alert({
-                title: 'Success!',
-                template: 'Your password was changed',
+                title: 'The two passwords do not match',
+                //template: '',
                 okType: 'button-balanced'
             });
-        }, function errorCallback(response) {
-            console.log('error', response)
-            $ionicPopup.alert({
-                title: 'Error changing password',
-                //template: 'Please type in username, email and password',
-                okType: 'button-balanced'
-            });
+        }
 
-        });
-
-
+        }, function errorCallback() {
+                $ionicPopup.alert({
+                    title: 'Your current password was incorrect',
+                    //template: '',
+                    okType: 'button-balanced'
+                });
+        })
     };
 }])
+
+
+
+            
+
 
 .controller('myRealRoutesCtrl', ['$scope', '$state', '$stateParams', '$http', 'listItmeDataService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
