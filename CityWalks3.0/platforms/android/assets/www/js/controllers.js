@@ -174,34 +174,139 @@ function ($scope, $stateParams, $state) {
     }
 }])
    
-.controller('nearbyRoutesCtrl', ['$scope', '$stateParams', '$state', '$http', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('nearbyRoutesCtrl', ['$scope', '$stateParams', '$state', '$http', 'listItmeDataService', '$ionicPopup', 'handleUser', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http) {
+function ($scope, $stateParams, $state, $http, listItmeDataService, $ionicPopup, handleUser) {
 
-    $scope.data = {
-        'city': '',
-        'distance': ''
-    }
-
+    var nearbyList = [];
 
     $scope.findNearbyRoutes = function () {
 
-        var req = {
-            crossDomain: true,
-            method: 'POST',
-            url: 'http://46.101.219.139:5000/api/cities',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: { 'name': $scope.data.city, 'distance': $scope.data.distance }
+        navigator.geolocation.getCurrentPosition(
+        // Success
+        function (position) {
+            var myLat = position.coords.latitude;
+            var myLng = position.coords.longitude;
+            console.log('myLat',myLat)
+            console.log(myLng)
+        
+        $http({
+            method: 'GET',
+            url: 'http://46.101.219.139:5000/api/routes'
+        }).then(function (response) {
+            var finalList = [];
+            for (i = 0; i < response.data.length; i++) {
+                var nameAndKey = handleUser.findName(response.data[i].creatorId, listItmeDataService.get().allUsers)   // get name of friend 
+                var usernamepush = nameAndKey.userName;
+                var startLat = response.data[i].coords["0"]["0"];
+                console.log('startLat',startLat)
+                var startLng = response.data[i].coords["0"]["1"];
+                var title = response.data[i].title;
+                console.log('startLng', startLng)
+                var distance = distanceBetween(myLat, myLng, startLat, startLng);
+                console.log('distance', distance)
+
+
+                nearbyList.push({ "startLat": startLat, "startLng": startLng, "distanceFromMyLocation": distance, "title": title })
+                finalList.push({ "username": usernamepush, "data": response.data[i], "distanceFromMyLocation": distance })
+            }
+            console.log('finalList',finalList)
+
+            $scope.myData = finalList;
+        })
+        }
+        )
+    }
+
+    $scope.getRouteInfo = function (x) {
+        var routeId = x;
+        var objectToList = [routeId.username, routeId.data];
+        console.log(objectToList)
+        listItmeDataService.set('routeId', objectToList);
+        $state.go("menu.myRoutes")
+        //var data = listItmeDataService.get()
+        //console.log('test av get().routeID', data.routeId);
+
+        //console.log('test av get().routeID', listItmeDataService.get().routeId);
+
+    }
+
+    distanceBetween = function(lat1, lon1, lat2, lon2) {
+        var p = 0.017453292519943295;    // Math.PI / 180
+        var c = Math.cos;
+        var a = 0.5 - c((lat2 - lat1) * p) / 2 +
+                c(lat1 * p) * c(lat2 * p) *
+                (1 - c((lon2 - lon1) * p)) / 2;
+
+        var theDistance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+        var theDistanceThreeDecimals = theDistance.toFixed(3);
+        return theDistanceThreeDecimals;
+    }
+
+    $scope.showNearbyRoutes = function () {
+
+        navigator.geolocation.getCurrentPosition(
+       // Success
+       function (position) {
+
+        var myLatLngCurrent = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        // Google Map options
+        var myOptionsCurrent = {
+            zoom: 17,
+            center: myLatLngCurrent,
+            mapTypeId: google.maps.MapTypeId.WALKING
+        };
+
+        // Create the Google Map, set options
+        var map_nearby = new google.maps.Map(document.getElementById("map_canvas_nearby"), myOptionsCurrent);
+
+        //Marker for first position
+        var icon_first = {
+            url: 'img/Icons/bluecross.png',
+            scaledSize: new google.maps.Size(30, 30), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(15, 15) // anchor
+
+
         }
 
-        $http(req).then(function () { $state.go('menu.nearbyRoutes'), $scope.error = 'Error logging in.' });
+        var marker = new google.maps.Marker({
+            position: myLatLngCurrent,
+            icon: icon_first,
+            map: map_nearby,
+            title: 'My position'
+        });
+
+        //Marker for routes position
+        var icon_routes = {
+            url: 'img/Icons/greendot.png',
+            scaledSize: new google.maps.Size(30, 30), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(15, 15) // anchor
 
 
-    };
+        }
 
+        console.log(nearbyList)
+        var markers = [];
+        for (var i = 0; i < nearbyList.length; i++) {
+
+            markers[i] = new google.maps.Marker({
+                position:  new google.maps.LatLng(nearbyList[i].startLat, nearbyList[i].startLng),
+                map: map_nearby,
+                icon: icon_routes,
+                title: nearbyList[i].title + ', ' + nearbyList[i].distanceFromMyLocation + 'km away'
+            });
+
+
+        }
+       
+
+       })
+
+
+    }
 
 }])
    
@@ -489,6 +594,14 @@ function ($scope, $stateParams, $http) {
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
 function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup, handleUser) {
 
+
+
+    $scope.sortOption = '-recommendations';
+
+    $scope.sortBy = function (sortOption) {
+        $scope.sortOption = sortOption;
+    };
+
     $scope.getRouteData = function () {
         
         $http({
@@ -499,15 +612,26 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup,
             for (i = 0; i < response.data.length; i++) {
                 var nameAndKey = handleUser.findName(response.data[i].creatorId, listItmeDataService.get().allUsers)   // get name of friend 
                 var usernamepush = nameAndKey.userName;
-                finalList.push([usernamepush, response.data[i]])
+                console.log(i)
+                var totalCommentsPush = response.data[i].comments.length;
+                var totalRecommendationsPush = response.data[i].score.length;
+                var titlePush = response.data[i].title;
+                var createDatePush = response.data[i].createdAt;
+                var distancePush = response.data[i].distance;
+
+                finalList.push({ "username": usernamepush, "data": response.data[i], "recommendations": totalRecommendationsPush, "comments": totalCommentsPush, "date": createDatePush, "title": titlePush, "distance": distancePush })
             }
+            console.log(finalList)
+
             $scope.myData = finalList;
         })
     }
 
-    $scope.getRouteInfo = function (id) {
-        var routeId = id;
-        listItmeDataService.set('routeId', routeId);
+    $scope.getRouteInfo = function (x) {
+        var routeId = x;
+        var objectToList = [routeId.username, routeId.data];
+        console.log(objectToList)
+        listItmeDataService.set('routeId', objectToList);
         $state.go("menu.myRoutes")
         //var data = listItmeDataService.get()
         //console.log('test av get().routeID', data.routeId);
@@ -534,7 +658,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService, $ionicPopup,
 
 function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup) {
 
-
+    $scope.userName = listItmeDataService.get().Userdata.username;
     $scope.itemUser = listItmeDataService.get().routeId[0];
     $scope.itemData = listItmeDataService.get().routeId[1];
     var tracking_data = listItmeDataService.get().routeId[1];
@@ -627,7 +751,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
 
         $ionicPopup.alert({
             title: 'You can now walk this route!',
-            template: '<div style="text-align:center"> Follow the purple line (the route) with the red marker (your position) and you will probably have </br> a great experience! </br></br> Good luck! </div>',
+            template: '<div style="text-align:center"> Follow the <font color="#7253c3"> line (the route)</font> with the <font color="#387ef5"> marker (your position) </font> and you will probably have a great experience! </br></br> Good luck! </div>',
             okType: 'button-balanced'
         });
 
@@ -652,6 +776,14 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                if (1 < tracking_data.coords.length) {
                    console.log(' inne i watch')
 
+
+
+
+
+
+
+
+
                        var positionCoords = []; // google maps lat lng coords for map
                        // Add each GPS entry to array trackCoords
                        for (i = 0; i < position_data.length; i++) {
@@ -671,7 +803,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                            draggable: false,
                            scrollwheel: false,
                            disableDoubleClickZoom: true,
-                           zoomControl: false,
+                           zoomControl: true,
                            center: myLatLng_current,
                            mapTypeId: google.maps.MapTypeId.WALKING
                        };
@@ -747,9 +879,39 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                            title: 'Final position'
                        });
 
-                           /*
-                       // Apply the line to the map
-                       trackPath.setMap(map_current);*/
+                       var directionsDisplay;
+                       var directionsService = new google.maps.DirectionsService();
+                       initialize();
+                       calcRoute();
+
+                       function initialize() {
+                           directionsDisplay = new google.maps.DirectionsRenderer();
+
+                           
+                           directionsDisplay.setMap(map_current);
+                       }
+
+                       function calcRoute() {
+                           var selectedMode = document.getElementById('map_item_full').value;
+                           var request = {
+                               origin: myLatLng_current,
+                               destination: myLatLng_first,
+                               // Note that Javascript allows us to access the constant
+                               // using square brackets and a string value as its
+                               // "property."
+                               travelMode: google.maps.TravelMode.WALKING
+                           };
+                           directionsService.route(request, function (response, status) {
+                               if (status == 'OK') {
+                                   directionsDisplay.setDirections(response);
+                               }
+                           });
+                       }
+                      
+
+
+
+
                    }
                    counter++;
                    if (counter === 1) {
@@ -790,12 +952,13 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 url: 'http://46.101.219.139:5000/api/routes/' + tracking_data._id
             }).then(function (response) {
                 var latest_tracking_data = response.data;
-
+                var userInfo = listItmeDataService.get().Userdata._id;
+                var userName = listItmeDataService.get().Userdata.username;
 
                 //Input new comment
                 if ($scope.data.routeWalkComment !== '') {
                     var newCommentList = latest_tracking_data.comments;
-                    newCommentList.push({ "userId": userInfo, "comment": $scope.data.routeWalkComment})
+                    newCommentList.push({ "userId": userInfo,"username":userName, "comment": $scope.data.routeWalkComment})
                 }
                 else {
                     newCommentList = newCommentList;
@@ -804,7 +967,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
 
                 //input new like if liked and your user id not in score list
                 var willAddRating = true;
-                var userInfo = listItmeDataService.get().Userdata._id;
+                
                 var newLikeList = latest_tracking_data.score;
 
                 for (i = 0; i < newLikeList.length; i++) {
@@ -916,7 +1079,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 console.log(latest_tracking_data)
 
                 var newCommentList = latest_tracking_data.comments;
-                newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "comment": $scope.data.message})
+                newCommentList.push({ "userId": listItmeDataService.get().Userdata._id, "username": listItmeDataService.get().Userdata.username, "comment": $scope.data.message })
 
                 var req = {
                     crossDomain: true,
@@ -941,12 +1104,12 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                     }
                 }
 
-                $http(req).then(function () {
+                $http(req).then(function (response) {
                     $scope.data = {
                         message: ''
                     };
-                    $scope.itemData = latest_tracking_data;
-                    $state.go('menu.myRoutes', {}, { reload: false });
+                    $scope.itemData = response.data;
+                    $state.go('menu.myRoutes', {}, { reload: true });
                 });
             })
             };
@@ -1294,6 +1457,7 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
         var routeCoords = coordData;
         var userInfo = listItmeDataService.get().Userdata._id
+        var userName = listItmeDataService.get().Userdata.username
         console.log(routeTimeMin)
         console.log(routeTimeSec)
         var time = routeTimeMin + ":" + routeTimeSec;
@@ -1304,7 +1468,7 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
         //comment array
         var routeCommentArray = [];
         if ($scope.data.routeComment !== '') {
-            routeCommentArray = [{ "userId": userInfo, "comment": $scope.data.routeComment }];
+            routeCommentArray = [{ "userId": userInfo, "username": userName, "comment": $scope.data.routeComment }];
         }
         if ($scope.data.routeComment == '') {
             routeCommentArray = [];
@@ -1372,6 +1536,10 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
                 routeComment: '',
                 routeTitle: ''
             };
+
+            $state.go('menu.recordRoute', {}, { reload: true }),
+            $scope.error = 'Error sharing route.'
+
             var data = listItmeDataService.get();
             var jwt = data.jwt;
             var sendrouteid = {
@@ -1389,8 +1557,7 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
             $http(sendrouteid);
 
-            $state.go('menu.recordRoute', {}, { reload: true }),
-            $scope.error = 'Error sharing route.'
+           
         });
 
 
@@ -1731,6 +1898,7 @@ function ($scope, $state, $stateParams, $http, listItmeDataService) {
 
     $scope.getRouteInfo = function (route) {
         var route = route;
+        console.log(route)
         listItmeDataService.set('routeId', route);
         $state.go("menu.myRoutes")
     }

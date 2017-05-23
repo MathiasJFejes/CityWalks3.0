@@ -53,7 +53,7 @@
                 <ion-scroll id="comments-container1" style="position:absolute;top:0%;bottom:8%">
                     <ion-list id="comments-list2">
                         <ion-item class="item" id="comments-list-item1" ng-repeat="x in itemData.comments" style="background: linear-gradient(white,#fefefe);border:none">
-                            <p style="color:gray;font-size:small">{{x.userId}} &bull; {{x.date | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p style="color:gray;font-size:small">{{x.username}} &bull; {{x.date | date:'yyyy-MM-dd HH:mm:ss'}}</p>
                             <textarea disabled rows="3" style="color:black;width:100%;background-color:white">{{x.comment}}</textarea>
                         </ion-item>
                     </ion-list>
@@ -62,11 +62,11 @@
                 
                     <label class="item item-input" id="comments-input4" style="position:absolute;width:80%;height:8%;margin:auto;bottom:0%;left:10%">
                         
-                        <input type="text" placeholder="Message" maxlength="120" ng-model="data.message" ng-submit="sendComment()" style="left:10%">
+                        <input type="text" placeholder="Message @{{userName}}" maxlength="120" ng-model="data.message" ng-submit="sendComment()" style="left:10%">
                     </label>
                     
-                   <button style="position:absolute;bottom:0%;left:0%;width:10%;height:8%;color:#ef473a;border:none;background-color:white;font-size:x-large" id="comments-button2" ng-click="clickedComment=false" class="icon-left ion-close-round"></button>
-                   <button style="position:absolute;bottom:0%;left:90%;width:10%;height:8%;color:#33cd5f;border:none;background-color:white;font-size:xx-large" id="comments-button2" ng-click="sendComment()" class="icon-left ion-android-send"></button>
+                   <button style="position:absolute;bottom:0%;left:0%;width:10%;height:8%;color:#ef473a;border:none;background-color:white;font-size:x-large" id="comments-button2" ng-click="clickedComment=false" class="button icon-left ion-close-round"></button>
+                   <button style="position:absolute;bottom:0%;left:90%;width:10%;height:8%;color:#33cd5f;border:none;background-color:white;font-size:xx-large" id="comments-button2" ng-click="sendComment()" class="button icon-left ion-android-send"></button>
 
                 
             </div>
