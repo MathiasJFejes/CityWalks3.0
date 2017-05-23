@@ -365,18 +365,18 @@ function ($scope, $stateParams, $http) {
 
     $scope.placeNation = {
         model: null,
-        availableOptions: [{ id: '0', name: 'Södermanlands-Nerikes' },
+        availableOptions: [{ id: '0', name: 'Sodermanlands-Nerikes' },
                            { id: '1', name: 'Stockholms' },
-                           { id: '2', name: 'Värmlands' },
-                           { id: '3', name: 'Gästrike-Hälsinge' },
-                           { id: '4', name: 'Östgöta' },
-                           { id: '5', name: 'Västgöta' },
+                           { id: '2', name: 'Varmlands' },
+                           { id: '3', name: 'Gastrike-Halsinge' },
+                           { id: '4', name: 'Ostgota' },
+                           { id: '5', name: 'Vastgota' },
                            { id: '6', name: 'Norrlands' },
                            { id: '7', name: 'Gotlands' },
-                           { id: '8', name: 'Smålands' },
-                           { id: '9', name: 'Göteborgs' },
+                           { id: '8', name: 'Smalands' },
+                           { id: '9', name: 'Goteborgs' },
                            { id: '10', name: 'Uplands' },
-                           { id: '11', name: 'Västmanlands-Dala' },
+                           { id: '11', name: 'Vastmanlands-Dala' },
                            { id: '12', name: 'Kalmar' }]
     }
 
@@ -460,29 +460,40 @@ function ($scope, $stateParams, $http) {
                             var request = {
                                 origin: startend,
                                 destination: startend,
-                                waypoints: waypts, /*getgreedy(),*/
+                                waypoints: getgreedy(),
                                 optimizeWaypoints: true,
                                 travelMode: google.maps.TravelMode.WALKING,
                                 avoidHighways: true
                             }
 
-                            getgreedy();
+                            //getgreedy();
 
                             function getgreedy() {
 
-                                var greedywaypts = [];
                                 var places = 5;
-                                var mincost = 1000;
                                 var visits = 0;
-                                var pointer = currentpos;
-                                
+                                var pointer = [];
+                                var tspwaypts = [];
+
+                                tspwaypts = tspwaypts.concat(getFirstroute());
+                                return tspwaypts; 
+                            }
+
+                            function getFirstroute() {
+                                var mincost = 1000;
+                                var shortwaypt = [];
                                 for (var i = 0; i < waypts.length; i++) {
                                     var cost = getDistance(init_lat, init_lon, waypts[i].location.lat(), waypts[i].location.lng());
+                                    console.log(cost)
                                     if (cost < mincost) {
                                         mincost = cost;
+                                        shortwaypt[0] = waypts[i];
+
                                     }
                                 }
+
                                 console.log(mincost)
+                                return shortwaypt;
                             }
 
                             function getDistance(lat1, lon1, lat2, lon2) {
@@ -503,7 +514,6 @@ function ($scope, $stateParams, $http) {
                                 return deg * (Math.PI / 180)
                             }
 
-                            console.log(waypts)
                             directionsService.route(request, function (response, status) {
                            
                                 if (status == google.maps.DirectionsStatus.OK) {
