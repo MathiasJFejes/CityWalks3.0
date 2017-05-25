@@ -996,7 +996,12 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
         $state.go('menu.myRoutes', {}, { reload: true });
     }
 
+    $scope.data = {
+        routeWalkComment: '',
+        routeWalkLike: false
+    }
 
+    console.log('routeWalkLike', $scope.data.routeWalkLike)
     $scope.sendCommentRating = function () {
 
 
@@ -1009,12 +1014,14 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 var userName = listItmeDataService.get().Userdata.username;
 
                 //Input new comment
-                if ($scope.data.routeWalkComment !== '') {
-                    var newCommentList = latest_tracking_data.comments;
-                    newCommentList.push({ "userId": userInfo,"username":userName, "comment": $scope.data.routeWalkComment})
-                }
-                else {
+                console.log('routewalkomment', $scope.data.routeWalkComment)
+                var newCommentList = latest_tracking_data.comments;
+                if ($scope.data.routeWalkComment === undefined || $scope.data.routeWalkComment === '') {
+                    console.log('newcommentfalse', $scope.data.routeWalkComment)
                     newCommentList = newCommentList;
+                } else {
+                    console.log('newcommenttrue', $scope.data.routeWalkComment)
+                    newCommentList.push({ "userId": userInfo, "username": userName, "comment": $scope.data.routeWalkComment })
                 }
 
 
@@ -1022,6 +1029,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 var willAddRating = true;
                 
                 var newLikeList = latest_tracking_data.score;
+                console.log('newLikeList first', newLikeList)
 
                 for (i = 0; i < newLikeList.length; i++) {
                     if (newLikeList[i].userId == userInfo) {
@@ -1032,17 +1040,17 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 }
                 console.log('likelist', newLikeList)
                 console.log('likevalue',$scope.data.routeWalkLike)
-                if (willAddRating == true && $scope.data.routeWalkLike == true) {
+                if (willAddRating === true && $scope.data.routeWalkLike === true) {
                     newLikeList.push({ "userId": userInfo, "score": 1 })
-                    console.log('true1', newLikeList)
+                    console.log('newLikeList willaddtrue routewalklikefalse', newLikeList)
                 }
-                if (willAddRating == false && $scope.data.routeWalkLike !== true) {
+                if (willAddRating === false && $scope.data.routeWalkLike !== true) {
                     newLikeList.splice(indexForRemove, 1);
-                    console.log('false0', newLikeList)
+                    console.log('newLikeList willaddfalse routewalklikefalse', newLikeList)
                 }
-                if (willAddRating == false && $scope.data.routeWalkLike == true) {
+                if (willAddRating === false && $scope.data.routeWalkLike === true) {
                     newLikeList = newLikeList;
-                    console.log('false else', newLikeList)
+                    console.log('newLikeList willaddfalse routewalkliketrue', newLikeList)
                 }
 
                 //add userid to walkerslist
@@ -1056,9 +1064,12 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                 }
                 if (willAddWalkerId == true) {
                     walksersList.push(userInfo);
+                    console.log('willAddWalkerIdtrue')
                 }
                 if (willAddWalkerId == false) {
                     walksersList = walksersList;
+                    console.log('willAddWalkerIdfalse')
+
                 }
 
 
@@ -1088,7 +1099,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                     }
                 }
 
-                $http(req).then(function () {
+                $http(req).then(function (response) {
                     $ionicPopup.alert({
                         title: 'Thanks for walking this route!',
                         template: '<div style="text-align:center"> Your comment and choise of recommendation has been added to this route so that other people can see your thoughts of it. </br> </br> Also, your username has been added to this route so that other people can see that you have walked this route. </div>',
@@ -1096,9 +1107,9 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                     });
                     $scope.data = {
                         routeWalkComment: '',
-                        routeWalkLike: 0
+                        routeWalkLike: false
                     };
-                    $scope.itemData = latest_tracking_data;
+                    $scope.itemData = response.data;
                     $state.go('menu.myRoutes', {}, { reload: true });
                 });
             })
@@ -1115,7 +1126,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
 
         var messageFromInput = $scope.data.message;
 
-        if (messageFromInput == '') {
+        if (messageFromInput == '' || messageFromInput == null) {
             $ionicPopup.alert({
                 title: 'Comment must include text!',
                 okType: 'button-assertive'
@@ -1148,6 +1159,7 @@ function ($scope, $stateParams, listItmeDataService, $http, $state, $ionicPopup)
                         "createdAt": latest_tracking_data.createdAt,
                         "updatedAt": latest_tracking_data.updatedAt,
                         "coords": latest_tracking_data.coords,
+                        "walkersId": latest_tracking_data.walkersId,
                         "time": latest_tracking_data.time,
                         "score": latest_tracking_data.score,
                         "comments": newCommentList,
