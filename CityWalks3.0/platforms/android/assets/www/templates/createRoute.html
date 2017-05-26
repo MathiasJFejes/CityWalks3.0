@@ -2,14 +2,14 @@
   <ion-content padding="false" class="has-header" scroll="false" style="background: linear-gradient(lightgray,#7253C3)">
       <div ng-hide="clickedCreate">
 
-          <div class="item item-devider" style="position:absolute;background: linear-gradient(#7253C3,#937bd1);color:white;top:0%;width:100%">Route Type</div>
-          <ion-radio ng-model="data.choice" ng-value="'B'" ng-click="clickedRandom=false" style="position:absolute;background: rgba(255,255,255,0.4);color:#33cd5f;top:8%;width:100%">Create route</ion-radio>
-          <ion-radio ng-model="data.choice" ng-value="'A'" ng-click="clickedRandom=true" style="position:absolute;background: rgba(255,255,255,0.4);color:#387ef5;top:17%;width:100%">Random route</ion-radio>
+          <div class="item item-devider" style="border:none;position:absolute;background: linear-gradient(#7253C3,#937bd1);color:white;top:0%;height:8%;width:100%">Create random route from:</div>
+          <ion-radio ng-model="data.choice" ng-value="'B'" ng-click="clickedRandom=false" style="border:none;position:absolute;background: rgba(255,255,255,0.4);color:#33cd5f;top:8%;height:8%;width:100%">Types of places </ion-radio>
+          <ion-radio ng-model="data.choice" ng-value="'A'" ng-click="clickedRandom=true" style="border:none;position:absolute;background: rgba(255,255,255,0.4);color:#387ef5;height:8%;top:16%;width:100%">Difficulty level</ion-radio>
 
 
-          <div class="item item-devider" style="position:absolute;background: linear-gradient(#7253C3,#937bd1);color:white;top:25.5%;width:100%">Preferenses</div>
+          <div class="item item-devider" style="border:none;position:absolute;background: linear-gradient(#7253C3,#937bd1);color:white;top:24%;height:8%;width:100%">Preferenses</div>
           
-          <ion-list id="createRandomRoute" class="list" style="position:absolute;top:34%;width:100%">
+          <ion-list id="createRandomRoute" class="list" style="border:none;position:absolute;top:32%;width:100%">
 
               <label class="item item-select" id="createRoute-range" ng-show="clickedRandom">
                   <span class="input-label">Level <i class="assertive" style="text-align:right;font-style:italic;font-size:smaller"></i> </span>
@@ -47,8 +47,8 @@
               </label>
 
           </ion-list>
-          <button ng-hide="clickedRandom" id="recordRoute-button24" ng-click="startRecordRoute(); clickedCreate=true" class="button button-balanced icon-left ion-plus" style="display:block;position:absolute;width:100%;height:8%;bottom:0%">Create</button>
-          <button ng-show="clickedRandom" id="recordRoute-button24" ng-click="startRandomRoute(); clickedCreate=true" class="button button-positive icon-left ion-shuffle" style="display:block;position:absolute;width:100%;height:8%;bottom:0%;left:0%">Random</button>
+          <button ng-hide="clickedRandom" id="recordRoute-button24" ng-click="startRecordRoute(); clickedCreate=true" class="button button-balanced icon-left ion-ios-location" style="display:block;position:absolute;width:100%;height:8%;bottom:0%">Create route</button>
+          <button ng-show="clickedRandom" id="recordRoute-button24" ng-click="startRandomRoute(); clickedCreate=true" class="button button-positive icon-left ion-speedometer" style="display:block;position:absolute;width:100%;height:8%;bottom:0%;left:0%">Create route</button>
       </div>
       <!--Second view-->
       <div ng-show="clickedCreate">

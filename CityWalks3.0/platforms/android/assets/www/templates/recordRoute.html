@@ -13,7 +13,7 @@
 
 
         <!-- SHOW THIS WHEN DONE WALKING-->
-        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:60%;bottom:5%">
+        <div class="list" ng-show="clickedStop && !clickedShare" style="position:absolute;width:100%;bottom:5%">
 
             <a class="item item-icon-left">
                 <i class="icon ion-map"></i>
@@ -37,40 +37,41 @@
         <!-- SEND -->
 
         <div ng-show="clickedShare">
-            <div class="list">
-                <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
-                    <i class="icon ion-document-text"></i>
-                    Route Title
+            <ion-scroll id="comments-container1" style="position:absolute;top:0%;bottom:8%" ng-hide="clickedNearby">
+                <div class="list">
+                    <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
+                        <i class="icon ion-document-text"></i>
+                        Route Title
 
-                </div>
-                <label class="item item-input" >
-                    <input required type="text" maxlength="20" placeholder="Input a route title here!" ng-model="data.routeTitle">
-                </label>
-                <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
-                    <i class="icon ion-android-textsms"></i>
-                    Route Comment
-                </div>
-                <label class="item item-input">
-                    <textarea required rows="3" maxlength="120" placeholder="Input the first route comment here!" ng-model="data.routeComment"></textarea>
-                </label>
-                <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
-                    <i class="icon ion-thumbsup"></i>
-                    Route recommendation
+                    </div>
+                    <label class="item item-input">
+                        <input required type="text" maxlength="20" placeholder="Input a route title here!" ng-model="data.routeTitle">
+                    </label>
+                    <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
+                        <i class="icon ion-android-textsms"></i>
+                        Route Comment
+                    </div>
+                    <label class="item item-input">
+                        <textarea required rows="3" maxlength="120" placeholder="Input the first route comment here!" ng-model="data.routeComment"></textarea>
+                    </label>
+                    <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
+                        <i class="icon ion-thumbsup"></i>
+                        Route recommendation
 
+                    </div>
+                    <ion-checkbox class="item-checkbox-right checkbox-balanced" ng-model="data.routeLike">Recommend Route?</ion-checkbox>
+                    <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
+                        <i class="icon ion-ios-information"></i>
+                        Route Information
+                    </div>
+                    <a class="item" ">
+                        Route Distance: {{routeDistance}} (km)
+                    </a>
+                    <a class="item">
+                        Route Time: {{routeTimeMin}}:{{routeTimeSec}} (hh:mm:ss)
+                    </a>
                 </div>
-                <ion-checkbox class="item-checkbox-right checkbox-balanced" ng-model="data.routeLike">Recommend Route?</ion-checkbox>
-                <div class="item item-divider item-icon-left" style="background: linear-gradient(#7253C3,#937bd1);color:white">
-                    <i class="icon ion-ios-information"></i>
-                    Route Information
-                </div>
-                <a class="item" ">
-                    Route Distance: {{routeDistance}} (km)
-                </a>
-                <a class="item">
-                    Route Time: {{routeTimeMin}}:{{routeTimeSec}} (hh:mm:ss)
-                </a>
-            </div>
-
+             </ion-scroll>
         </div>
         
             <!-- Back-->

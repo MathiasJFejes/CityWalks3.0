@@ -1,20 +1,43 @@
-<ion-view view-title='Top Routes' hide-back-button="true" id="page7" cache-view="false">
+<ion-view view-title='Find Routes' hide-back-button="true" id="page7" cache-view="false">
 
 
-    <ion-content padding="false" class="has-header" style="background: linear-gradient(lightgray,#7253C3)">
+    <ion-content padding="false" class="has-header" style="background: linear-gradient(#7253C3,lightgray)" scroll="false">
 
-        <ion-list ng-init="getRouteData()">
-            <ion-item class="item item-icon-left" ng-repeat="x in myData" ng-click="getRouteInfo(x)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
-                <i class="icon ion-map"></i>
+        <div class="list" style="top:0%;height:16%">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="text" placeholder="Search routes" ng-model="filterValue">
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Sort by:
+                </div>
+                <select ng-model="sortOption" ng-change="sortBy(sortOption)">
+                    <option value="-comments">Comments: High to Low</option>
+                    <option value="-date">Date - Newest to Oldest</option>
+                    <option value="-distance">Distance - High to Low</option>
+                    <option value="-recommendations" selected>Recommendations: High to Low</option>
+                    <option value="title">Title (A-Z)</option>
+                    <option value="username">Username (A-Z)</option>
+                    <option value="-walks">Walks: High to Low</option>
+                </select>
+            </label>
+        </div>
+           
+        <ion-scroll id="comments-container1" style="position:absolute;top:14%;bottom:0%">
+            <ion-list ng-init="getRouteData()">
+                <ion-item class="item item-icon-left" ng-repeat="x in myData | orderBy:sortOption | filter:filterValue" ng-click="getRouteInfo(x)" style="background: linear-gradient(#937bd1,#7253C3);color:white;border:none">
+                    <i class="icon ion-map"></i>
 
-                <p style="color:white; font-size:larger"> {{x["1"].title}} </p>
-                <p style="color:white"> Creator: {{x["0"]}} </p>
-                <p style="color:white"> Distance: {{x["1"].distance}} km</p>
-                <p style="color:white"> Recommendations: {{x["1"].score.length}}</p>
-                <p style="color:white"> Comments: {{x["1"].comments.length}}</p>
+                    <p style="color:white; font-size:larger"> {{x.data.title}} </p>
+                    <p style="color:white"> User: {{x.username}} </p>
+                    <p style="color:white"> Distance: {{x.data.distance}} km</p>
+                    <p style="color:white"> Recommendations: {{x.recommendations}}</p>
+                    <p style="color:white"> Comments: {{x.comments}}</p>
 
-         
-            </ion-item>
-        </ion-list>
+
+                </ion-item>
+            </ion-list>
+        </ion-scroll>
     </ion-content>
 </ion-view>
