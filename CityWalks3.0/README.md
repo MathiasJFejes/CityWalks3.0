@@ -1,9 +1,6 @@
-# Ionic Blank Template
+# CityWalks application (front-end)
 
-An application using Apache Cordova, Ionic Framework, and Typescript. Currently supporting iOS, Android and Windows 10.
-
-## Important!
-To learn more about Tools for Apache Cordova, visit this [link](https://taco.visualstudio.com/).
+A walking application using Apache Cordova, Ionic Framework, AngularJS and javascript. Currently supporting iOS, Android and Windows 10.
 
 ## Table of Contents
  - [Requirements](#requirements)
