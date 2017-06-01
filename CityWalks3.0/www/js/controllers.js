@@ -418,7 +418,7 @@ function ($scope, $stateParams, $http) {
                     // Y2 point will be sin * range
                     y2 = Math.sin(currentAngle) * range;
 
-                    // Assuming here you're using points for each x,y..             
+                    // Assuming here we are using points for each x,y..             
                     newLat = lat + x2;
                     newLong = long + y2;
                     lat_long = new google.maps.LatLng(newLat, newLong);
@@ -427,12 +427,13 @@ function ($scope, $stateParams, $http) {
                     currentAngle += degreesPerPoint;
                 }
 
-                // Return the points we've generated
+                // Return the points we have generated
                 //gets random coordinate from our array of coords
                 //Add the last point to array that is the start point so that we start and stop at same position
                 randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                 
+                //A way around a unknown bug that indicates that some coordinates are undefined
                 if (randCoordfirst == undefined || randCoordsecond == undefined) {
                     randCoordfirst = trackPoints[Math.floor(Math.random() * trackPoints.length)];
                     randCoordsecond = trackPoints[Math.floor(Math.random() * trackPoints.length)];
@@ -536,6 +537,12 @@ function ($scope, $stateParams, $http) {
                         directionsDisplay.setMap(map);
                         var service = new google.maps.places.PlacesService(map);
                         var waypts = [];
+                        var tspwaypts = [];
+                        var closewaypt = [];
+                        var visit = [];
+                        var visitsec = [];
+                        var visitthird = [];
+                        var visitfourth = [];
 
                         waypts.push({
                             location: new google.maps.LatLng(wayptsNation[0], wayptsNation[1]),
@@ -571,7 +578,6 @@ function ($scope, $stateParams, $http) {
                                         location: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()),
                                         stopover: false
                                     });
-                                    //console.log(results[0].geometry.location.lat())
                                 //}
                             }
 
@@ -584,39 +590,92 @@ function ($scope, $stateParams, $http) {
                                 avoidHighways: true
                             }
 
-                            //getgreedy();
-
                             function getgreedy() {
 
-                                var places = 5;
-                                var visits = 0;
-                                var pointer = [];
-                                var tspwaypts = [];
+                                var places = 3;
+                                var nations = 1;
 
-                                tspwaypts = tspwaypts.concat(getFirstroute());
+                                if (waypts.length == places + nations) {
+
+                                    console.log(waypts.length)  
+                                    tspwaypts = tspwaypts.concat(getFirstpoint());
+                                    console.log(waypts.length)
+                                    //tspwaypts = tspwaypts.concat(getSecondroute(pointer));
+
+                                } 
                                 return tspwaypts; 
                             }
 
-                            function getFirstroute() {
+                            function getFirstpoint() {
                                 var mincost = 1000;
-                                var shortwaypt = [];
-                                for (var i = 0; i < waypts.length; i++) {
-                                    var cost = getDistance(init_lat, init_lon, waypts[i].location.lat(), waypts[i].location.lng());
-                                    console.log(cost)
-                                    if (cost < mincost) {
-                                        mincost = cost;
-                                        shortwaypt[0] = waypts[i];
 
+                                if (mincost > 0) {
+
+                                    for (var i = 0; i < waypts.length; i++) {
+
+                                        var cost = getDistance(init_lat, init_lon, waypts[i].location.lat(), waypts[i].location.lng());
+
+                                        if (cost < mincost) {
+                                            mincost = cost;
+                                            visit = waypts[i];
+                                        }
                                     }
-                                }
+                                    
+                                    var a = waypts.indexOf(visit);
+                                    waypts.splice(a, 1)
+                                    var mincost2 = 1000;
 
-                                console.log(mincost)
-                                return shortwaypt;
+                                    for (var i = 0; i < waypts.length; i++) {
+
+                                        var cost = getDistance(visit.location.lat(), visit.location.lng(), waypts[i].location.lat(), waypts[i].location.lng());
+
+                                        if (cost < mincost2) {
+                                            mincost2 = cost;
+                                            visitsec = waypts[i];
+                                        }
+                                    }
+
+                                    var b = waypts.indexOf(visitsec);
+                                    waypts.splice(b, 1)
+                                    var mincost3 = 1000;
+                                
+                                    for (var i = 0; i < waypts.length; i++) {
+
+                                        var cost = getDistance(visitsec.location.lat(), visitsec.location.lng(), waypts[i].location.lat(), waypts[i].location.lng());
+
+                                        if (cost < mincost3) {
+                                            mincost3 = cost;
+                                            visitthird = waypts[i];
+                                        }
+                                    }
+                                
+                                    var c = waypts.indexOf(visitthird);
+                                    waypts.splice(c, 1)
+
+                                    var mincost4 = 1000;
+
+                                    for (var i = 0; i < waypts.length; i++) {
+
+                                        var cost = getDistance(visitthird.location.lat(), visitthird.location.lng(), waypts[i].location.lat(), waypts[i].location.lng());
+
+                                        if (cost < mincost4) {
+                                            mincost4 = cost;
+                                            visitfourth = waypts[i];
+                                        }
+                                    }
+
+                                    var d = waypts.indexOf(visitfourth);
+                                    waypts.splice(d, 1)
+                                    closewaypt = closewaypt.concat(visit, visitsec, visitthird, visitfourth);
+                                    
+                                }
+                                
+                                return closewaypt;
                             }
 
                             function getDistance(lat1, lon1, lat2, lon2) {
                                 var R = 6371; // Radius of the earth in km
-                                var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+                                var dLat = deg2rad(lat2 - lat1);  // degrees to radians below
                                 var dLon = deg2rad(lon2 - lon1);
                                 var a =
                                   Math.sin(dLat / 2) * Math.sin(dLat / 2) +
