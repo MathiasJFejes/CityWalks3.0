@@ -551,21 +551,21 @@ function ($scope, $stateParams, $http) {
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 5000,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 5000,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeTwo.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 5000,
+                            radius: 1000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeThree.model]
                         }, callback);
@@ -1699,28 +1699,6 @@ function ($scope, $state, $stateParams, $http, $ionicPopup, listItmeDataService,
 
     }
 
-
-}])
-
-   
-.controller('createdRouteCtrl', ['$scope', '$stateParams', '$ionicPopup', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $ionicPopup) {
-    
-    $scope.rateRoute = function() {
-       var alertPopup = $ionicPopup.show({
-         template: '<ion-list>  <ion-toggle>Like route</ion-toggle> <ion-toggle>Dangerous route</ion-toggle>  </ion-list> ',
-         title: 'Please add informarion about your route',
-         scope: $scope,
-         buttons: [
-           { text: 'Cancel', style:'red'},
-           { text: 'Save' },
-          ]
-       });
-    };
- 
-    
 
 }])
    
