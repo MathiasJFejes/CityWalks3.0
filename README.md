@@ -1,2 +1,2 @@
 # CityWalksFrontEnd
-Probably the best walking app in the world!
+The README file of the CityWalks application lies inside the CityWalks3.0 folder
