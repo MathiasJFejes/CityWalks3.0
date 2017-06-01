@@ -4,7 +4,7 @@ A walking application using Apache Cordova, Ionic Framework, AngularJS and JavaS
 
 ## Table of Contents
  - [Getting Started](#getting-started)
- - [File Structure of CityWalks application](#file-structure-of-app)
+ - [File Structure of the CityWalks application](#file-structure-of-app)
 
 ## Getting Started
 
