@@ -551,21 +551,21 @@ function ($scope, $stateParams, $http) {
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeTwo.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeThree.model]
                         }, callback);
