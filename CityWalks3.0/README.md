@@ -7,29 +7,10 @@ A walking application using Apache Cordova, Ionic Framework, AngularJS and javas
  - [Getting Started](#getting-started)
  - [File Structure of App](#file-structure-of-app)
 
-## Requirements
-1. node.js
-2. Cordova and Ionic - npm install cordova ionic
-3. TypeScript - npm install typescript
-4. Gulp - npm install gulp
-5. Bower - npm install bower
-
 ## Getting Started
 
-With VS Code:
-* Clone this repository.
-* Run `npm install` from the project root.
-* Run `bower install` from the project root.
-* Add android / iOS / windows platform to your project by running `ionic platform add <platform name>` in a terminal from your project root.
-* Build the project by running gulp tsc and then `ionic build <platform name>`
-* Deploy to device or emulator by running `ionic run <platform name>` or `ionic emulate <platform name>`
-* Success
-
-** Note: To improve your Cordova development workflow, install [VS Code Cordova extension](https://marketplace.visualstudio.com/items?itemName=vsmobile.cordova-tools). 
-* Launch the VS Code Command Palette – (Ctrl+Shift+P on Windows, Cmd+Shift+P on Mac) – and type the following command and hit Enter: 
-> ext install cordova-tools
-
 With Visual Studio:
+* Install Visual Studio with the Code Cordova extension (cordova-tools) 
 * Clone this repository.
 * Open the ionic-typescript-blank.sln in Visual Studio.
 * Open Task Runner window by pressing Ctrl+Alt+Bkspce. 
