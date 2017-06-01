@@ -1,52 +1,72 @@
 # CityWalks application (front-end)
 
-A walking application using Apache Cordova, Ionic Framework, AngularJS and javascript. Currently supporting iOS, Android and Windows 10.
+A walking application using Apache Cordova, Ionic Framework, AngularJS and JavaScript. Currently supporting iOS, Android and Windows 10.
 
 ## Table of Contents
- - [Requirements](#requirements)
  - [Getting Started](#getting-started)
- - [File Structure of App](#file-structure-of-app)
+ - [File Structure of the CityWalks application](#file-structure-of-app)
 
 ## Getting Started
 
 With Visual Studio:
 * Install Visual Studio with the Code Cordova extension (cordova-tools) 
 * Clone this repository.
-* Open the ionic-typescript-blank.sln in Visual Studio.
-* Open Task Runner window by pressing Ctrl+Alt+Bkspce. 
-** Note: It is important that the task runner window be open in VS while building the project. You can also use "gulp watch" task to enable live reload in browser based debugging scenarios.    
+* Open the CityWalks3.0.sln in Visual Studio.
+* Open Task Runner window by pressing Ctrl+Alt+Bkspce.    
 * Install npm packages by going to your Solution Explorer -> Dependencies -> npm and clicking on 'Restore Packages'. 
-* Once packages are restored, build the project and deploy it on Ripple or an android emulator.  
-* Success
+* Once packages are restored, build the project.
+* The project can then be deployed on Ripple or an android emulator. 
+* The project can also be deployed on a physical device: 
+* - Android: Install and open Android Studio, connect a Android device with USB-debugging set to true. Choose "Device" in the deploy options. The project can then be deployed on the Android Device. 
+* - iOS: Follow the instructions on https://ionicframework.com/docs/intro/deploying/ at the iOS part.
+* - Windows: Follow the instructions on https://ionicframework.com/docs/resources/platform-setup/windows-setup.html
 
 
-## File Structure of App
+## File Structure of the CityWalks application
 
 ```
-ionic-typescript-blank/
-├── app/                               * Working directory for TypeScript files
-│   └── app.ts                         * Main Application configuration
-│
+CityWalks3.0/
 ├── node_modules/                      * Node dependencies
 |
 ├── platforms/                         * Cordova generated native platform code
 |
-├── plugins/                           * Cordova native plugins go
+├── plugins/                           * Cordova native plugins go here (Geolocation etc.)
 |
 ├── resources/                         * Images for splash screens and icons
 |
-├── typings/                           * Contains all typings for this project
+├── SCSS/                              * The app’s SASS file, customizes Ionic without adding a myriad of CSS overrides
 |
-├── www/                               * Folder that is copied over to platforms www directory
+├── www/                               * WWW directory, where most of the CityWalks app is developed and build.
 │   │   
-│   ├── js/                            * Contains transpiled JS files from TS files
-│   │    └── app.js                 
+│   ├── js/                            * Contains JS files
+│   │    └── app.js                     ** Contains the Angular run and config methods
+│   │    └── controller.js              ** JS functions and Angular controllers for the states 
+│   │    └── directives.js              ** Directives goes here (only contains a directive that highlights the current side menu tab)
+│   │    └── routes.js                  ** Various states which the app can be in, each state's controller can be found in controller.js
+│   │    └── services.js                ** Contains the custom Angular services and factories for the CityWalks application
 │   │
 │   ├── css/                           * Compiled CSS
 │   │
-│   ├── img/                           * App images
+│   ├── img/                           * App images and map icons
 │   │
-│   ├── lib/                           * Dependencies from bower install 
+│   ├── lib/                           * Ionic and other libraries. Dependencies from bower install, angular, ionic, ionicrouter 
+│   │
+│   ├── templates/                     * HTML templates
+│   │    └── confirmResetPassword.html    ** Confirm and reset the password page
+│   │    └── createRoute.html             ** Create route form places or level page
+│   │    └── EditFriends.html             ** Edit friends, add or remove page
+│   │    └── friends.html                 ** Show the friends page
+│   │    └── friendsRoutes.html           ** The friends routes page
+│   │    └── login.html                   ** Login page
+│   │    └── menu.html                    ** Template for the side-menu 
+│   │    └── myRealRoutes.html            ** All the routes of the in user page
+│   │    └── myRoutes.html                ** (CONFUSING NAME! Really "RouteInfo") Information and small map for all routes
+│   │    └── nearbyRoutes.html            ** Shows nearby routes and a map with the position and other nearby routes
+│   │    └── recordRoute.html             ** Record route page, share route page
+│   │    └── requestResetPassword.html    ** Request and reset the password page
+│   │    └── settings.html                ** The settings page
+│   │    └── signup.html                  ** The signup page
+│   │    └── topRoutes.html               ** (CONFUSING NAME! Really "FindRoutes") Search and sort through the routes page
 │   │
 │   └── index.html                     * Main entry point
 |
@@ -56,9 +76,9 @@ ionic-typescript-blank/
 ├── gulpfile.js                        * Contains gulp tasks for compiling ts files, scss files and more..
 ├── ionic.project                      * Ionic configuration file
 ├── package.json                       * Our javascript dependencies
-├── ionic-typescript-blank.sln         * VS solution
-├── ionic-typescript-blank.jsproj        
-├── ionic-typescript-blank.jsproj.user     
+├── CityWalks3.0.sln                   * VS solution
+├── CityWalks3.0.jsproj        
+├── CityWalks3.0.jsproj.user     
 └── README.md                          * This file
 ```
 
