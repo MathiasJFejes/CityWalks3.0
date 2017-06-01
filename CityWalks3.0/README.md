@@ -3,7 +3,6 @@
 A walking application using Apache Cordova, Ionic Framework, AngularJS and JavaScript. Currently supporting iOS, Android and Windows 10.
 
 ## Table of Contents
- - [Requirements](#requirements)
  - [Getting Started](#getting-started)
  - [File Structure of CityWalks application](#file-structure-of-app)
 
