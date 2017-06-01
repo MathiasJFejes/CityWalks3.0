@@ -551,21 +551,21 @@ function ($scope, $stateParams, $http) {
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeOne.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeTwo.model]
                         }, callback);
 
                         service.nearbySearch({
                             location: currentpos,
-                            radius: 1000,
+                            radius: 5000,
                             //rankBy: google.maps.places.RankBy.DISTANCE,
                             type: [$scope.placeThree.model]
                         }, callback);
@@ -590,6 +590,7 @@ function ($scope, $stateParams, $http) {
                                 avoidHighways: true
                             }
 
+                            //A function that orders the array after points that are located close to each other 
                             function getgreedy() {
 
                                 var places = 3;
@@ -597,16 +598,14 @@ function ($scope, $stateParams, $http) {
 
                                 if (waypts.length == places + nations) {
 
-                                    console.log(waypts.length)  
-                                    tspwaypts = tspwaypts.concat(getFirstpoint());
-                                    console.log(waypts.length)
-                                    //tspwaypts = tspwaypts.concat(getSecondroute(pointer));
-
+                                    tspwaypts = tspwaypts.concat(getPoints());
+                                    
                                 } 
                                 return tspwaypts; 
                             }
 
-                            function getFirstpoint() {
+                            //Compares all the points with those that are left 
+                            function getPoints() {
                                 var mincost = 1000;
 
                                 if (mincost > 0) {
@@ -673,6 +672,7 @@ function ($scope, $stateParams, $http) {
                                 return closewaypt;
                             }
 
+                            //Returns the distance in km between two coordinates
                             function getDistance(lat1, lon1, lat2, lon2) {
                                 var R = 6371; // Radius of the earth in km
                                 var dLat = deg2rad(lat2 - lat1);  // degrees to radians below
