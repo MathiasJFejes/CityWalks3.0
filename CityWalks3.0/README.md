@@ -34,24 +34,26 @@ CityWalks3.0/
 |
 ├── resources/                         * Images for splash screens and icons
 |
-├── www/                               * Folder that is copied over to platforms www directory
+├── SCSS/                              * The app’s SASS file, customizes Ionic without adding a myriad of CSS overrides
+|
+├── www/                               * WWW directory, where most of the CityWalks app is developed and build.
 │   │   
 │   ├── js/                            * Contains JS files
-│   │    └── app.js
-│   │    └── controller.js              ** CityWalks JS functions for login, maps etc. 
+│   │    └── app.js                     ** Contains the Angular run and config methods
+│   │    └── controller.js              ** JS functions and Angular controllers for the states 
 │   │    └── directives.js              ** Directives goes here (only contains a directive that highlights the current side menu tab)
 │   │    └── routes.js                  ** Various states which the app can be in, each state's controller can be found in controller.js
-│   │    └── services.js                ** Factories and services for the CityWalks application
+│   │    └── services.js                ** Contains the custom Angular services and factories for the CityWalks application
 │   │
 │   ├── css/                           * Compiled CSS
 │   │
 │   ├── img/                           * App images and map icons
 │   │
-│   ├── lib/                           * Dependencies from bower install, angular, ionic, ionicrouter 
+│   ├── lib/                           * Ionic and other libraries. Dependencies from bower install, angular, ionic, ionicrouter 
 │   │
 │   ├── templates/                     * HTML templates
-│   │    └── confirmResetPassword.html    ** confirm and reset the password page
-│   │    └── createRoute.html             ** create route form places or level page
+│   │    └── confirmResetPassword.html    ** Confirm and reset the password page
+│   │    └── createRoute.html             ** Create route form places or level page
 │   │    └── EditFriends.html             ** Edit friends, add or remove page
 │   │    └── friends.html                 ** Show the friends page
 │   │    └── friendsRoutes.html           ** The friends routes page
@@ -64,7 +66,7 @@ CityWalks3.0/
 │   │    └── requestResetPassword.html    ** Request and reset the password page
 │   │    └── settings.html                ** The settings page
 │   │    └── signup.html                  ** The signup page
-│   │    └── topRoutes.html               ** (CONFUSING NAME! Really "FindRoutes") Search and sort through the routes
+│   │    └── topRoutes.html               ** (CONFUSING NAME! Really "FindRoutes") Search and sort through the routes page
 │   │
 │   └── index.html                     * Main entry point
 |
